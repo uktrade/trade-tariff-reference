@@ -1,0 +1,23 @@
+version: '2'
+services:
+
+  tariffs:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file: .env
+    entrypoint: dockerize -wait tcp://postgres:5432
+    depends_on:
+      - postgres
+    command: /app/start.sh
+
+  postgres:
+    image: postgres:11
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file: .env
+
