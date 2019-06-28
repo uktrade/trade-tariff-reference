@@ -1,3 +1,7 @@
+django-extensions==2.1.9
 Django==2.2.2
 flake8==3.7.7
 psycopg2-binary
+ipdb==0.12
+ipython==7.5.0
+werkzeug==0.15.2

@@ -12,5 +12,17 @@ DATABASES = {
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('POSTGRES_HOST'),
+    },
+    'tariff': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'tariff_uk',
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
     }
 }
+
+
+DATABASE_ROUTERS = [
+    'trade_tariff_reference.core.router.Router',
+]
