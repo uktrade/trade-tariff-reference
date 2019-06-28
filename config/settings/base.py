@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'trade_tariff_reference.core',
+    'trade_tariff_reference.schedule',
+    'trade_tariff_reference.tariff',
 ]
 
 MIDDLEWARE = [
