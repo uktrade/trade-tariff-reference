@@ -391,8 +391,8 @@ class document(object):
 					if str(qb.quota_order_number_id) == str(qd.quota_order_number_id):
 						found_matching_balance = True
 						#print (qd.quota_order_number_id)
-						qd.initial_volume = f.mnum(qb.y1_balance)
-						qd.volume_yx	= f.mnum(qb.yx_balance)
+						qd.initial_volume = mnum(qb.y1_balance)
+						qd.volume_yx	= mnum(qb.yx_balance)
 						qd.addendum		= qb.addendum
 						qd.scope		= qb.scope
 						qd.format_volumes()

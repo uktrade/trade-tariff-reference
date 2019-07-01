@@ -1,5 +1,3 @@
-# Import standard modules
-import sys
 import glob as g
 import functions as f
 

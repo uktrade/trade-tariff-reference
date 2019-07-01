@@ -1,12 +1,9 @@
 # Import standard modules
 from __future__ import with_statement
-import psycopg2
 from contextlib import closing
 from zipfile import ZipFile, ZIP_DEFLATED
 from datetime import datetime
 import os
-import sys
-import codecs
 import re
 
 import glob as g

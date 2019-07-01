@@ -1,7 +1,3 @@
-import functions as f
-import glob as g
-import datetime
-import sys
 
 class measure_condition(object):
 	def __init__(self, measure_condition_sid, measure_sid, condition_code, component_sequence_number,

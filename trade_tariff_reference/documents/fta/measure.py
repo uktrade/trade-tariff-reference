@@ -1,10 +1,7 @@
-import re
-import sys
-from datetime import datetime
 
-import functions as f
+from datetime import datetime
 import glob as g
-from duty import duty
+
 
 class measure(object):
 	def __init__(self, measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date, geographical_area_id, reduction_indicator):
