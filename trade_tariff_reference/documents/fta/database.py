@@ -1,12 +1,9 @@
-import psycopg2
-
+from django.db import connections
 
 class DatabaseConnect:
 
     def connect(self):
-        self.conn = psycopg2.connect(
-            "dbname=" + self.DBASE + " user=postgres password=" + self.p + " host=postgres"
-        )
+        self.conn = connections['tariff']
 
     def shutDown(self):
         self.conn.close()

@@ -1,19 +1,19 @@
-import sys
-import os
-from os import system, name 
+from os import system, name
 import csv
 import json
-from datetime import datetime
 
-from .database import DatabaseConnect
-from .document import document
-from .hierarchy import hierarchy
-from .mfn_duty import mfn_duty
-from .local_siv import local_siv
+from documents.fta.functions import *
+from documents.fta.database import DatabaseConnect
+from documents.fta.document import document
+from documents.fta.hierarchy import hierarchy
+from documents.fta.mfn_duty import mfn_duty
+from documents.fta.local_siv import local_siv
 
 
 class Application(DatabaseConnect):
-	def __init__(self):
+
+	def __init__(self, country_profile):
+		self.country_profile = country_profile
 		self.clear()
 		self.siv_list               = []
 		self.meursing_list			= []
@@ -44,7 +44,7 @@ class Application(DatabaseConnect):
 		self.CSV_DIR			= os.path.join(self.BASE_DIR, "csv")
 		self.COMPONENT_DIR		= os.path.join(self.BASE_DIR, "xmlcomponents")
 
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "config")
+		self.CONFIG_DIR			= os.path.join(self.BASE_DIR, "config")
 		self.CONFIG_FILE		= os.path.join(self.CONFIG_DIR, "config_common.json")
 		self.CONFIG_FILE_LOCAL	= os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
 
@@ -123,7 +123,8 @@ class Application(DatabaseConnect):
 		my_document.write()
 		print ("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
 			
-	def clear(self): 
+	def clear(self):
+		pass
 		# for windows 
 		if name == 'nt': 
 			_ = system('cls') 
@@ -136,17 +137,12 @@ class Application(DatabaseConnect):
 		with open(self.CONFIG_FILE, 'r') as f:
 			my_dict = json.load(f)
 
-		self.DBASE = "tariff_eu"
-		self.p	= "tariffs"
-
 		# Get local config items
 		with open(self.CONFIG_FILE_LOCAL, 'r') as f:
 			my_dict = json.load(f)
 
 		self.all_country_profiles = my_dict['country_profiles']
 
-		# Connect to the database
-		#print (self.DBASE)
 		self.connect()
 
 	def get_country_list(self):
