@@ -1,11 +1,12 @@
-import sys
 import glob as g
-import functions
+import documents.fta.functions as functions
+
 
 class duty(object):
-	def __init__(self, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
+	def __init__(self, application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
 	duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code, measure_sid,
 	quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date, reduction_indicator, is_siv):
+		self.application = application
 		self.commodity_code                  	= functions.mstr(commodity_code)
 		self.additional_code_type_id         	= functions.mstr(additional_code_type_id)
 		self.additional_code_id              	= functions.mstr(additional_code_id)
@@ -109,7 +110,7 @@ class duty(object):
 			if self.duty_amount == None:
 				self.duty_amount = 0
 			if self.duty_amount > 0:
-				mfn_rate = g.app.get_mfn_rate(self.commodity_code, self.validity_start_date, self.validity_end_date)
+				mfn_rate = self.application.get_mfn_rate(self.commodity_code, self.validity_start_date, self.validity_end_date)
 				#if self.commodity_code == "0805290011":
 				#	print (self.commodity_code, self.validity_start_date, self.validity_end_date, self.duty_amount,  mfn_rate)
 				if mfn_rate != 0.0:
@@ -119,7 +120,7 @@ class duty(object):
 			else:
 				my_duty = 0
 				
-			if self.commodity_code in g.app.local_sivs_commodities_only and g.app.country_profile == "morocco":
+			if self.commodity_code in self.application.local_sivs_commodities_only and self.application.country_profile == "morocco":
 				#self.duty_string = "Entry Price - 0% + Specific 100% Rebased price €" + "{0:1.2f}".format(my_duty) + " Rebased Price P"
 				self.duty_string = "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%" + self.get_rebase() # " Rebased Price P"
 			else:
@@ -131,7 +132,7 @@ class duty(object):
 	def get_rebase(self):
 		out = ""
 		print (self.commodity_code)
-		for obj in g.app.local_sivs:
+		for obj in self.application.local_sivs:
 			if obj.goods_nomenclature_item_id == self.commodity_code:
 				if self.validity_start_date == obj.validity_start_date:
 					print ("Found a match")

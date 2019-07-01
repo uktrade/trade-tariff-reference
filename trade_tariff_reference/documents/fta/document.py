@@ -1,25 +1,21 @@
-from datetime import datetime
-import re
-import os
-import os, csv
-import sys
+import csv
 import codecs
 
-import functions as f
-import glob as g
+from documents.fta.functions import *
 
-#from application import application
-from duty        import duty
-from quota_order_number import quota_order_number
-from quota_definition import quota_definition
-from measure import measure
-from measure_condition import measure_condition
-from commodity import commodity
-from quota_commodity import quota_commodity
-from quota_balance import quota_balance
+from documents.fta.duty import duty
+from documents.fta.quota_order_number import quota_order_number
+from documents.fta.quota_definition import quota_definition
+from documents.fta.measure import measure
+from documents.fta.measure_condition import measure_condition
+from documents.fta.commodity import commodity
+from documents.fta.quota_commodity import quota_commodity
+from documents.fta.quota_balance import quota_balance
+
 
 class document(object):
-	def __init__(self):
+	def __init__(self, application):
+		self.application = application
 		self.footnote_list				= []
 		self.duty_list					= []
 		self.balance_list				= []
@@ -27,16 +23,16 @@ class document(object):
 		self.seasonal_records			= 0
 		self.wide_duty					= False
 
-		print ("Creating FTA document for " + g.app.country_name + "\n")
-		g.app.get_mfns_for_siv_products()
+		print ("Creating FTA document for " + application.country_name + "\n")
+		self.application.get_mfns_for_siv_products()
 
 		self.document_xml = ""
 		
 
 	def check_for_quotas(self):
 		sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
-		AND m.geographical_area_id IN (""" + g.app.geo_ids + """) ORDER BY 1"""
-		cur = g.app.conn.cursor()
+		AND m.geographical_area_id IN (""" + self.application.geo_ids + """) ORDER BY 1"""
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		if len(rows) == 0:
@@ -69,12 +65,12 @@ class document(object):
 		WHERE mc.measure_condition_sid = mcc.measure_condition_sid
 		AND m.measure_sid = mc.measure_sid AND condition_code = 'V' AND mcc.duty_expression_id = '01'
 		AND m.measure_type_id IN (""" + measure_type_list + """)
-		AND m.geographical_area_id IN (""" + g.app.geo_ids + """)
+		AND m.geographical_area_id IN (""" + self.application.geo_ids + """)
 		AND m.validity_start_date < '2019-12-31' AND m.validity_end_date >= '2018-01-01'
 		ORDER BY measure_sid;
 		"""
 		# print (sql)
-		cur = g.app.conn.cursor()
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		for row in rows:
@@ -85,12 +81,12 @@ class document(object):
 
 		# Now get the country exclusions
 		exclusion_list = []
-		if g.app.exclusion_check != "":
+		if self.application.exclusion_check != "":
 			sql = """SELECT m.measure_sid FROM measure_excluded_geographical_areas mega, ml.v5_2019 m
 			WHERE m.measure_sid = mega.measure_sid
-			AND excluded_geographical_area = '""" + g.app.exclusion_check + """'
+			AND excluded_geographical_area = '""" + self.application.exclusion_check + """'
 			ORDER BY validity_start_date DESC"""
-			cur = g.app.conn.cursor()
+			cur = self.application.conn.cursor()
 			cur.execute(sql)
 			rows = cur.fetchall()
 			for row in rows:
@@ -108,13 +104,13 @@ class document(object):
 		m.validity_start_date, m.validity_end_date, m.geographical_area_id, m.reduction_indicator
 		FROM goods_nomenclatures gn, ml.v5_2019 m LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
 		WHERE (m.measure_type_id IN (""" + measure_type_list + """)
-		AND m.geographical_area_id IN (""" + g.app.geo_ids + """)
+		AND m.geographical_area_id IN (""" + self.application.geo_ids + """)
 		AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
 		AND gn.validity_end_date IS NULL AND gn.producline_suffix = '80'
 		) ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
 		"""
 
-		cur = g.app.conn.cursor()
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 
@@ -130,20 +126,20 @@ class document(object):
 		for row in rows:
 			measure_sid						= row[9]
 			if measure_sid not in (exclusion_list):
-				commodity_code					= f.mstr(row[0])
-				additional_code_type_id			= f.mstr(row[1])
-				additional_code_id				= f.mstr(row[2])
-				measure_type_id					= f.mstr(row[3])
+				commodity_code					= mstr(row[0])
+				additional_code_type_id			= mstr(row[1])
+				additional_code_id				= mstr(row[2])
+				measure_type_id					= mstr(row[3])
 				duty_expression_id				= row[4]
 				duty_amount						= row[5]
-				monetary_unit_code				= f.mstr(row[6])
+				monetary_unit_code				= mstr(row[6])
 				monetary_unit_code				= monetary_unit_code.replace("EUR", "€")
-				measurement_unit_code			= f.mstr(row[7])
-				measurement_unit_qualifier_code = f.mstr(row[8])
-				quota_order_number_id			= f.mstr(row[10])
+				measurement_unit_code			= mstr(row[7])
+				measurement_unit_qualifier_code = mstr(row[8])
+				quota_order_number_id			= mstr(row[10])
 				validity_start_date				= row[11]
 				validity_end_date				= row[12]
-				geographical_area_id			= f.mstr(row[13])
+				geographical_area_id			= mstr(row[13])
 				reduction_indicator				= row[14]
 
 				# Hypothesis would be that the only reason why the duty amount is None is when
@@ -161,7 +157,7 @@ class document(object):
 					is_siv = False
 
 
-				obj_duty = duty(commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
+				obj_duty = duty(self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
 				duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
 				measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date, reduction_indicator, is_siv)
 				self.duty_list.append(obj_duty)
@@ -200,7 +196,7 @@ class document(object):
 		
 		# Combine duties into a string
 		for m in self.measure_list:
-			m.combine_duties()
+			m.combine_duties(self.application)
 		# Finally, form the measures into a consolidated string
 		for c in self.commodity_list:
 			c.resolve_measures()
@@ -210,9 +206,9 @@ class document(object):
 		print (" - Getting unique quota order numbers")
 		# Get unique order numbers
 		sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
-		AND m.geographical_area_id IN (""" + g.app.geo_ids + """) ORDER BY 1"""
+		AND m.geographical_area_id IN (""" + self.application.geo_ids + """) ORDER BY 1"""
 
-		cur = g.app.conn.cursor()
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		if len(rows) == 0:
@@ -247,7 +243,7 @@ class document(object):
 					qon.suspended = True
 		"""
 
-		filename = os.path.join(g.app.CSV_DIR, g.app.country_profile + "_quotas.csv")
+		filename = os.path.join(self.application.CSV_DIR, self.application.country_profile + "_quotas.csv")
 		file = codecs.open(filename, "w", "utf-8")
 		file.write(csv_text)
 		file.close() 
@@ -260,10 +256,10 @@ class document(object):
 		sql = """
 		SELECT DISTINCT measure_sid, goods_nomenclature_item_id, ordernumber, validity_start_date,
 		validity_end_date, geographical_area_id, reduction_indicator FROM ml.v5_2019 m
-		WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN (""" + g.app.geo_ids + """)
+		WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN (""" + self.application.geo_ids + """)
 		ORDER BY goods_nomenclature_item_id, measure_sid
 		"""
-		cur = g.app.conn.cursor()
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		if len(rows) == 0:
@@ -293,7 +289,7 @@ class document(object):
 					my_measure.assigned = True
 					temp_commodity_list.append(my_measure.commodity_code + "|" + my_measure.quota_order_number_id)
 
-			my_measure.combine_duties()
+			my_measure.combine_duties(self.application)
 
 		# Step 3 - Create commodity objects that relate all of the measures together
 		temp_commodity_set = set(temp_commodity_list)
@@ -327,7 +323,7 @@ class document(object):
 		print (" - Getting quota balances from CSV")
 		if self.has_quotas == False:
 			return
-		with open(g.app.BALANCE_FILE, "r") as f:
+		with open(self.application.BALANCE_FILE, "r") as f:
 			reader = csv.reader(f)
 			temp = list(reader)
 		for balance in temp:
@@ -363,10 +359,10 @@ class document(object):
 		# Any licensed quotas with first three characters "094" needs there to be an additional step to get the balances
 		# from a CSV file - as per function "get_quota_balances_from_csv" above
 
-		my_order_numbers = f.list_to_sql(self.q)
+		my_order_numbers = list_to_sql(self.q)
 		sql = """SELECT * FROM quota_definitions WHERE quota_order_number_id IN (""" + my_order_numbers + """)
 		AND validity_start_date >= '2018-01-01' ORDER BY quota_order_number_id, validity_start_date DESC"""
-		cur = g.app.conn.cursor()
+		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		self.quota_definition_list = []
@@ -528,7 +524,7 @@ class document(object):
 					if comm.suppress == False:
 						insert_divider = False
 						insert_duty_divider = False
-						row_string = g.app.sQuotaTableRowXML
+						row_string = self.application.sQuotaTableRowXML
 						row_string = row_string.replace("{COMMODITY_CODE}",   		comm.commodity_code_formatted)
 						#row_string = row_string.replace("{COMMODITY_CODE}",   		comm.commodity_code)
 
@@ -591,9 +587,9 @@ class document(object):
 
 
 						if insert_divider == True:
-							row_string = row_string.replace("<w:tc>", "<w:tc>\n" + g.app.sHorizLineXML)
+							row_string = row_string.replace("<w:tc>", "<w:tc>\n" + self.application.sHorizLineXML)
 						elif insert_duty_divider == True:
-							row_string = row_string.replace("<w:tc>", "<w:tc>\n" + g.app.sHorizLineSoftXML)
+							row_string = row_string.replace("<w:tc>", "<w:tc>\n" + self.application.sHorizLineSoftXML)
 							pass
 
 						if (last_order_number == qon.quota_order_number_id):
@@ -619,7 +615,7 @@ class document(object):
 		###########################################################################
 
 		quota_xml = ""
-		sTableXML = g.app.sQuotaTableXML
+		sTableXML = self.application.sQuotaTableXML
 		width_list = [8, 7, 11, 22, 16, 10, 10, 16]
 
 		sTableXML = sTableXML.replace("{WIDTH_QUOTA_NUMBER}", 					str(width_list[0]))
@@ -638,15 +634,15 @@ class document(object):
 		self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", quota_xml)
 
 	def create_core(self):
-		s = g.app.sCoreXML
+		s = self.application.sCoreXML
 		a = 1
-		s = s.replace("{COUNTRY_NAME}",		g.app.country_name)
-		s = s.replace("{AGREEMENT_NAME}",	g.app.agreement_name)
-		s = s.replace("{AGREEMENT_DATE}",	g.app.agreement_date_long)
-		s = s.replace("{VERSION}",			g.app.version)
-		s = s.replace("{DATE}",				g.app.agreement_date_short)
+		s = s.replace("{COUNTRY_NAME}",		self.application.country_name)
+		s = s.replace("{AGREEMENT_NAME}",	self.application.agreement_name)
+		s = s.replace("{AGREEMENT_DATE}",	self.application.agreement_date_long)
+		s = s.replace("{VERSION}",			self.application.version)
+		s = s.replace("{DATE}",				self.application.agreement_date_short)
 
-		FILENAME	= os.path.join(g.app.DOCPROPS_DIR, "core.xml")
+		FILENAME	= os.path.join(self.application.DOCPROPS_DIR, "core.xml")
 		file = codecs.open(FILENAME, "w", "utf-8")
 		file.write(s)
 		file.close() 
@@ -658,7 +654,7 @@ class document(object):
 		###########################################################################
 		## WRITE document.xml
 		###########################################################################
-		FILENAME	= os.path.join(g.app.WORD_DIR, "document.xml")
+		FILENAME	= os.path.join(self.application.WORD_DIR, "document.xml")
 
 		file = codecs.open(FILENAME, "w", "utf-8")
 		file.write(self.document_xml)
@@ -667,14 +663,9 @@ class document(object):
 		###########################################################################
 		## Finally, ZIP everything up
 		###########################################################################
-		self.FILENAME = g.app.country_profile + "_annex.docx"
-		self.word_filename = os.path.join(g.app.OUTPUT_DIR, self.FILENAME)
-		f.zipdir(self.word_filename)
-
-
-
-
-
+		self.FILENAME = self.application.country_profile + "_annex.docx"
+		self.word_filename = os.path.join(self.application.OUTPUT_DIR, self.FILENAME)
+		zipdir(self.word_filename)
 
 	def print_tariffs(self):
 		print (" - Getting preferential duties")
@@ -700,7 +691,7 @@ class document(object):
 		table_content = ""
 		for c in self.commodity_list:
 			if c.suppress == False:
-				row_string = g.app.sTableRowXML
+				row_string = self.application.sTableRowXML
 				row_string = row_string.replace("{COMMODITY}",   c.commodity_code_formatted)
 				#row_string = row_string.replace("{COMMODITY}",   c.commodity_code)
 				if c.duty_string[-18:] == "<w:r><w:br/></w:r>":
@@ -714,7 +705,7 @@ class document(object):
 
 		tariff_xml = ""
 
-		sTableXML = g.app.sTableXML
+		sTableXML = self.application.sTableXML
 		width_list = [400, 1450, 1150, 2000]
 		sTableXML = sTableXML.replace("{WIDTH_CLASSIFICATION}", str(width_list[0]))
 		sTableXML = sTableXML.replace("{WIDTH_DUTY}",			str(width_list[1]))
@@ -722,6 +713,6 @@ class document(object):
 		sTableXML = sTableXML.replace("{TABLEBODY}", table_content)
 
 		tariff_xml += sTableXML
-		self.document_xml = g.app.sDocumentXML
+		self.document_xml = self.application.sDocumentXML
 		self.document_xml = self.document_xml.replace("{TARIFF TABLE GOES HERE}", tariff_xml)
 

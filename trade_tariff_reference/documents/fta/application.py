@@ -61,21 +61,13 @@ class Application(DatabaseConnect):
 		self.get_config()
 
 		# Unless we are running a sequence, find the country code
-		if "sequence" in sys.argv[0]:
-			return
-		else:
-			try:
-				self.country_profile = sys.argv[1]
-			except:
-				print ("No country scope parameter found - ending")
-				sys.exit()
-		
+
 		self.get_country_list()
-		self.geo_ids = f.list_to_sql(self.country_codes)
+		self.geo_ids = list_to_sql(self.country_codes)
 
 	def create_document(self):
 		# Create the document
-		my_document = document()
+		my_document = document(self)
 		self.get_meursing_components()
 		my_document.check_for_quotas()
 		self.readTemplates(my_document.has_quotas)
