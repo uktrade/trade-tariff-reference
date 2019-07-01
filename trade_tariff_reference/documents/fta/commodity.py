@@ -46,7 +46,7 @@ class Commodity:
                 if self.measure_list[0].validity_end_date:
                     if self.measure_list[0].validity_end_date < date_brexit:
                         self.suppress = True
-                        # print ("found an old record - kill it", self.commodity_code)
+                        # print("found an old record - kill it", self.commodity_code)
 
         else:
             self.measure_list.reverse()

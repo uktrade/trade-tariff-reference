@@ -77,7 +77,7 @@ class measure(object):
         for d in self.duty_list:
             """
             if d.is_siv == True:
-                print ("I have found an SIV in combine_duties on product ", self.commodity_code)
+                print("I have found an SIV in combine_duties on product ", self.commodity_code)
             """
             d.geographical_area_id = self.geographical_area_id
             self.measure_type_list.append(d.measure_type_id)
@@ -99,18 +99,18 @@ class measure(object):
             for d in self.duty_list:
                 self.combined_duty += d.duty_string + " "
             if d.is_siv == True:
-                print ("I have found an SIV")
+                print("I have found an SIV")
         else:
-            print ("I should never show", self.measure_count)
+            print("I should never show", self.measure_count)
             if self.measure_type_count > 1:
-                #print ("MTOMT")
+                #print("MTOMT")
                 #self.combined_duty = "More than one measure type"
                 if "105" in measure_type_list_unique:
                     for d in self.duty_list:
                         if d.measure_type_id == "105":
                             self.combined_duty += d.duty_string + " "
             elif self.additional_code_count > 1:
-                #print ("ADD CODES")
+                #print("ADD CODES")
                 #self.combined_duty = "More than one additional code"
                 if "500" in additional_code_list_unique:
                     for d in self.duty_list:
@@ -127,7 +127,7 @@ class measure(object):
 
         # Now add in the Meursing components
         if "ACR" in self.combined_duty or "SDR" in self.combined_duty or "FDR" in self.combined_duty:
-            print ("Reduction indicator", self.reduction_indicator)
+            print("Reduction indicator", self.reduction_indicator)
             meursing_percentage = application.get_meursing_percentage(self.reduction_indicator, self.geographical_area_id)
             self.combined_duty = "CAD - " + self.combined_duty + ") " + str(meursing_percentage) + "%"
             self.combined_duty = self.combined_duty.replace(" + ", " + (", 1)

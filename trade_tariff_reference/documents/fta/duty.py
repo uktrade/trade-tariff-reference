@@ -90,7 +90,7 @@ class duty(object):
             self.duty_string += " + FDR"
 
         else:
-            print ("Found an unexpected DE", self.duty_expression_id)
+            print("Found an unexpected DE", self.duty_expression_id)
 
         if self.is_siv == True:
             # Still need to get the MFN duty for the same time period to work out the specific percentage
@@ -105,14 +105,14 @@ class duty(object):
             # (6.4 / 16) * 100 = 40%
             #try:
 
-            #print (g.app.DBASE)
+            #print(g.app.DBASE)
 
             if self.duty_amount == None:
                 self.duty_amount = 0
             if self.duty_amount > 0:
                 mfn_rate = self.application.get_mfn_rate(self.commodity_code, self.validity_start_date, self.validity_end_date)
                 #if self.commodity_code == "0805290011":
-                #	print (self.commodity_code, self.validity_start_date, self.validity_end_date, self.duty_amount,  mfn_rate)
+                #	print(self.commodity_code, self.validity_start_date, self.validity_end_date, self.duty_amount,  mfn_rate)
                 if mfn_rate != 0.0:
                     my_duty = (self.duty_amount / mfn_rate) * 100
                 else:
@@ -126,17 +126,17 @@ class duty(object):
             else:
                 self.duty_string = "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%"
             #except:
-            #	print ("Error", self.commodity_code)
+            #	print("Error", self.commodity_code)
             #	sys.exit()
 
     def get_rebase(self):
         out = ""
-        print (self.commodity_code)
+        print(self.commodity_code)
         for obj in self.application.local_sivs:
             if obj.goods_nomenclature_item_id == self.commodity_code:
                 if self.validity_start_date == obj.validity_start_date:
-                    print ("Found a match")
-                    print (self.validity_start_date)
+                    print("Found a match")
+                    print(self.validity_start_date)
                     out = " Rebased Price " + str(obj.condition_duty_amount) + " € / " + self.getMeasurementUnit(obj.condition_measurement_unit_code) #  " € / tonne"
                     break
         return (out)

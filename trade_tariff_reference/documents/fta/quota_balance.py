@@ -22,7 +22,7 @@ class quota_balance(object):
         self.getY1Dates()
 
     def addYear(self, v):
-        #print (type(v))
+        #print(type(v))
         try:
             if type(v) is str:
                 d1 = datetime.strptime(v, "%d/%m/%Y")
@@ -33,7 +33,7 @@ class quota_balance(object):
                 d2 = d1 + timedelta(days = -1)
                 d2 = d2 + relativedelta(years = 1)
         except:
-            #print ("An error has occurred: cannot work out date / time of quota", self.quota_order_number_id)
+            #print("An error has occurred: cannot work out date / time of quota", self.quota_order_number_id)
             #sys.exit()
             pass
         return (d2)
@@ -42,7 +42,7 @@ class quota_balance(object):
         dBrexit	= datetime.strptime("29/03/2019", "%d/%m/%Y")
         d1		= datetime.strptime(self.yx_start, "%d/%m/%Y")
         d1Month	= d1.month
-        #print (d1Month, type(d1Month))
+        #print(d1Month, type(d1Month))
         #sys.exit()
         if d1Month > 3:
             self.validity_start_date_2019 = d1

@@ -13,7 +13,7 @@ def formatFootnote(s):
     a = s.split("\n")
     for ax in a:
         ax.strip()
-        #print (ax)
+        #print(ax)
         if len(ax) > 0:
             lChar = ascii(ax[0])
             lChar = ord(ax[0])
@@ -113,7 +113,7 @@ def mnum(x):
 
 def debug(x):
     if g.app.debug:
-        print (x)
+        print(x)
 
 def surround(x):
     if "<w:t>" in x:

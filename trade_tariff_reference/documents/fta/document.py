@@ -37,14 +37,13 @@ class document(object):
 		rows = cur.fetchall()
 		if len(rows) == 0:
 			self.has_quotas = False
-			print (" - This FTA has no quotas")
+			print(" - This FTA has no quotas")
 		else:
 			self.has_quotas = True
-			print (" - This FTA has quotas")
+			print(" - This FTA has quotas")
 
-	
 	def get_duties(self, instrument_type):
-		print (" - Getting duties for " + instrument_type)
+		print(" - Getting duties for " + instrument_type)
 
 		###############################################################
 		# Work out which measures to capture
@@ -58,7 +57,7 @@ class document(object):
 		# Before getting the duties, get the measure component conditions
 		# These are used in adding in SIV components whenever the duty is no present
 		# due to the fact that there are SIVs applied via measure components
-		print (" - Getting measure conditions")
+		print(" - Getting measure conditions")
 		self.measure_condition_list = []
 		sql = """
 		SELECT DISTINCT mc.measure_sid, mcc.duty_amount FROM measure_conditions mc, measure_condition_components mcc, measures m
@@ -148,7 +147,7 @@ class document(object):
 				if duty_amount is None and duty_expression_id is None:
 					is_siv = True
 					for mc in self.measure_condition_list:
-						#print (mc.measure_sid, measure_sid)
+						#print(mc.measure_sid, measure_sid)
 						if mc.measure_sid == measure_sid:
 							duty_expression_id = "01"
 							duty_amount = mc.condition_duty_amount
@@ -203,7 +202,7 @@ class document(object):
 
 
 	def get_quota_order_numbers(self):
-		print (" - Getting unique quota order numbers")
+		print(" - Getting unique quota order numbers")
 		# Get unique order numbers
 		sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
 		AND m.geographical_area_id IN (""" + self.application.geo_ids + """) ORDER BY 1"""
@@ -250,7 +249,7 @@ class document(object):
 
 
 	def get_quota_measures(self):
-		#print (len(self.commodity_list))
+		#print(len(self.commodity_list))
 		# Get the measures - in order to get the commodity codes and the duties
 		# Just get the commodities and add to an array
 		sql = """
@@ -320,7 +319,7 @@ class document(object):
 
 
 	def get_quota_balances_from_csv(self):
-		print (" - Getting quota balances from CSV")
+		print(" - Getting quota balances from CSV")
 		if self.has_quotas == False:
 			return
 		with open(self.application.BALANCE_FILE, "r") as f:
@@ -390,7 +389,7 @@ class document(object):
 				for qb in self.balance_list:
 					if str(qb.quota_order_number_id) == str(qd.quota_order_number_id):
 						found_matching_balance = True
-						#print (qd.quota_order_number_id)
+						#print(qd.quota_order_number_id)
 						qd.initial_volume = mnum(qb.y1_balance)
 						qd.volume_yx	= mnum(qb.yx_balance)
 						qd.addendum		= qb.addendum
@@ -399,7 +398,7 @@ class document(object):
 						break
 
 			if found_matching_balance == False:
-				print ("Matching balance not found", qd.quota_order_number_id)
+				print("Matching balance not found", qd.quota_order_number_id)
 			qd.format_volumes()
 			self.quota_definition_list.append(qd)
 
@@ -452,7 +451,7 @@ class document(object):
 						break
 
 	def print_quotas(self):
-		print (" - Getting quotas")
+		print(" - Getting quotas")
 		if self.has_quotas == False:
 			self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", "")
 			return
@@ -468,12 +467,12 @@ class document(object):
 					break
 
 			#if not balance_found:
-			#	print ("Quota balance not found", qon.quota_order_number_id)
+			#	print("Quota balance not found", qon.quota_order_number_id)
 
 
 			if balance_found:
 				if len(qon.quota_definition_list) > 1:
-					print ("More than one definition - we must be in Morocco")
+					print("More than one definition - we must be in Morocco")
 
 				if len(qon.quota_definition_list) == 0:
 					# if there are no definitions, then, either this is a screwed quota and the database is missing definition
@@ -481,7 +480,7 @@ class document(object):
 					# which should avoid this eventuality.
 					qon.validity_start_date				= datetime.strptime("2019-03-29", "%Y-%m-%d")
 					qon.validity_end_date				= datetime.strptime("2019-12-31", "%Y-%m-%d")
-					print ("No quota definitions found for quota", str(qon.quota_order_number_id))
+					print("No quota definitions found for quota", str(qon.quota_order_number_id))
 					qon.initial_volume					= ""
 					qon.volume_yx						= ""
 					qon.addendum						= ""
@@ -504,7 +503,7 @@ class document(object):
 					qon.monetary_unit_code				= qon.quota_definition_list[0].monetary_unit_code
 					qon.measurement_unit_qualifier_code = qon.quota_definition_list[0].measurement_unit_qualifier_code
 
-					#print (qon.quota_order_number_id, qon.validity_start_date, qon.validity_end_date)
+					#print(qon.quota_order_number_id, qon.validity_start_date, qon.validity_end_date)
 
 				last_order_number	= "00.0000"
 				last_duty			= "-1"
@@ -544,7 +543,7 @@ class document(object):
 							qon.format_order_number()
 
 							# Final fixes to the 2019 dates
-							#print (qon.quota_order_number_id, qon.validity_start_date_2019, qon.validity_end_date_2019, (qon.validity_end_date_2019 - qon.validity_start_date_2019).days)
+							#print(qon.quota_order_number_id, qon.validity_start_date_2019, qon.validity_end_date_2019, (qon.validity_end_date_2019 - qon.validity_start_date_2019).days)
 
 
 							if qon.suspended:
@@ -668,7 +667,7 @@ class document(object):
 		zipdir(self.word_filename)
 
 	def print_tariffs(self):
-		print (" - Getting preferential duties")
+		print(" - Getting preferential duties")
 
 
 		# Run a check to ensure that there are no 10 digit codes being added to the extract

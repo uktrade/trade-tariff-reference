@@ -21,7 +21,7 @@ class quota_commodity(object):
 
         for measure in self.measure_list:
             #if self.commodity_code == "0204230011":
-            #	print (len(self.measure_list), "jijij")
+            #	print(len(self.measure_list), "jijij")
             if measure.extent not in(365, -1) :
                 is_all_full_year = False
 
@@ -32,7 +32,7 @@ class quota_commodity(object):
                 contains_siv = True
 
             #if self.commodity_code == "0204230011":
-            #	print ("QQQQQQQQQQQQQQQQQQQQQQ", measure.extent, self.commodity_code, is_all_full_year)
+            #	print("QQQQQQQQQQQQQQQQQQQQQQ", measure.extent, self.commodity_code, is_all_full_year)
 
         # Check for EU screw-ups where they restarted a measure for no reason
         # List all of the measures, remove the measures that are 365 days long
@@ -114,7 +114,7 @@ class quota_commodity(object):
                     self.duty_string += measure.combined_duty
 
         #if self.duty_string == "":
-        #	print ("duty string is erroneously blank", self.commodity_code)
+        #	print("duty string is erroneously blank", self.commodity_code)
 
 
     def formatCommodityCode(self):

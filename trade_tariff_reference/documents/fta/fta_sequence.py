@@ -12,4 +12,4 @@ for item in app.all_country_profiles:
         app.create_document()
 
 app.shutDown()
-print ("\nPROCESS COMPLETE")
+print("\nPROCESS COMPLETE")

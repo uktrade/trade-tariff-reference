@@ -28,7 +28,7 @@ class hierarchy(object):
             gn.deal_with_double_zeroes()
             ar_goods_nomenclatures.append(gn)
 
-            #print (goods_nomenclature_item_id, productline_suffix, cnt)
+            #print(goods_nomenclature_item_id, productline_suffix, cnt)
             cnt += 1
         #sys.exit()
 
@@ -37,7 +37,7 @@ class hierarchy(object):
         for commodity in ar_goods_nomenclatures:
             if ((commodity.goods_nomenclature_item_id == self.goods_nomenclature_item_id) and (commodity.productline_suffix == self.productline_suffix)):
                 my_index	= ar_goods_nomenclatures.index(commodity)
-                #print (my_index)
+                #print(my_index)
                 my_indent	= commodity.number_indents
                 break
 
@@ -45,7 +45,7 @@ class hierarchy(object):
         # Kludge to deal with the chapter level records, which have a "0" indent, the same as their children
         if (my_indent == 0):
             if (self.goods_nomenclature_item_id[-8:] == "00000000"):
-                #print ("found 0") # Try this later
+                #print("found 0") # Try this later
                 my_indent = -1
 
         # First, search up towards the root of the tree from my_index to find parent codes
