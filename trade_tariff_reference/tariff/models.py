@@ -761,7 +761,7 @@ class GeographicalAreaMemberships(models.Model):
 
 
 class GeographicalAreas(models.Model):
-    geographical_area_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='geographical_area_sid')
     parent_geographical_area_group_sid = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
@@ -912,7 +912,7 @@ class GoodsNomenclatureSuccessors(models.Model):
 
 
 class GoodsNomenclatures(models.Model):
-    goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='goods_nomenclature_sid')
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
     producline_suffix = models.CharField(max_length=255, blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
@@ -1192,7 +1192,7 @@ class MeasureTypeSeriesDescriptions(models.Model):
 
 
 class MeasureTypes(models.Model):
-    measure_type_id = models.CharField(max_length=3, blank=True, null=True)
+    id = models.CharField(max_length=3, primary_key=True, db_column='measure_type_id')
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
     trade_movement_code = models.IntegerField(blank=True, null=True)
@@ -1298,10 +1298,32 @@ class Measurements(models.Model):
 
 
 class Measures(models.Model):
-    measure_sid = models.IntegerField(blank=True, null=True)
-    measure_type_id = models.CharField(max_length=3, blank=True, null=True)
-    geographical_area_id = models.CharField(max_length=255, blank=True, null=True)
-    goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
+    measure_sid = models.IntegerField(primary_key=True)
+    measure_type = models.ForeignKey(
+        'tariff.MeasureTypes',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+    )
+
+    geographical_area = models.ForeignKey(
+        'tariff.GeographicalAreas',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        db_column='geographical_area_sid',
+    )
+
+    goods_nomenclature = models.ForeignKey(
+        'tariff.GoodsNomenclatures',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        db_column='goods_nomenclature_sid',
+    )
+
+    additional_code_sid = models.IntegerField(blank=True, null=True)
+
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
     measure_generating_regulation_role = models.IntegerField(blank=True, null=True)
@@ -1309,19 +1331,17 @@ class Measures(models.Model):
     justification_regulation_role = models.IntegerField(blank=True, null=True)
     justification_regulation_id = models.CharField(max_length=255, blank=True, null=True)
     stopped_flag = models.BooleanField(blank=True, null=True)
-    geographical_area_sid = models.IntegerField(blank=True, null=True)
-    goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
+
     ordernumber = models.CharField(max_length=255, blank=True, null=True)
     additional_code_type_id = models.TextField(blank=True, null=True)
-    additional_code_id = models.CharField(max_length=3, blank=True, null=True)
-    additional_code_sid = models.IntegerField(blank=True, null=True)
+
     reduction_indicator = models.IntegerField(blank=True, null=True)
     export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
     national = models.BooleanField(blank=True, null=True)
     tariff_measure_number = models.CharField(max_length=10, blank=True, null=True)
     invalidated_by = models.IntegerField(blank=True, null=True)
     invalidated_at = models.DateTimeField(blank=True, null=True)
-    oid = models.IntegerField(blank=True, null=True)
+
     operation = models.CharField(max_length=1, blank=True, null=True)
     operation_date = models.DateTimeField(blank=True, null=True)
     added_by_id = models.IntegerField(blank=True, null=True)
@@ -1335,6 +1355,10 @@ class Measures(models.Model):
     workbasket_sequence_number = models.IntegerField(blank=True, null=True)
     original_measure_sid = models.TextField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
+
+    oid = models.IntegerField(blank=True, null=True)
+    goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
+    additional_code_id = models.CharField(max_length=3, blank=True, null=True)
 
     class Meta:
         managed = False  # Created from a view. Don't remove.
