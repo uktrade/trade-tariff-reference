@@ -1,4 +1,4 @@
-import functions as f
+import documents.fta.functions as f
 
 class special(object):
 	def __init__(self, commodity_code = "", note = ""):

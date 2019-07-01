@@ -1,22 +1,19 @@
-import psycopg2
-import sys
-import os
-from os import system, name 
+from os import system, name
 import csv
 import json
-from datetime import datetime
 
-import functions as f
-from partial_temporary_stop import partial_temporary_stop
-from document import document
-from hierarchy import hierarchy
-from mfn_duty import mfn_duty
-from meursing_component import meursing_component
-from local_siv import local_siv
+from documents.fta.functions import *
+from documents.fta.database import DatabaseConnect
+from documents.fta.document import document
+from documents.fta.hierarchy import hierarchy
+from documents.fta.mfn_duty import mfn_duty
+from documents.fta.local_siv import local_siv
 
 
-class application(object):
-	def __init__(self):
+class Application(DatabaseConnect):
+
+	def __init__(self, country_profile):
+		self.country_profile = country_profile
 		self.clear()
 		self.siv_list               = []
 		self.meursing_list			= []
@@ -46,22 +43,12 @@ class application(object):
 		self.SOURCE_DIR			= os.path.join(self.BASE_DIR, "source")
 		self.CSV_DIR			= os.path.join(self.BASE_DIR, "csv")
 		self.COMPONENT_DIR		= os.path.join(self.BASE_DIR, "xmlcomponents")
-		self.CONFIG_DIR			= os.path.join(self.BASE_DIR, "..")
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "..")
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "create-data")
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "config")
+
+		self.CONFIG_DIR			= os.path.join(self.BASE_DIR, "config")
 		self.CONFIG_FILE		= os.path.join(self.CONFIG_DIR, "config_common.json")
 		self.CONFIG_FILE_LOCAL	= os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
 
-		self.BALANCE_DIR		= os.path.join(self.BASE_DIR, "..")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "..")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "create-data")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "migrate_measures_and_quotas")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "source")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "quotas")
-		self.BALANCE_FILE		= os.path.join(self.BALANCE_DIR, "quota_volume_master.csv")
-		#print (self.BALANCE_FILE)
-		#sys.exit()
+		self.BALANCE_FILE		= os.path.join(self.CONFIG_DIR, "quota_volume_master.csv")
 
 		# For the word model folders
 		self.MODEL_DIR			= os.path.join(self.BASE_DIR, "model")
@@ -74,21 +61,13 @@ class application(object):
 		self.get_config()
 
 		# Unless we are running a sequence, find the country code
-		if "sequence" in sys.argv[0]:
-			return
-		else:
-			try:
-				self.country_profile = sys.argv[1]
-			except:
-				print ("No country scope parameter found - ending")
-				sys.exit()
-		
+
 		self.get_country_list()
-		self.geo_ids = f.list_to_sql(self.country_codes)
+		self.geo_ids = list_to_sql(self.country_codes)
 
 	def create_document(self):
 		# Create the document
-		my_document = document()
+		my_document = document(self)
 		self.get_meursing_components()
 		my_document.check_for_quotas()
 		self.readTemplates(my_document.has_quotas)
@@ -144,7 +123,8 @@ class application(object):
 		my_document.write()
 		print ("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
 			
-	def clear(self): 
+	def clear(self):
+		pass
 		# for windows 
 		if name == 'nt': 
 			_ = system('cls') 
@@ -157,17 +137,12 @@ class application(object):
 		with open(self.CONFIG_FILE, 'r') as f:
 			my_dict = json.load(f)
 
-		self.DBASE = "tariff_eu"
-		self.p	= "tariffs"
-
 		# Get local config items
 		with open(self.CONFIG_FILE_LOCAL, 'r') as f:
 			my_dict = json.load(f)
 
 		self.all_country_profiles = my_dict['country_profiles']
 
-		# Connect to the database
-		#print (self.DBASE)
 		self.connect()
 
 	def get_country_list(self):
@@ -198,11 +173,6 @@ class application(object):
 		self.version				= self.all_country_profiles[self.country_profile]["version"]
 		self.country_name			= self.all_country_profiles[self.country_profile]["country_name"]
 
-	def connect(self):
-		self.conn = psycopg2.connect("dbname=" + self.DBASE + " user=postgres password=" + self.p + " host=postgres")
-
-	def shutDown(self):
-		self.conn.close()
 
 	def get_sections_chapters(self):
 		sql = """

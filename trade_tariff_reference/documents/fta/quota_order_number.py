@@ -1,4 +1,3 @@
-import functions as f
 
 class quota_order_number(object):
 	def __init__(self, quota_order_number_id):

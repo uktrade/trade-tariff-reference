@@ -1,6 +1,6 @@
-import sys
-import functions
-from measure import period
+import documents.fta.functions as functions
+from documents.fta.measure import period
+
 
 class quota_commodity(object):
 	def __init__(self, commodity_code, quota_order_number_id):

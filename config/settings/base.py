@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'trade_tariff_reference.core',
     'trade_tariff_reference.schedule',
     'trade_tariff_reference.tariff',
+    'trade_tariff_reference.documents',
 ]
 
 MIDDLEWARE = [

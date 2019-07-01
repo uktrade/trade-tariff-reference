@@ -1,12 +1,5 @@
-import re
-import sys
-from datetime import datetime
-
-import functions as f
 import glob as g
-from duty import duty
 
-#app = g.app
 
 class hierarchy(object):
 	def __init__(self, goods_nomenclature_item_id, productline_suffix, description, number_indents):

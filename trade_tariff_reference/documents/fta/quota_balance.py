@@ -1,10 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from datetime import timedelta
-import sys
 
-import functions as f
-import glob as g
 
 class quota_balance(object):
 	def __init__(self, quota_order_number_id, country, method, y1_balance, yx_balance, yx_start, measurement_unit_code, origin_quota, addendum, scope):

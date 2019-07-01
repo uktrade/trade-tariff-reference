@@ -1,7 +1,3 @@
-import functions as f
-import glob as g
-import datetime
-import sys
 
 class meursing_component(object):
 	def __init__(self, measure_sid, measure_type_id, additional_code_id, duty_amount, geographical_area_id, reduction_indicator):
