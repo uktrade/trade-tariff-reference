@@ -8,7 +8,7 @@ from documents.fta.quota_order_number import quota_order_number
 from documents.fta.quota_definition import quota_definition
 from documents.fta.measure import measure
 from documents.fta.measure_condition import measure_condition
-from documents.fta.commodity import commodity
+from documents.fta.commodity import Commodity
 from documents.fta.quota_commodity import quota_commodity
 from documents.fta.quota_balance import quota_balance
 
@@ -168,7 +168,7 @@ class document(object):
 					temp_measure_list.append(measure_sid)
 
 				if commodity_code not in temp_commodity_list:
-					obj_commodity = commodity(commodity_code)
+					obj_commodity = Commodity(commodity_code)
 					self.commodity_list.append(obj_commodity)
 					temp_commodity_list.append(commodity_code)
 
