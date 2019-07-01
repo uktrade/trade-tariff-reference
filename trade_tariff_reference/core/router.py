@@ -1,11 +1,10 @@
 class Router:
     """
-    A router to control all database operations on models in the
-    auth application.
+    A router to control all database operations on models in the tariff application.
     """
     def db_for_read(self, model, **hints):
         """
-        Attempts to read auth models go to auth_db.
+        Attempts to read auth models go to the tariff db.
         """
         if model._meta.app_label == 'tariff':
             return 'tariff'
@@ -13,7 +12,7 @@ class Router:
 
     def db_for_write(self, model, **hints):
         """
-        Attempts to write auth models go to auth_db.
+        Attempts to write to the tariff application raises an exception as db is readonly.
         """
         if model._meta.app_label == 'tariff':
             raise Exception("This data is readonly")

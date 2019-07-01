@@ -1,0 +1,158 @@
+		 <w:tr>
+				<w:trPr>
+					<w:cantSplit/>
+				</w:trPr>
+<!-- Begin quota number cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<w:rPr><w:b/></w:rPr>
+							<w:t>{QUOTA_ORDER_NUMBER}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End quota number cell //-->
+<!-- Begin origin quota cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{ORIGIN_QUOTA}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End origin quota cell //-->
+<!-- Begin commodity code cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{COMMODITY_CODE}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End commodity code cell //-->
+<!-- Begin Preferential Quota Duty Rate cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{PREFERENTIAL_DUTY_RATE}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End Preferential Quota Duty Rate cell //-->
+<!-- Begin Quota Volume cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{QUOTA_VOLUME}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End Quota Volume cell //-->
+<!-- Begin Quota Open Date cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="000000" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{QUOTA_OPEN_DATE}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End Quota Open Date cell //-->
+<!-- Begin Quota Close Date cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="0" w:space="0" w:color="ffffff" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="0" w:space="0" w:color="ffffff" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{QUOTA_CLOSE_DATE}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End Quota Close Date cell //-->
+<!-- Begin 2019 Quota Volume cell //-->
+				<w:tc>
+					<!--<w:tcPr>
+						<w:tcBorders>
+							<w:top w:val="single" w:sz="4" w:space="0" w:color="666666" w:themeColor="background1" w:themeShade="A6"/>
+							<w:right w:val="single" w:sz="4" w:space="0" w:color="666666" w:themeColor="text1"/>
+						</w:tcBorders>
+					</w:tcPr>//-->
+					<w:p>
+						<w:pPr>
+							<w:pStyle w:val="NormalinTable"/>
+						</w:pPr>
+						<w:r>
+							<!--<w:rPr><w:b/></w:rPr>//-->
+							<w:t>{2019_QUOTA_VOLUME}</w:t>
+						</w:r>
+					</w:p>
+				</w:tc>
+<!-- End 2019 Quota Volume cell //-->
+
+			</w:tr>
