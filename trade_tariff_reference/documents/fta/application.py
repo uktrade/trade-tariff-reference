@@ -1,4 +1,3 @@
-import psycopg2
 import sys
 import os
 from os import system, name 
@@ -6,16 +5,14 @@ import csv
 import json
 from datetime import datetime
 
-import functions as f
-from partial_temporary_stop import partial_temporary_stop
-from document import document
-from hierarchy import hierarchy
-from mfn_duty import mfn_duty
-from meursing_component import meursing_component
-from local_siv import local_siv
+from .database import DatabaseConnect
+from .document import document
+from .hierarchy import hierarchy
+from .mfn_duty import mfn_duty
+from .local_siv import local_siv
 
 
-class application(object):
+class Application(DatabaseConnect):
 	def __init__(self):
 		self.clear()
 		self.siv_list               = []
@@ -46,22 +43,12 @@ class application(object):
 		self.SOURCE_DIR			= os.path.join(self.BASE_DIR, "source")
 		self.CSV_DIR			= os.path.join(self.BASE_DIR, "csv")
 		self.COMPONENT_DIR		= os.path.join(self.BASE_DIR, "xmlcomponents")
-		self.CONFIG_DIR			= os.path.join(self.BASE_DIR, "..")
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "..")
-		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "create-data")
+
 		self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "config")
 		self.CONFIG_FILE		= os.path.join(self.CONFIG_DIR, "config_common.json")
 		self.CONFIG_FILE_LOCAL	= os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
 
-		self.BALANCE_DIR		= os.path.join(self.BASE_DIR, "..")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "..")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "create-data")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "migrate_measures_and_quotas")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "source")
-		self.BALANCE_DIR		= os.path.join(self.BALANCE_DIR, "quotas")
-		self.BALANCE_FILE		= os.path.join(self.BALANCE_DIR, "quota_volume_master.csv")
-		#print (self.BALANCE_FILE)
-		#sys.exit()
+		self.BALANCE_FILE		= os.path.join(self.CONFIG_DIR, "quota_volume_master.csv")
 
 		# For the word model folders
 		self.MODEL_DIR			= os.path.join(self.BASE_DIR, "model")
@@ -198,11 +185,6 @@ class application(object):
 		self.version				= self.all_country_profiles[self.country_profile]["version"]
 		self.country_name			= self.all_country_profiles[self.country_profile]["country_name"]
 
-	def connect(self):
-		self.conn = psycopg2.connect("dbname=" + self.DBASE + " user=postgres password=" + self.p + " host=postgres")
-
-	def shutDown(self):
-		self.conn.close()
 
 	def get_sections_chapters(self):
 		sql = """
