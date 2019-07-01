@@ -1,0 +1,349 @@
+<!--
+<w:p>
+	<w:r>
+		<w:t></w:t>
+	</w:r>
+</w:p> 
+//-->
+    <w:tbl>
+      <w:tblPr>
+        <w:tblStyle w:val="ListTable3"/>
+        <w:tblW w:w="0" w:type="auto"/>
+        <w:tblLook w:val="0620" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="0"/>
+      </w:tblPr>
+      <w:tr>
+        <w:trPr>
+          <w:cnfStyle w:val="100000000000" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:oddVBand="0" w:evenVBand="0" w:oddHBand="0" w:evenHBand="0" w:firstRowFirstColumn="0" w:firstRowLastColumn="0" w:lastRowFirstColumn="0" w:lastRowLastColumn="0"/>
+          <w:cantSplit/>
+          <w:tblHeader/>
+        </w:trPr>
+<!-- Begin quota number cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_NUMBER}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+              <w:t>1</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End quota number cell //-->
+<!-- Begin origin quota cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_ORIGIN_QUOTA}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>2</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End origin quota cell //-->
+<!-- Begin commodity code cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_COMMODITY_CODE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>3</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End commodity code cell //-->
+<!-- Begin Preferential Quota Duty Rate cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_PREFERENTIAL_QUOTA_DUTY_RATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>4</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Preferential Quota Duty Rate cell //-->
+<!-- Begin Quota Volume cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_VOLUME}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>5</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Volume cell //-->
+<!-- Begin Quota Open Date cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_OPEN_DATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>6</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Open Date cell //-->
+<!-- Begin Quota Close Date cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_CLOSE_DATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>7</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Close Date cell //-->
+<!-- Begin 2019 Quota Volume cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_2019_QUOTA_VOLUME}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>8</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End 2019 Quota Volume cell //-->
+      </w:tr>
+<!-- End numbers row //-->
+<!-- Begin header row //-->
+      <w:tr>
+        <w:trPr>
+          <w:cnfStyle w:val="100000000000" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:oddVBand="0" w:evenVBand="0" w:oddHBand="0" w:evenHBand="0" w:firstRowFirstColumn="0" w:firstRowLastColumn="0" w:lastRowFirstColumn="0" w:lastRowLastColumn="0"/>
+          <w:cantSplit/>
+          <w:tblHeader/>
+        </w:trPr>
+<!-- Begin quota number cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_NUMBER}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Quota Number</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End quota number cell //-->
+<!-- Begin origin quota cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_ORIGIN_QUOTA}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Origin Quota</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End origin quota cell //-->
+<!-- Begin commodity code cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_COMMODITY_CODE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Commodity Code</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End commodity code cell //-->
+<!-- Begin Preferential Quota Duty Rate cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_PREFERENTIAL_QUOTA_DUTY_RATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Preferential Quota Duty Rate</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Preferential Quota Duty Rate cell //-->
+<!-- Begin Quota Volume cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_VOLUME}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Quota Volume</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Volume cell //-->
+<!-- Begin Quota Open Date cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_OPEN_DATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Quota Open Date</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Open Date cell //-->
+<!-- Begin Quota Close Date cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_QUOTA_CLOSE_DATE}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Quota Close Date</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End Quota Close Date cell //-->
+<!-- Begin 2019 Quota Volume cell //-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_2019_QUOTA_VOLUME}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>2019 Quota Volume</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+<!-- End 2019 Quota Volume cell //-->
+      </w:tr>
+	  {TABLEBODY}
+    </w:tbl>

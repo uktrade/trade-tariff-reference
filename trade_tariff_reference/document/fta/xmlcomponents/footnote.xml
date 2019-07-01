@@ -1,0 +1,16 @@
+  <w:footnote w:id="{FOOTID}">
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="FootnoteText"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="FootnoteReference"/>
+        </w:rPr>
+        <w:footnoteRef/>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve"> {FOOTCONTENT}</w:t>
+      </w:r>
+    </w:p>
+  </w:footnote>
