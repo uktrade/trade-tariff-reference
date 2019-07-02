@@ -8,6 +8,7 @@ import re
 
 import glob as g
 
+
 def formatFootnote(s):
     sOut = ""
     a = s.split("\n")
@@ -24,11 +25,13 @@ def formatFootnote(s):
             ax = ax.replace(chr(8226) + "\t", "")
             ax = ax.replace("  ", " ")
             sOut += "<w:p><w:pPr><w:pStyle w:val=\"" + sStyle + "\"/></w:pPr><w:r><w:t>" + ax + "</w:t></w:r></w:p>"
-    return (sOut)
+    return sOut
+
 
 def fmtMeasureTypeDescription(s):
     s = s.replace("end-use", "authorised use")
     return s
+
 
 def fmtDate(d):
     try:
@@ -36,6 +39,7 @@ def fmtDate(d):
     except:
         d = ""
     return d
+
 
 def fmtMarkdown(s):
     s = re.sub("<table.*</table>", "", s, flags=re.DOTALL)
@@ -82,6 +86,7 @@ def fmtMarkdown(s):
 
     return (sOut)
 
+
 def zipdir(archivename):
     BASE_DIR     = os.path.dirname(os.path.realpath(__file__))
     MODEL_DIR = os.path.join(BASE_DIR, "model")
@@ -93,6 +98,7 @@ def zipdir(archivename):
                 zfn = absfn[len(MODEL_DIR)+len(os.sep):] #XXX: relative path
                 z.write(absfn, zfn)
 
+
 def mstr(x):
     try:
         if x is None:
@@ -101,6 +107,7 @@ def mstr(x):
             return str(x)
     except:
         return ""
+
 
 def mnum(x):
     try:
@@ -111,15 +118,18 @@ def mnum(x):
     except:
         return 0
 
+
 def debug(x):
     if g.app.debug:
         print(x)
+
 
 def surround(x):
     if "<w:t>" in x:
         return x
     else:
         return "<w:r><w:t>" + x + "</w:t></w:r>"
+
 
 def fmtSeasonal(s):
     s = mstr(s)
@@ -128,6 +138,7 @@ def fmtSeasonal(s):
     s = s.replace("DTN", "/ 100 kg")
     return s
 
+
 def list_to_sql(my_list):
     s = ""
     if my_list != "":
@@ -135,7 +146,8 @@ def list_to_sql(my_list):
             s += "'" + o + "', "
         s = s.strip()
         s = s.strip(",")
-    return (s)
+    return s
+
 
 def getMeasurementUnit(s):
     if s == "ASV":

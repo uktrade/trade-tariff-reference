@@ -2,29 +2,33 @@ import glob as g
 import documents.fta.functions as functions
 
 
-class duty(object):
-    def __init__(self, application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
-    duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code, measure_sid,
-    quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date, reduction_indicator, is_siv):
+class Duty:
+
+    def __init__(
+        self, application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
+        duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
+        measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date,
+        reduction_indicator, is_siv,
+    ):
         self.application = application
-        self.commodity_code                  	= functions.mstr(commodity_code)
-        self.additional_code_type_id         	= functions.mstr(additional_code_type_id)
-        self.additional_code_id              	= functions.mstr(additional_code_id)
-        self.measure_type_id                 	= functions.mstr(measure_type_id)
-        self.measure_type_description        	= ""
-        self.duty_expression_id              	= functions.mstr(duty_expression_id)
-        self.duty_amount                     	= duty_amount
-        self.monetary_unit_code              	= functions.mstr(monetary_unit_code)
-        self.measurement_unit_code           	= functions.mstr(measurement_unit_code)
-        self.measurement_unit_qualifier_code 	= functions.mstr(measurement_unit_qualifier_code)
-        self.measure_sid					 	= measure_sid
-        self.quota_order_number_id				= quota_order_number_id
-        self.siv_duty							= False
-        self.geographical_area_id				= geographical_area_id
-        self.validity_start_date				= validity_start_date
-        self.validity_end_date					= validity_end_date
-        self.reduction_indicator				= reduction_indicator
-        self.is_siv								= is_siv
+        self.commodity_code = functions.mstr(commodity_code)
+        self.additional_code_type_id = functions.mstr(additional_code_type_id)
+        self.additional_code_id = functions.mstr(additional_code_id)
+        self.measure_type_id = functions.mstr(measure_type_id)
+        self.measure_type_description = ""
+        self.duty_expression_id = functions.mstr(duty_expression_id)
+        self.duty_amount = duty_amount
+        self.monetary_unit_code = functions.mstr(monetary_unit_code)
+        self.measurement_unit_code = functions.mstr(measurement_unit_code)
+        self.measurement_unit_qualifier_code = functions.mstr(measurement_unit_qualifier_code)
+        self.measure_sid = measure_sid
+        self.quota_order_number_id = quota_order_number_id
+        self.siv_duty = False
+        self.geographical_area_id = geographical_area_id
+        self.validity_start_date = validity_start_date
+        self.validity_end_date = validity_end_date
+        self.reduction_indicator = reduction_indicator
+        self.is_siv = is_siv
 
         self.getDutyString()
 

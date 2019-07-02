@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import documents.fta.functions as functions
-from documents.fta.measure import period
+from documents.fta.measure import Period
 
 
 class Commodity:
@@ -64,7 +64,7 @@ class Commodity:
             if len(partial) > 0:
                 for obj in partial:
                     obj_split = obj.split("/")
-                    obj_period = period(int(obj_split[0]), int(obj_split[1]))
+                    obj_period = Period(int(obj_split[0]), int(obj_split[1]))
                     partial_period_list.append(obj_period)
 
             reversed_list = self.measure_list

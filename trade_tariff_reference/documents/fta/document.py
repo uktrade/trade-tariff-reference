@@ -3,31 +3,31 @@ import codecs
 
 from documents.fta.functions import *
 
-from documents.fta.duty import duty
-from documents.fta.quota_order_number import quota_order_number
-from documents.fta.quota_definition import quota_definition
-from documents.fta.measure import measure
-from documents.fta.measure_condition import measure_condition
+from documents.fta.duty import Duty
+from documents.fta.quota_order_number import QuotaOrderNumber
+from documents.fta.quota_definition import QuotaDefinition
+from documents.fta.measure import Measure
+from documents.fta.measure_condition import MeasureCondition
 from documents.fta.commodity import Commodity
-from documents.fta.quota_commodity import quota_commodity
-from documents.fta.quota_balance import quota_balance
+from documents.fta.quota_commodity import QuotaCommodity
+from documents.fta.quota_balance import QuotaBalance
 
 
-class document(object):
+class Document:
+
 	def __init__(self, application):
 		self.application = application
-		self.footnote_list				= []
-		self.duty_list					= []
-		self.balance_list				= []
-		self.supplementary_unit_list	= []
-		self.seasonal_records			= 0
-		self.wide_duty					= False
+		self.footnote_list = []
+		self.duty_list = []
+		self.balance_list = []
+		self.supplementary_unit_list = []
+		self.seasonal_records = 0
+		self.wide_duty = False
 
-		print ("Creating FTA document for " + application.country_name + "\n")
+		print("Creating FTA document for " + application.country_name + "\n")
 		self.application.get_mfns_for_siv_products()
 
 		self.document_xml = ""
-		
 
 	def check_for_quotas(self):
 		sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
@@ -68,14 +68,14 @@ class document(object):
 		AND m.validity_start_date < '2019-12-31' AND m.validity_end_date >= '2018-01-01'
 		ORDER BY measure_sid;
 		"""
-		# print (sql)
+		# print(sql)
 		cur = self.application.conn.cursor()
 		cur.execute(sql)
 		rows = cur.fetchall()
 		for row in rows:
-			measure_sid				= row[0]
-			condition_duty_amount	= row[1]
-			mc = measure_condition(0, measure_sid, "V", 1, condition_duty_amount, "", "", "", "", "", "")
+			measure_sid = row[0]
+			condition_duty_amount = row[1]
+			mc = MeasureCondition(0, measure_sid, "V", 1, condition_duty_amount, "", "", "", "", "", "")
 			self.measure_condition_list.append (mc)
 
 		# Now get the country exclusions
@@ -113,36 +113,36 @@ class document(object):
 		cur.execute(sql)
 		rows = cur.fetchall()
 
-		# Do a pass through the duties table and create a full duty expression - duty is a mnemonic for measure component
-		temp_commodity_list				= []
-		temp_quota_order_number_list	= []
-		temp_measure_list				= []
-		self.duty_list					= []
-		self.measure_list				= []
-		self.commodity_list				= []
-		self.quota_order_number_list	= []
+		# Do a pass through the duties table and create a full Duty expression - Duty is a mnemonic for Measure component
+		temp_commodity_list = []
+		temp_quota_order_number_list = []
+		temp_measure_list = []
+		self.duty_list = []
+		self.measure_list = []
+		self.commodity_list = []
+		self.quota_order_number_list = []
 
 		for row in rows:
-			measure_sid						= row[9]
+			measure_sid = row[9]
 			if measure_sid not in (exclusion_list):
-				commodity_code					= mstr(row[0])
-				additional_code_type_id			= mstr(row[1])
-				additional_code_id				= mstr(row[2])
-				measure_type_id					= mstr(row[3])
-				duty_expression_id				= row[4]
-				duty_amount						= row[5]
-				monetary_unit_code				= mstr(row[6])
-				monetary_unit_code				= monetary_unit_code.replace("EUR", "€")
-				measurement_unit_code			= mstr(row[7])
+				commodity_code = mstr(row[0])
+				additional_code_type_id = mstr(row[1])
+				additional_code_id = mstr(row[2])
+				measure_type_id = mstr(row[3])
+				duty_expression_id = row[4]
+				duty_amount = row[5]
+				monetary_unit_code = mstr(row[6])
+				monetary_unit_code = monetary_unit_code.replace("EUR", "€")
+				measurement_unit_code = mstr(row[7])
 				measurement_unit_qualifier_code = mstr(row[8])
-				quota_order_number_id			= mstr(row[10])
-				validity_start_date				= row[11]
-				validity_end_date				= row[12]
-				geographical_area_id			= mstr(row[13])
-				reduction_indicator				= row[14]
+				quota_order_number_id = mstr(row[10])
+				validity_start_date = row[11]
+				validity_end_date = row[12]
+				geographical_area_id = mstr(row[13])
+				reduction_indicator = row[14]
 
-				# Hypothesis would be that the only reason why the duty amount is None is when
-				# there is a "V" code attached to the measure
+				# Hypothesis would be that the only reason why the Duty amount is None is when
+				# there is a "V" code attached to the Measure
 				#if ((duty_amount is None) and (duty_expression_id == "01")):
 				if duty_amount is None and duty_expression_id is None:
 					is_siv = True
@@ -156,13 +156,13 @@ class document(object):
 					is_siv = False
 
 
-				obj_duty = duty(self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
-				duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
-				measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date, reduction_indicator, is_siv)
+				obj_duty = Duty(self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
+								duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
+								measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date, reduction_indicator, is_siv)
 				self.duty_list.append(obj_duty)
 
 				if measure_sid not in temp_measure_list:
-					obj_measure = measure(measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date, geographical_area_id, reduction_indicator)
+					obj_measure = Measure(measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date, geographical_area_id, reduction_indicator)
 					self.measure_list.append(obj_measure)
 					temp_measure_list.append(measure_sid)
 
@@ -173,7 +173,7 @@ class document(object):
 
 				if quota_order_number_id not in temp_quota_order_number_list:
 					if quota_order_number_id != "":
-						obj_quota_order_number = quota_order_number(quota_order_number_id)
+						obj_quota_order_number = QuotaOrderNumber(quota_order_number_id)
 						self.quota_order_number_list.append(obj_quota_order_number)
 						temp_quota_order_number_list.append(quota_order_number_id)
 
@@ -222,7 +222,7 @@ class document(object):
 		csv_text = ""
 		for row in rows:
 			quota_order_number_id = row[0]
-			qon = quota_order_number(quota_order_number_id)
+			qon = QuotaOrderNumber(quota_order_number_id)
 			self.quota_order_number_list.append(qon)
 			self.q.append (quota_order_number_id)
 			quota_order_number_list_flattened += "'" + quota_order_number_id + "',"
@@ -275,7 +275,7 @@ class document(object):
 			geographical_area_id		= row[5]
 			reduction_indicator			= row[6]
 
-			my_measure = measure(measure_sid, goods_nomenclature_item_id, quota_order_number_id, validity_start_date, validity_end_date, geographical_area_id, reduction_indicator)
+			my_measure = Measure(measure_sid, goods_nomenclature_item_id, quota_order_number_id, validity_start_date, validity_end_date, geographical_area_id, reduction_indicator)
 			self.measure_list.append (my_measure)
 		
 		# Step 2 - Having loaded all of the measures from the database, cycle through the list of duties (components)
@@ -297,7 +297,7 @@ class document(object):
 			item_split				= item.split("|")
 			code					= item_split[0]
 			quota_order_number_id	= item_split[1]
-			obj = quota_commodity(code, quota_order_number_id)
+			obj = QuotaCommodity(code, quota_order_number_id)
 			quota_commodity_list.append(obj)
 
 		quota_commodity_list.sort(key=lambda x: x.commodity_code, reverse = False)
@@ -342,8 +342,8 @@ class document(object):
 					measurement_unit_code = "KGM"
 
 				if quota_order_number_id not in ("", "Quota order number"):
-					qb = quota_balance(quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
-					measurement_unit_code, origin_quota, addendum, scope)
+					qb = QuotaBalance(quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
+									  measurement_unit_code, origin_quota, addendum, scope)
 				
 					self.balance_list.append(qb)
 			except:
@@ -380,9 +380,9 @@ class document(object):
 			monetary_unit_code				= row[10]
 			measurement_unit_qualifier_code	= row[11]
 
-			qd = quota_definition(quota_definition_sid, quota_order_number_id, validity_start_date, validity_end_date,
-			quota_order_number_sid, volume, initial_volume, measurement_unit_code, maximum_precision, critical_state,
-			critical_threshold, monetary_unit_code, measurement_unit_qualifier_code)
+			qd = QuotaDefinition(quota_definition_sid, quota_order_number_id, validity_start_date, validity_end_date,
+								 quota_order_number_sid, volume, initial_volume, measurement_unit_code, maximum_precision, critical_state,
+								 critical_threshold, monetary_unit_code, measurement_unit_qualifier_code)
 			
 			if len(self.balance_list) > 0:
 				found_matching_balance = False
@@ -417,7 +417,7 @@ class document(object):
 								qb.measurement_unit_code = "KGM"
 							d1 = datetime.strptime(qb.yx_start, "%d/%m/%Y")
 							d2 = qb.yx_end
-							qd = quota_definition(0, qon.quota_order_number_id, d1, d2, 0, int(qb.y1_balance), int(qb.y1_balance), qb.measurement_unit_code, 3, "Y", 90, "", "")
+							qd = QuotaDefinition(0, qon.quota_order_number_id, d1, d2, 0, int(qb.y1_balance), int(qb.y1_balance), qb.measurement_unit_code, 3, "Y", 90, "", "")
 							qd.volume_yx = int(qb.yx_balance)
 							qd.addendum = qb.addendum.strip()
 							qd.scope = qb.scope.strip()

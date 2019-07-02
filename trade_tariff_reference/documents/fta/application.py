@@ -8,10 +8,10 @@ import json
 from datetime import datetime
 import documents.fta.functions as f
 from documents.fta.database import DatabaseConnect
-from documents.fta.document import document
-from documents.fta.hierarchy import hierarchy
-from documents.fta.mfn_duty import mfn_duty
-from documents.fta.local_siv import local_siv
+from documents.fta.document import Document
+from documents.fta.hierarchy import Hierarchy
+from documents.fta.mfn_duty import MfnDuty
+from documents.fta.local_siv import LocalSiv
 
 
 class Application(DatabaseConnect):
@@ -71,7 +71,7 @@ class Application(DatabaseConnect):
 
     def create_document(self):
         # Create the document
-        my_document = document(self)
+        my_document = Document(self)
         self.get_meursing_components()
         my_document.check_for_quotas()
         self.readTemplates(my_document.has_quotas)
@@ -104,7 +104,7 @@ class Application(DatabaseConnect):
             condition_monetary_unit_code = rw[3]
             condition_measurement_unit_code = rw[4]
 
-            obj = local_siv(
+            obj = LocalSiv(
                 goods_nomenclature_item_id,
                 validity_start_date,
                 condition_duty_amount,
@@ -448,7 +448,7 @@ class Application(DatabaseConnect):
             number_indents = row[2]
             description = row[3]
             print(number_indents)
-            hier = hierarchy(
+            hier = Hierarchy(
                 goods_nomenclature_item_id,
                 productline_suffix,
                 number_indents,
@@ -504,7 +504,7 @@ class Application(DatabaseConnect):
             duty_amount = r[1]
             validity_start_date = r[2]
             validity_end_date = r[3]
-            mfn = mfn_duty(
+            mfn = MfnDuty(
                 goods_nomenclature_item_id,
                 duty_amount,
                 validity_start_date,
