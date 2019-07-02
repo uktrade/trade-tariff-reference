@@ -30,12 +30,12 @@ class QuotaBalance:
         try:
             if type(v) is str:
                 d1 = datetime.strptime(v, "%d/%m/%Y")
-                d2 = d1 + timedelta(days = -1)
-                d2 = d2 + relativedelta(years = 1)
+                d2 = d1 + timedelta(days=-1)
+                d2 = d2 + relativedelta(years=1)
             else:
                 d1 = v
-                d2 = d1 + timedelta(days = -1)
-                d2 = d2 + relativedelta(years = 1)
+                d2 = d1 + timedelta(days=-1)
+                d2 = d2 + relativedelta(years=1)
         except:
             # print("An error has occurred: cannot work out date / time of quota", self.quota_order_number_id)
             # sys.exit()
@@ -45,7 +45,7 @@ class QuotaBalance:
     def getY1Dates(self):
         dBrexit = datetime.strptime("29/03/2019", "%d/%m/%Y")
         d1 = datetime.strptime(self.yx_start, "%d/%m/%Y")
-        d1Month	= d1.month
+        d1Month = d1.month
         # print(d1Month, type(d1Month))
         # sys.exit()
         if d1Month > 3:
@@ -54,4 +54,3 @@ class QuotaBalance:
         else:
             self.validity_start_date_2019 = dBrexit
             self.validity_end_date_2019 = datetime.strptime("31/12/2019", "%d/%m/%Y")
-

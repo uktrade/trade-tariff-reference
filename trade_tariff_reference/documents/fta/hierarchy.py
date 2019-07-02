@@ -13,8 +13,11 @@ class Hierarchy:
     def get_hierarchy(self, direction):
         ar_goods_nomenclatures = []
         ar_hierarchies = []
-        stem = self.goods_nomenclature_item_id[0:2]
-        sql = "SELECT goods_nomenclature_item_id, producline_suffix as productline_suffix, number_indents, description FROM ml.goods_nomenclature_export('" + stem + "%') ORDER BY goods_nomenclature_item_id, producline_suffix"
+        # stem = self.goods_nomenclature_item_id[0:2]
+        sql = """
+        SELECT goods_nomenclature_item_id, producline_suffix as productline_suffix, number_indents, description
+        FROM ml.goods_nomenclature_export('" + stem + "%') ORDER BY goods_nomenclature_item_id, producline_suffix
+        """
         cur = g.app.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
@@ -66,10 +69,10 @@ class Hierarchy:
 
         # Reverse the Hierarchy, so that the 'current' hierarchical item sits at the bottom
         ar_hierarchies.reverse()
-        hier_count = len(ar_hierarchies)
+        # hier_count = len(ar_hierarchies)
         # Remove the empty item accidentally created when the array was initialised
-        #if (hier_count > 0):
-        #	ar_hierarchies.pop(hier_count) # Not necessary - this is just an issue in PHP
+        # if (hier_count > 0):
+        # ar_hierarchies.pop(hier_count) # Not necessary - this is just an issue in PHP
 
         # Then search down towards the branches of the tree from my_index to find child codes
         if direction != "up":

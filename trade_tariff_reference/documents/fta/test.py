@@ -63,7 +63,10 @@ def resolve_measures_didwork(self):
         for measure in reversed_list:
             for obj in partial_period_list:
                 if obj.marked is False:
-                    if int(measure.validity_start_day) == int(obj.validity_start_day) and int(measure.validity_start_month) == int(obj.validity_start_month):
+                    if (
+                            int(measure.validity_start_day) == int(obj.validity_start_day)
+                            and int(measure.validity_start_month) == int(obj.validity_start_month)
+                    ):
                         measure.marked = True
                         obj.marked = True
 
@@ -77,4 +80,3 @@ def resolve_measures_didwork(self):
                 self.duty_string = measure.xml_with_dates() + self.duty_string
             else:
                 self.duty_string += measure.combined_duty
-

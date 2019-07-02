@@ -14,9 +14,9 @@ def formatFootnote(s):
     a = s.split("\n")
     for ax in a:
         ax.strip()
-        #print(ax)
+        # print(ax)
         if len(ax) > 0:
-            lChar = ascii(ax[0])
+            # lChar = ascii(ax[0])
             lChar = ord(ax[0])
             if lChar == 8226:
                 sStyle = "ListBulletinTable"
@@ -53,34 +53,34 @@ def fmtMarkdown(s):
         if ax[:2] == "##":
             sTemp = app.sHeading3XML
             sTemp = sTemp.replace("{HEADING}", ax.strip())
-            sTemp = sTemp.replace("\.", ".")
+            sTemp = sTemp.replace("\\.", ".")
             sTemp = sTemp.replace("##", "")
             sOut += sTemp
         elif ax[:4] == "  * ":
             sTemp = ax.strip()
             sTemp = sTemp.replace("* -", "")
             sTemp = sTemp.replace("* ", "")
-            sTemp = sTemp.replace("\.", ".")
-            sTemp = re.sub("^\([a-z]\) ", "", sTemp)
+            sTemp = sTemp.replace("\\.", ".")
+            sTemp = re.sub("^\\([a-z]\\) ", "", sTemp)
             sTemp = app.sBulletXML.replace("{TEXT}", sTemp)
             sOut += sTemp
         elif ax[:2] == "* ":
             sTemp = app.sParaXML
             sTemp = sTemp.replace("{TEXT}", ax.strip())
             sTemp = sTemp.replace("* ", "")
-            sTemp = sTemp.replace("\.", ".")
+            sTemp = sTemp.replace("\\.", ".")
             sOut += sTemp
         elif ax[:1] == "*":
             sTemp = app.sParaXML
             sTemp = sTemp.replace("{TEXT}", ax.strip())
             sTemp = sTemp.replace("*", "")
-            sTemp = sTemp.replace("\.", ".")
+            sTemp = sTemp.replace("\\.", ".")
             sOut += sTemp
         else:
             sTemp = app.sParaXML
             sTemp = sTemp.replace("{TEXT}", ax.strip())
             sTemp = sTemp.replace("* ", "")
-            sTemp = sTemp.replace("\.", ".")
+            sTemp = sTemp.replace("\\.", ".")
             if sTemp != "\n":
                 sOut += sTemp
 
@@ -88,14 +88,14 @@ def fmtMarkdown(s):
 
 
 def zipdir(archivename):
-    BASE_DIR     = os.path.dirname(os.path.realpath(__file__))
+    BASE_DIR = os.path.dirname(os.path.realpath(__file__))
     MODEL_DIR = os.path.join(BASE_DIR, "model")
     with closing(ZipFile(archivename, "w", ZIP_DEFLATED)) as z:
         for root, dirs, files in os.walk(MODEL_DIR):
-            #NOTE: ignore empty directories
+            # NOTE: ignore empty directories
             for fn in files:
                 absfn = os.path.join(root, fn)
-                zfn = absfn[len(MODEL_DIR)+len(os.sep):] #XXX: relative path
+                zfn = absfn[len(MODEL_DIR)+len(os.sep):]  # XXX: relative path
                 z.write(absfn, zfn)
 
 
@@ -151,7 +151,7 @@ def list_to_sql(my_list):
 
 def getMeasurementUnit(s):
     if s == "ASV":
-        return "% vol/hl" # 3302101000
+        return "% vol/hl"  # 3302101000
     if s == "NAR":
         return "p/st"
     elif s == "CCT":
@@ -167,9 +167,9 @@ def getMeasurementUnit(s):
     elif s == "GRM":
         return "g"
     elif s == "HLT":
-        return "hl" # 2209009100
+        return "hl"  # 2209009100
     elif s == "HMT":
-        return "100 m" # 3706909900
+        return "100 m"  # 3706909900
     elif s == "KGM":
         return "kg"
     elif s == "KLT":
@@ -193,7 +193,7 @@ def getMeasurementUnit(s):
     elif s == "KUR":
         return "kg U"
     elif s == "LPA":
-        #return "l alc. 100%"
+        # return "l alc. 100%"
         return "l (expressed in equivalent of pure alcohol)"
     elif s == "LTR":
         return "l"
@@ -214,7 +214,7 @@ def getMeasurementUnit(s):
     elif s == "TJO":
         return "TJ"
     elif s == "TNE":
-        return "t" # 1005900020
+        return "t"  # 1005900020
         # return "1000 kg" # 1005900020
     else:
         return s

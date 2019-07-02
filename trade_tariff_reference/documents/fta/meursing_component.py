@@ -14,5 +14,3 @@ class MeursingComponent:
         self.duty_amount = duty_amount
         self.geographical_area_id = geographical_area_id
         self.reduction_indicator = reduction_indicator
-
-

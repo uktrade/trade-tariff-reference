@@ -23,7 +23,7 @@ class QuotaCommodity:
         for measure in self.measure_list:
             # if self.commodity_code == "0204230011":
             # print(len(self.measure_list), "jijij")
-            if measure.extent not in(365, -1) :
+            if measure.extent not in(365, -1):
                 is_all_full_year = False
 
             if measure.extent == -1:
@@ -41,7 +41,7 @@ class QuotaCommodity:
         temp_measure_list = []
         for measure in self.measure_list:
             if measure.extent != 365:
-                temp_measure_list.append (measure)
+                temp_measure_list.append(measure)
 
         day_count = 0
         for measure in temp_measure_list:
@@ -56,7 +56,7 @@ class QuotaCommodity:
         # Also check to see if this is on the entry price system. If this is EPS, then it is not going to
         # be seasonal as well - they appear to be mutually exclusive
 
-        if is_all_full_year == True or contains_siv == True:
+        if is_all_full_year or contains_siv:
             measure_count = len(self.measure_list)
 
             if measure_count > 0:
@@ -90,21 +90,24 @@ class QuotaCommodity:
         reversed_list.reverse()
 
         is_seasonal = False
-        if (contains_siv == False) and (is_all_full_year == False) and (is_infinite == False):
+        if not contains_siv and not is_all_full_year and not is_infinite:
             is_seasonal = True
             for measure in reversed_list:
                 for obj in partial_period_list:
-                    if obj.marked == False:
-                        if int(measure.validity_start_day) == int(obj.validity_start_day) and int(measure.validity_start_month) == int(obj.validity_start_month):
+                    if not obj.marked:
+                        if (
+                                int(measure.validity_start_day) == int(obj.validity_start_day)
+                                and int(measure.validity_start_month) == int(obj.validity_start_month)
+                        ):
                             measure.marked = True
                             obj.marked = True
 
             for measure in reversed_list:
-                if measure.marked == False:
+                if not measure.marked:
                     measure.suppress = True
 
         for measure in self.measure_list:
-            if measure.suppress == False:
+            if not measure.suppress:
                 if is_seasonal:
                     self.duty_string = measure.combined_duty
                 else:

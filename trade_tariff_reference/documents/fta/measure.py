@@ -115,7 +115,6 @@ class Measure:
                     for d in self.duty_list:
                         if d.additional_code_id == "550":
                             self.combined_duty += d.duty_string + " "
-    
         """
         self.combined_duty = self.combined_duty.replace("  ", " ")
         self.combined_duty = self.combined_duty.strip()
@@ -142,7 +141,7 @@ class Measure:
         for obj in g.app.seasonal_fta_duties:
             if obj.goods_nomenclature_item_id == self.commodity_code:
                 if obj.geographical_area_id in g.app.country_codes:
-                    self.seasonal_list.append (obj)
+                    self.seasonal_list.append(obj)
 
 
 class Period:

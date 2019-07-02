@@ -37,7 +37,7 @@ class QuotaDefinition:
             s = "{:,.0f}".format(val) + " " + f.getMeasurementUnit(self.measurement_unit_code)
         except:
             s = ""
-        if self.measurement_unit_qualifier_code != None:
+        if not self.measurement_unit_qualifier_code:
             s += " " + self.measurement_unit_qualifier_code
 
         s = s.strip()

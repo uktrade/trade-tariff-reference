@@ -1,4 +1,3 @@
-import glob as g
 import documents.fta.functions as functions
 
 
@@ -65,7 +64,7 @@ class Duty:
                     if self.measurement_unit_qualifier_code != "":
                         self.duty_string += " / " + self.getQualifier()
 
-        elif self.duty_expression_id in ("17", "35"): #MAX
+        elif self.duty_expression_id in ("17", "35"):  # MAX
             if self.monetary_unit_code == "":
                 self.duty_string += "MAX {0:1.2f}".format(self.duty_amount) + "%"
             else:
@@ -96,7 +95,7 @@ class Duty:
         else:
             print("Found an unexpected DE", self.duty_expression_id)
 
-        if self.is_siv == True:
+        if self.is_siv:
             # Still need to get the MFN duty for the same time period to work out the specific percentage
             # The phrase required here is:
             #
@@ -107,16 +106,19 @@ class Duty:
             # but, in the example of Israel, where, on product 0805 10 24, there is a variable ad valorem
             # including 6.4, against a 3rd country duty (MFN) of 16%, so the 1st percentage is
             # (6.4 / 16) * 100 = 40%
-            #try:
+            # try:
 
-            #print(g.app.DBASE)
+            # print(g.app.DBASE)
 
-            if self.duty_amount == None:
+            if not self.duty_amount:
                 self.duty_amount = 0
             if self.duty_amount > 0:
-                mfn_rate = self.application.get_mfn_rate(self.commodity_code, self.validity_start_date, self.validity_end_date)
-                #if self.commodity_code == "0805290011":
-                #	print(self.commodity_code, self.validity_start_date, self.validity_end_date, self.duty_amount,  mfn_rate)
+                mfn_rate = self.application.get_mfn_rate(
+                    self.commodity_code, self.validity_start_date, self.validity_end_date
+                )
+                # if self.commodity_code == "0805290011":
+                # print(self.commodity_code, self.validity_start_date,
+                # self.validity_end_date, self.duty_amount,  mfn_rate)
                 if mfn_rate != 0.0:
                     my_duty = (self.duty_amount / mfn_rate) * 100
                 else:
@@ -124,14 +126,20 @@ class Duty:
             else:
                 my_duty = 0
 
-            if self.commodity_code in self.application.local_sivs_commodities_only and self.application.country_profile == "morocco":
-                #self.duty_string = "Entry Price - 0% + Specific 100% Rebased price €" + "{0:1.2f}".format(my_duty) + " Rebased Price P"
-                self.duty_string = "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%" + self.get_rebase() # " Rebased Price P"
+            if (
+                self.commodity_code in self.application.local_sivs_commodities_only
+                and self.application.country_profile == "morocco"
+            ):
+                # self.duty_string = "Entry Price - 0% + Specific 100% Rebased price €" +
+                # "{0:1.2f}".format(my_duty) + " Rebased Price P"
+                self.duty_string = (
+                    "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%" + self.get_rebase()
+                )   # " Rebased Price P"
             else:
                 self.duty_string = "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%"
-            #except:
-            #	print("Error", self.commodity_code)
-            #	sys.exit()
+            # except:
+            # print("Error", self.commodity_code)
+            # sys.exit()
 
     def get_rebase(self):
         out = ""
@@ -141,13 +149,14 @@ class Duty:
                 if self.validity_start_date == obj.validity_start_date:
                     print("Found a match")
                     print(self.validity_start_date)
-                    out = " Rebased Price " + str(obj.condition_duty_amount) + " € / " + self.getMeasurementUnit(obj.condition_measurement_unit_code) #  " € / tonne"
+                    units = self.getMeasurementUnit(obj.condition_measurement_unit_code)  # "tonne"
+                    out = " Rebased Price " + str(obj.condition_duty_amount) + " € / " + units
                     break
         return (out)
 
     def getMeasurementUnit(self, s):
         if s == "ASV":
-            return "% vol" # 3302101000
+            return "% vol"  # 3302101000
         if s == "NAR":
             return "item"
         elif s == "CCT":
@@ -163,9 +172,9 @@ class Duty:
         elif s == "GRM":
             return "g"
         elif s == "HLT":
-            return "hl" # 2209009100
+            return "hl"  # 2209009100
         elif s == "HMT":
-            return "100 m" # 3706909900
+            return "100 m"  # 3706909900
         elif s == "KGM":
             return "kg"
         elif s == "KLT":
@@ -209,7 +218,7 @@ class Duty:
         elif s == "TJO":
             return "TJ"
         elif s == "TNE":
-            return "tonne" # 1005900020
+            return "tonne"  # 1005900020
             # return "1000 kg" # 1005900020
         else:
             return s
@@ -218,25 +227,25 @@ class Duty:
         sQualDesc = ""
         s = self.measurement_unit_qualifier_code
         if s == "A":
-            sQualDesc = "tot alc" # Total alcohol
+            sQualDesc = "tot alc"  # Total alcohol
         elif s == "C":
-            sQualDesc = "1 000" # Total alcohol
+            sQualDesc = "1 000"  # Total alcohol
         elif s == "E":
-            sQualDesc = "net drained wt" # net of drained weight
+            sQualDesc = "net drained wt"  # net of drained weight
         elif s == "G":
-            sQualDesc = "gross" # Gross
+            sQualDesc = "gross"  # Gross
         elif s == "M":
-            sQualDesc = "net dry" # net of dry matter
+            sQualDesc = "net dry"  # net of dry matter
         elif s == "P":
-            sQualDesc = "lactic matter" # of lactic matter
+            sQualDesc = "lactic matter"  # of lactic matter
         elif s == "R":
-            sQualDesc = "std qual" # of the standard quality
+            sQualDesc = "std qual"  # of the standard quality
         elif s == "S":
             sQualDesc = " raw sugar"
         elif s == "T":
-            sQualDesc = "dry lactic matter" # of dry lactic matter
+            sQualDesc = "dry lactic matter"  # of dry lactic matter
         elif s == "X":
-            sQualDesc = " hl" # Hectolitre
+            sQualDesc = " hl"  # Hectolitre
         elif s == "Z":
-            sQualDesc = "% sacchar." # per 1% by weight of sucrose
+            sQualDesc = "% sacchar."  # per 1% by weight of sucrose
         return sQualDesc
