@@ -1,8 +1,8 @@
-from hierarchy import hierarchy
+from documents.fta.hierarchy import Hierarchy
 
 import sys
 import glob as g
-import functions as f
+
 
 # Set up
 app = g.app
@@ -17,19 +17,20 @@ rows = cur.fetchall()
 for row in rows:
     number_indents = row[2]
     description = row[3]
-    print (number_indents)
-    hier = hierarchy(goods_nomenclature_item_id, productline_suffix, number_indents, description)
+    print(number_indents)
+    hier = Hierarchy(goods_nomenclature_item_id, productline_suffix, number_indents, description)
     hier.get_hierarchy("up")
     clause = ""
     for o in hier.ar_hierarchies:
-        print (o.goods_nomenclature_item_id, o.productline_suffix)
+        print(o.goods_nomenclature_item_id, o.productline_suffix)
         if o.productline_suffix == "80":
             clause += "'" + o.goods_nomenclature_item_id + "', "
     clause = clause.strip()
     clause = clause.strip(",")
-    print (clause)
+    print(clause)
 
-sql = """SELECT * FROM measures WHERE goods_nomenclature_item_id IN (""" + clause + """) AND measure_type_id IN ('103', '105')
+sql = """
+SELECT * FROM measures WHERE goods_nomenclature_item_id IN (""" + clause + """) AND measure_type_id IN ('103', '105')
 AND validity_start_date < '2019_03_29' AND (validity_end_date >= '2019_03_29' OR validity_end_date IS NULL)"""
 
 """
@@ -41,15 +42,16 @@ however in most cases, this will not be the case, as they will exist as measure_
 
 Thought
 =======
-Might need to make the search below specifically against the times at which the duties in the FTA schedule are applicable
-This is almost entirely impossible
+Might need to make the search below specifically against the times at which the duties
+in the FTA schedule are applicable. This is almost entirely impossible
 
 """
 
 
-sql = """SELECT * FROM measures WHERE goods_nomenclature_item_id IN (""" + clause + """) AND measure_type_id IN ('103', '105')
+sql = """
+SELECT * FROM measures WHERE goods_nomenclature_item_id IN (""" + clause + """) AND measure_type_id IN ('103', '105')
 AND validity_start_date < '2019_03_29' AND (validity_end_date >= '2019_03_29' OR validity_end_date IS NULL)"""
-print (sql)
+print(sql)
 sys.exit()
 """
 cur = app.conn.cursor()

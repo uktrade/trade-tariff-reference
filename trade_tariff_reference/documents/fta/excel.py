@@ -1,4 +1,5 @@
-import xlsxwriter, psycopg2
+import xlsxwriter
+import psycopg2
 
 workbook = xlsxwriter.Workbook('hello.xlsx')
 worksheet = workbook.add_worksheet()
@@ -7,11 +8,11 @@ wrap = workbook.add_format({'text_wrap': True, 'align': 'left', 'valign': 'top'}
 
 indents = []
 for i in range(0, 14):
-	tmp = workbook.add_format({'text_wrap': True, 'align': 'left', 'valign': 'top', 'indent': i*2})
-	indents.append(tmp)
+    tmp = workbook.add_format({'text_wrap': True, 'align': 'left', 'valign': 'top', 'indent': i*2})
+    indents.append(tmp)
 
 DBASE = "tariff_eu"
-p = "zanzibar"
+p = ""
 conn = psycopg2.connect("dbname=" + DBASE + " user=postgres password=" + p)
 
 
@@ -44,19 +45,19 @@ worksheet.set_column('B:B', 15)
 worksheet.set_column('C:C', 50)
 
 for row in rows:
-	goods_nomenclature_item_id  = row[1]
-	producline_suffix           = row[2]
-	description                 = row[5]
-	indent                      = row[6]
-	address1 = "A" + str(rowcount)
-	address2 = "B" + str(rowcount)
-	address3 = "C" + str(rowcount)
-	address4 = "D" + str(rowcount)
-	worksheet.write(address1, goods_nomenclature_item_id, wrap)
-	worksheet.write(address2, producline_suffix, wrap)
-	worksheet.write(address3, description, indents[indent])
-	worksheet.write(address4, indent, wrap)
-	rowcount += 1
+    goods_nomenclature_item_id = row[1]
+    producline_suffix = row[2]
+    description = row[5]
+    indent = row[6]
+    address1 = "A" + str(rowcount)
+    address2 = "B" + str(rowcount)
+    address3 = "C" + str(rowcount)
+    address4 = "D" + str(rowcount)
+    worksheet.write(address1, goods_nomenclature_item_id, wrap)
+    worksheet.write(address2, producline_suffix, wrap)
+    worksheet.write(address3, description, indents[indent])
+    worksheet.write(address4, indent, wrap)
+    rowcount += 1
 
 
 worksheet.freeze_panes(1, 0)

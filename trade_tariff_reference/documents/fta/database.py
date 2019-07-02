@@ -1,5 +1,6 @@
 from django.db import connections
 
+
 class DatabaseConnect:
 
     def connect(self):
