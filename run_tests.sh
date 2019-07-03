@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-pytest -Wa -rxXs -s "$@"
+pytest -Wa -rAxXs -s "$@"

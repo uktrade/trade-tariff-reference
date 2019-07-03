@@ -1,6 +1,11 @@
 import documents.fta.functions as functions
 
 
+PLUS_PREFIX = '+ '
+MIN_PREFIX = 'MIN '
+MAX_PREFIX = 'MAX '
+
+
 class Duty:
 
     def __init__(
@@ -16,7 +21,7 @@ class Duty:
         self.measure_type_id = functions.mstr(measure_type_id)
         self.measure_type_description = ""
         self.duty_expression_id = functions.mstr(duty_expression_id)
-        self.duty_amount = duty_amount
+        self.duty_amount = duty_amount or 0
         self.monetary_unit_code = functions.mstr(monetary_unit_code)
         self.measurement_unit_code = functions.mstr(measurement_unit_code)
         self.measurement_unit_qualifier_code = functions.mstr(measurement_unit_qualifier_code)
@@ -32,124 +37,88 @@ class Duty:
         self.duty_string = self.get_duty_string()
 
     def get_duty_string(self):
-        duty_string = ""
-
-        if self.duty_expression_id == "01":
-            if self.monetary_unit_code == "":
-                duty_string += "{0:1.2f}".format(self.duty_amount) + "%"
-            else:
-                duty_string += "{0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    duty_string += " / " + self.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        duty_string += " / " + self.get_qualifier()
-
-        elif self.duty_expression_id in ("04", "19", "20"):
-            if self.monetary_unit_code == "":
-                duty_string += "+ {0:1.2f}".format(self.duty_amount) + "%"
-            else:
-                duty_string += "+ {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    duty_string += " / " + self.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        duty_string += " / " + self.get_qualifier()
-
-        elif self.duty_expression_id == "15":
-            if self.monetary_unit_code == "":
-                duty_string += "MIN {0:1.2f}".format(self.duty_amount) + "%"
-            else:
-                duty_string += "MIN {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    duty_string += " / " + self.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        duty_string += " / " + self.get_qualifier()
-
-        elif self.duty_expression_id in ("17", "35"):  # MAX
-            if self.monetary_unit_code == "":
-                duty_string += "MAX {0:1.2f}".format(self.duty_amount) + "%"
-            else:
-                duty_string += "MAX {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    duty_string += " / " + self.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        duty_string += " / " + self.get_qualifier()
-
-        elif self.duty_expression_id in ("12"):
-            duty_string += " + AC"
-
-        elif self.duty_expression_id in ("14"):
-            duty_string += " + ACR"
-
-        elif self.duty_expression_id in ("21"):
-            duty_string += " + SD"
-
-        elif self.duty_expression_id in ("25"):
-            duty_string += " + SDR"
-
-        elif self.duty_expression_id in ("27"):
-            duty_string += " + FD"
-
-        elif self.duty_expression_id in ("29"):
-            duty_string += " + FDR"
-
-        else:
-            print("Found an unexpected DE", self.duty_expression_id)
-
         if self.is_siv:
-            # Still need to get the MFN duty for the same time period to work out the specific percentage
-            # The phrase required here is:
-            #
-            # Entry Price - 6.40% + Specific 100%
-            #
-            # where the calculation is "((My advalorem) / (MFN ad valorem)) * 100"
-            # where the "My advalorem" is zero, then this will always be zero
-            # but, in the example of Israel, where, on product 0805 10 24, there is a variable ad valorem
-            # including 6.4, against a 3rd country duty (MFN) of 16%, so the 1st percentage is
-            # (6.4 / 16) * 100 = 40%
-            # try:
+            return self.get_siv_duty_string()
 
-            # print(g.app.DBASE)
+        simple_duty_dict = {
+            '12': ' + AC',
+            '14': ' + ACR',
+            '21': ' + SD',
+            '25': ' + SDR',
+            '27': ' + FD',
+            '29': ' + FDR',
+        }
 
-            if not self.duty_amount:
-                self.duty_amount = 0
-            if self.duty_amount > 0:
-                mfn_rate = self.application.get_mfn_rate(
-                    self.commodity_code, self.validity_start_date, self.validity_end_date
-                )
-                # if self.commodity_code == "0805290011":
-                # print(self.commodity_code, self.validity_start_date,
-                # self.validity_end_date, self.duty_amount,  mfn_rate)
-                if mfn_rate != 0.0:
-                    my_duty = (self.duty_amount / mfn_rate) * 100
-                else:
-                    my_duty = 0
-            else:
-                my_duty = 0
+        simple_duty = simple_duty_dict.get(self.duty_expression_id)
+        if simple_duty:
+            return simple_duty
 
-            if (
-                self.commodity_code in self.application.local_sivs_commodities_only
-                and self.application.country_profile == "morocco"
-            ):
-                # duty_string = "Entry Price - 0% + Specific 100% Rebased price €" +
-                # "{0:1.2f}".format(my_duty) + " Rebased Price P"
-                duty_string = (
-                    "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%" + self.get_rebase()
-                )   # " Rebased Price P"
-            else:
-                duty_string = "Entry Price - " + "{0:1.2f}".format(my_duty) + "% + Specific 100%"
+        prefix_dict = {
+            '01': '',
+            '04': PLUS_PREFIX,
+            '19': PLUS_PREFIX,
+            '20': PLUS_PREFIX,
+            '15': MIN_PREFIX,
+            '17': MAX_PREFIX,
+            '35': MAX_PREFIX,
+        }
+
+        prefix = prefix_dict.get(self.duty_expression_id)
+
+        if prefix is None:
+            return ""
+
+        if not self.monetary_unit_code:
+            return f"{prefix}{self.duty_amount:1.2f}%"
+
+        duty_string = f"{prefix}{self.duty_amount:1.3f} {self.monetary_unit_code}"
+        if self.measurement_unit_code:
+            duty_string += f" / {self.get_measurement_unit(self.measurement_unit_code)}"
+            if self.measurement_unit_qualifier_code:
+                duty_string += f" / {self.get_qualifier()}"
         return duty_string
 
-    def get_rebase(self):
+    def get_siv_duty_string(self):
+        # Still need to get the MFN duty for the same time period to work out the specific percentage
+        # The phrase required here is:
+        #
+        # Entry Price - 6.40% + Specific 100%
+        #
+        # where the calculation is "((My advalorem) / (MFN ad valorem)) * 100"
+        # where the "My advalorem" is zero, then this will always be zero
+        # but, in the example of Israel, where, on product 0805 10 24, there is a variable ad valorem
+        # including 6.4, against a 3rd country duty (MFN) of 16%, so the 1st percentage is
+        # (6.4 / 16) * 100 = 40%
+
+        siv_duty_amount = 0
+
+        if self.duty_amount > 0:
+            mfn_rate = self.application.get_mfn_rate(
+                self.commodity_code, self.validity_start_date, self.validity_end_date
+            )
+            if mfn_rate:
+                siv_duty_amount = (self.duty_amount / mfn_rate) * 100
+
+        rebased_price = ""
+        if (
+            self.commodity_code in self.application.local_sivs_commodities_only
+            and self.application.country_profile == "morocco"
+        ):
+            rebased_price = self.get_rebased_price_string()
+
+        return f"Entry Price - {siv_duty_amount:1.2f}% + Specific 100%{rebased_price}"
+
+    def get_rebased_price_string(self):
         out = ""
         for obj in self.application.local_sivs:
-            if obj.goods_nomenclature_item_id == self.commodity_code:
-                if self.validity_start_date == obj.validity_start_date:
-                    units = self.get_measurement_unit(obj.condition_measurement_unit_code)  # "tonne"
-                    out = " Rebased Price " + str(obj.condition_duty_amount) + " € / " + units
-                    break
+            if obj.goods_nomenclature_item_id != self.commodity_code:
+                continue
+            elif self.validity_start_date == obj.validity_start_date:
+                units = self.get_measurement_unit(obj.condition_measurement_unit_code)  # "tonne"
+                return f" Rebased Price {obj.condition_duty_amount} € / {units}"
         return out
 
-    def get_measurement_unit(self, s):
+    def get_measurement_unit(self, abbreviation):
         units_dict = {
             'ASV': '% vol',
             'NAR': 'item',
@@ -184,7 +153,7 @@ class Duty:
             'TJO': 'TJ',
             'TNE': 'tonne',
         }
-        return units_dict.get(s, s)
+        return units_dict.get(abbreviation, abbreviation)
 
     def get_qualifier(self):
         qualifier_dict = {
@@ -195,9 +164,9 @@ class Duty:
             'M': 'net dry',
             'P': 'lactic matter',
             'R': 'std qual',
-            'S': ' raw sugar',
+            'S': 'raw sugar',
             'T': 'dry lactic matter',
-            'X': ' hl',
+            'X': 'hl',
             'Z': '% sacchar.',
         }
         return qualifier_dict.get(self.measurement_unit_qualifier_code, '')
