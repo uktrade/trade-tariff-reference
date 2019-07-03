@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 class Router:
     """
     A router to control all database operations on models in the tariff application.
@@ -14,7 +17,7 @@ class Router:
         """
         Attempts to write to the tariff application raises an exception as db is readonly.
         """
-        if model._meta.app_label == 'tariff':
+        if model._meta.app_label == 'tariff' and not settings.MANAGE_TARIFF_DATABASE:
             raise Exception("This data is readonly")
         return None
 
