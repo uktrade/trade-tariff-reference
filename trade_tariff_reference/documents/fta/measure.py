@@ -1,5 +1,4 @@
 from datetime import datetime
-import glob as g
 
 
 class Measure:
@@ -136,12 +135,6 @@ class Measure:
         elif "AC" in self.combined_duty or "SD" in self.combined_duty or "FD" in self.combined_duty:
             self.combined_duty = "CAD - " + self.combined_duty + ") 100%"
             self.combined_duty = self.combined_duty.replace(" + ", " + (", 1)
-
-    def get_commodity_seasonal_duties(self):
-        for obj in g.app.seasonal_fta_duties:
-            if obj.goods_nomenclature_item_id == self.commodity_code:
-                if obj.geographical_area_id in g.app.country_codes:
-                    self.seasonal_list.append(obj)
 
 
 class Period:
