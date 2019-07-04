@@ -409,12 +409,10 @@ class Document:
                         qd.volume_yx = f.mnum(qb.yx_balance)
                         qd.addendum = qb.addendum
                         qd.scope = qb.scope
-                        qd.format_volumes()
                         break
 
             if found_matching_balance is False:
                 print("Matching balance not found", qd.quota_order_number_id)
-            qd.format_volumes()
             self.quota_definition_list.append(qd)
 
         # This process goes through the balance list (derived from the CSV) and assigns both the 2020 balance to the
@@ -439,7 +437,6 @@ class Document:
                             qd.volume_yx = int(qb.yx_balance)
                             qd.addendum = qb.addendum.strip()
                             qd.scope = qb.scope.strip()
-                            qd.format_volumes()
                             self.quota_definition_list.append(qd)
                             break
 

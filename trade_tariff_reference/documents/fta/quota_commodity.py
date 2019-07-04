@@ -10,8 +10,7 @@ class QuotaCommodity:
         self.measure_list = []
         self.duty_string = ""
         self.suppress = False
-
-        self.formatCommodityCode()
+        self.commodity_code_formatted = self.format_commodity_code()
 
     def resolve_measures(self):
         self.duty_string = ""
@@ -116,16 +115,14 @@ class QuotaCommodity:
         # if self.duty_string == "":
         # print("Duty string is erroneously blank", self.commodity_code)
 
-    def formatCommodityCode(self):
-        s = self.commodity_code
+    def format_commodity_code(self):
+        end_values = self.commodity_code[8:10]
+        if end_values == '00':
+            end_values = ''
 
-        if s[4:10] == "000000":
-            self.commodity_code_formatted = s[0:4] + ' 00 00'
-        elif s[6:10] == "0000":
-            self.commodity_code_formatted = s[0:4] + ' ' + s[4:6] + ' 00'
-        elif s[8:10] == "00":
-            self.commodity_code_formatted = s[0:4] + ' ' + s[4:6] + ' ' + s[6:8]
-        else:
-            self.commodity_code_formatted = s[0:4] + ' ' + s[4:6] + ' ' + s[6:8] + ' ' + s[8:10]
-
-        # self.commodity_code_formatted = self.commodity_code
+        formatted_string = (
+            f'{self.commodity_code[0:4]} {self.commodity_code[4:6]}'
+            f' {self.commodity_code[6:8]} {end_values}'
+        )
+        formatted_string = formatted_string.strip()
+        return formatted_string
