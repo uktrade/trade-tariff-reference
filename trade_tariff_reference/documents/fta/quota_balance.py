@@ -36,7 +36,6 @@ class QuotaBalance:
                 date = datetime.strptime(date, "%d/%m/%Y")
             return date + relativedelta(years=1, days=-1)
         except (TypeError, ValueError):
-            print("An error has occurred: cannot work out date / time of quota", self.quota_order_number_id)
             return
 
     def get_year_one_dates(self):
