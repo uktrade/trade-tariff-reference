@@ -15,7 +15,7 @@ class QuotaDefinition:
         self.quota_order_number_sid = quota_order_number_sid
         self.volume = volume
         self.initial_volume = initial_volume
-        self.measurement_unit_code = measurement_unit_code
+        self.measurement_unit_code = measurement_unit_code or ""
         self.maximum_precision = maximum_precision
         self.critical_state = critical_state
         self.critical_threshold = critical_threshold
@@ -23,22 +23,19 @@ class QuotaDefinition:
         self.measurement_unit_qualifier_code = measurement_unit_qualifier_code or ""
 
         self.volume_yx = 0
-        self.formatted_initial_volume = ""
-        self.formatted_volume_yx = ""
+        self.formatted_initial_volume = self.format_volume(self.initial_volume)
+        self.formatted_volume_yx = self.format_volume(self.volume_yx)
         self.addendum = ""
         self.scope = ""
 
-    def format_volumes(self):
-        self.formatted_initial_volume = self.format_volume(self.initial_volume)
-        self.formatted_volume_yx = self.format_volume(self.volume_yx)
-
-    def format_volume(self, val):
+    def format_volume(self, volume):
         try:
-            s = "{:,.0f}".format(val) + " " + f.getMeasurementUnit(self.measurement_unit_code)
+            formatted_string = (
+                f"{volume:,.0f} {f.getMeasurementUnit(self.measurement_unit_code)}"
+                f" {self.measurement_unit_qualifier_code}"
+            )
         except:
-            s = ""
-        if not self.measurement_unit_qualifier_code:
-            s += " " + self.measurement_unit_qualifier_code
+            formatted_string = ""
 
-        s = s.strip()
-        return s
+        formatted_string = formatted_string.strip()
+        return formatted_string
