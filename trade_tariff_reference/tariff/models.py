@@ -722,11 +722,17 @@ class GeographicalAreaDescriptionPeriods(models.Model):
 class GeographicalAreaDescriptions(models.Model):
     geographical_area_description_period_sid = models.IntegerField(blank=True, null=True)
     language_id = models.CharField(max_length=5, blank=True, null=True)
-    geographical_area_sid = models.IntegerField(blank=True, null=True)
-    geographical_area_id = models.CharField(max_length=255, blank=True, null=True)
+    geographical_area = models.ForeignKey(
+        'tariff.GeographicalAreas',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        db_column='geographical_area_sid',
+        related_name='descriptions',
+    )
     description = models.TextField(blank=True, null=True)
     national = models.BooleanField(blank=True, null=True)
-    oid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='oid')
     operation = models.CharField(max_length=1, blank=True, null=True)
     operation_date = models.DateTimeField(blank=True, null=True)
     status = models.TextField(blank=True, null=True)
@@ -1304,6 +1310,7 @@ class Measures(models.Model):
         blank=True,
         null=True,
         on_delete=models.PROTECT,
+        related_name='measures',
     )
 
     geographical_area = models.ForeignKey(
@@ -1312,6 +1319,7 @@ class Measures(models.Model):
         null=True,
         on_delete=models.PROTECT,
         db_column='geographical_area_sid',
+        related_name='measures',
     )
 
     goods_nomenclature = models.ForeignKey(
@@ -1320,6 +1328,7 @@ class Measures(models.Model):
         null=True,
         on_delete=models.PROTECT,
         db_column='goods_nomenclature_sid',
+        related_name='measures',
     )
 
     additional_code_sid = models.IntegerField(blank=True, null=True)
@@ -1332,7 +1341,15 @@ class Measures(models.Model):
     justification_regulation_id = models.CharField(max_length=255, blank=True, null=True)
     stopped_flag = models.BooleanField(blank=True, null=True)
 
-    ordernumber = models.CharField(max_length=255, blank=True, null=True)
+    quota_order_number = models.ForeignKey(
+        'tariff.QuotaOrderNumbers',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        db_column='ordernumber',
+        related_name='measures',
+    )
+
     additional_code_type_id = models.TextField(blank=True, null=True)
 
     reduction_indicator = models.IntegerField(blank=True, null=True)
@@ -1821,8 +1838,8 @@ class QuotaOrderNumberOrigins(models.Model):
 
 
 class QuotaOrderNumbers(models.Model):
+    id = models.CharField(max_length=255, primary_key=True, db_column='quota_order_number_id')
     quota_order_number_sid = models.IntegerField(blank=True, null=True)
-    quota_order_number_id = models.CharField(max_length=255, blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
     oid = models.IntegerField(blank=True, null=True)

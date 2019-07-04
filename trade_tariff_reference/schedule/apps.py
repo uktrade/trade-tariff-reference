@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ScheduleConfig(AppConfig):
-    name = 'schedule'
+    name = 'trade_tariff_reference.schedule'

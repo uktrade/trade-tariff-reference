@@ -2,10 +2,7 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_homepage_view(rf):
-    response = rf.get('/')
-    assert response.status_code == 213
-
-
-def test_homepage_2():
-    assert 1 == 2
+def test_homepage_view(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert "Hello" in str(response.content)

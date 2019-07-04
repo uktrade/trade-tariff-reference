@@ -166,7 +166,6 @@ class Application(DatabaseConnect):
             self.exclusion_check = profile["exclusion_check"]
         except:
             self.exclusion_check = ""
-            pass
 
         # Get agreement name
         self.agreement_name = profile["agreement_name"]
@@ -204,6 +203,7 @@ class Application(DatabaseConnect):
             iLastSection = iSection
 
     def getFootnotes(self):
+        # MPP: Not used
         # Get all footnotes
         sql = """
         SELECT DISTINCT fagn.goods_nomenclature_item_id,
@@ -314,6 +314,7 @@ class Application(DatabaseConnect):
         self.sCoreXML = fCore.read()
 
     def getSeasonal(self):
+        # MPP: Not used
         sFileName = os.path.join(self.SOURCE_DIR, "seasonal_commodities.csv")
         with open(sFileName, "r") as f:
             reader = csv.reader(f)
@@ -345,6 +346,7 @@ class Application(DatabaseConnect):
             self.seasonal_list.append(oSeasonal)
 
     def getSIVProducts(self):
+        # MPP: Not used
         # The SQL below gets all products that have a V condition,
         # therefore entry price system against them
         """SELECT DISTINCT goods_nomenclature_item_id FROM measures m, measure_conditions mc
@@ -361,6 +363,7 @@ class Application(DatabaseConnect):
             self.siv_list.append(i[0])
 
     def getCountryAdValoremForSIV(self):
+        # MPP: Not used
         sql = """SELECT m.goods_nomenclature_item_id, mcc.duty_amount,
         mcc.duty_expression_id, m.validity_start_date, m.validity_end_date
         FROM measures m, measure_conditions mc, measure_condition_components mcc
@@ -404,6 +407,7 @@ class Application(DatabaseConnect):
         self.siv_data_list = unique_siv_data_list
 
     def getMeursingProducts(self):
+        # MPP: Not used
         # The SQL below gets all products that have a V condition,
         # therefore entry price system against them
         """SELECT DISTINCT goods_nomenclature_item_id FROM measures m, measure_conditions mc
@@ -420,6 +424,7 @@ class Application(DatabaseConnect):
             self.meursing_list.append(i[0])
 
     def getSeasonalProducts(self):
+        # MPP: Not used
         sFileName = os.path.join(self.SOURCE_DIR, "seasonal_fta_duties.csv")
         with open(sFileName, "r") as f:
             reader = csv.reader(f)
@@ -435,6 +440,7 @@ class Application(DatabaseConnect):
             self.seasonal_fta_duties.append(s)
 
     def get_mfn_duty(self, goods_nomenclature_item_id, validity_start_date, validity_end_date):
+        # MPP: Not used
         productline_suffix = "80"
         sql = """
         SELECT goods_nomenclature_item_id, producline_suffix as productline_suffix, number_indents,
@@ -472,6 +478,7 @@ class Application(DatabaseConnect):
         AND (validity_end_date >= '2019-10-31' OR validity_end_date IS NULL)"""
 
     def list_to_where_clause_numeric(self, my_list):
+        # MPP: Not used
         s = ""
         for obj in my_list:
             s += str(obj) + ", "

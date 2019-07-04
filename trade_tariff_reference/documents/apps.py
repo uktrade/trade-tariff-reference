@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class DocumentsConfig(AppConfig):
-    name = 'documents'
+    name = 'trade_tariff_reference.documents'

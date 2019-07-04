@@ -19,8 +19,8 @@ class QuotaDefinition:
         self.maximum_precision = maximum_precision
         self.critical_state = critical_state
         self.critical_threshold = critical_threshold
-        self.monetary_unit_code = monetary_unit_code
-        self.measurement_unit_qualifier_code = measurement_unit_qualifier_code
+        self.monetary_unit_code = monetary_unit_code or ""
+        self.measurement_unit_qualifier_code = measurement_unit_qualifier_code or ""
 
         self.volume_yx = 0
         self.formatted_initial_volume = ""
