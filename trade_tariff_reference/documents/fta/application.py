@@ -2,14 +2,13 @@ import sys
 import os
 import os.path
 from os import system, name
-import csv
 import json
 
 from datetime import datetime
+
 import documents.fta.functions as f
 from documents.fta.database import DatabaseConnect
 from documents.fta.document import Document
-from documents.fta.hierarchy import Hierarchy
 from documents.fta.mfn_duty import MfnDuty
 from documents.fta.local_siv import LocalSiv
 
@@ -202,43 +201,6 @@ class Application(DatabaseConnect):
                 r[2] = True
             iLastSection = iSection
 
-    def getFootnotes(self):
-        # MPP: Not used
-        # Get all footnotes
-        sql = """
-        SELECT DISTINCT fagn.goods_nomenclature_item_id,
-         (fagn.footnote_type || fagn.footnote_id) as footnote,
-         fd.description as footnote_description
-        FROM footnote_association_goods_nomenclatures fagn, ml.ml_footnotes fd,
-         footnote_types ft, goods_nomenclatures gn
-        WHERE fagn.footnote_id = fd.footnote_id
-        AND fagn.footnote_type = fd.footnote_type_id
-        AND fagn.footnote_type = ft.footnote_type_id
-        AND fagn.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
-        AND fagn.productline_suffix = gn.producline_suffix
-        AND fagn.productline_suffix = '80'
-        AND gn.producline_suffix = '80'
-        AND fagn.goods_nomenclature_item_id LIKE '""" + sChapter + """%'
-        AND ft.application_code IN ('1', '2')
-        AND fagn.validity_start_date < CURRENT_DATE
-        AND (fagn.validity_end_date > CURRENT_DATE OR fagn.validity_end_date IS NULL)
-        AND gn.validity_start_date < CURRENT_DATE
-        AND (gn.validity_end_date > CURRENT_DATE OR gn.validity_end_date IS NULL)
-        ORDER BY 1, 2"""
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows_foonotes = cur.fetchall()
-        self.lstFootnotes = list(rows_foonotes)
-        self.lstFootnotesUnique = []
-        for x in self.lstFootnotes:
-            blFound = False
-            for y in self.lstFootnotesUnique:
-                if x[1] == y[0]:
-                    blFound = True
-                    break
-            if blFound is False:
-                self.lstFootnotesUnique.append([x[1], f.formatFootnote(x[2])])
-
     def readTemplates(self, has_quotas):
         self.COMPONENT_DIR = os.path.join(self.COMPONENT_DIR, "")
         if has_quotas:
@@ -312,179 +274,6 @@ class Application(DatabaseConnect):
         # core.xml that contains document information
         fCore = open(os.path.join(self.COMPONENT_DIR, "core.xml"), "r")
         self.sCoreXML = fCore.read()
-
-    def getSeasonal(self):
-        # MPP: Not used
-        sFileName = os.path.join(self.SOURCE_DIR, "seasonal_commodities.csv")
-        with open(sFileName, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
-        for row in temp:
-            commodity_code = row[0]
-            season1_start = row[1]
-            season1_end = row[2]
-            season1_expression = row[3]
-            season2_start = row[4]
-            season2_end = row[5]
-            season2_expression = row[6]
-            season3_start = row[7]
-            season3_end = row[8]
-            season3_expression = row[9]
-            oSeasonal = seasonal(
-                commodity_code,
-                season1_start,
-                season1_end,
-                season1_expression,
-                season2_start,
-                season2_end,
-                season2_expression,
-                season3_start,
-                season3_end,
-                season3_expression
-            )
-
-            self.seasonal_list.append(oSeasonal)
-
-    def getSIVProducts(self):
-        # MPP: Not used
-        # The SQL below gets all products that have a V condition,
-        # therefore entry price system against them
-        """SELECT DISTINCT goods_nomenclature_item_id FROM measures m, measure_conditions mc
-        WHERE m.measure_sid = mc.measure_sid
-        AND mc.condition_code = 'V'
-        AND m.validity_start_date >= '2018-01-01'
-        AND (m.validity_end_date <= '2020-01-01' OR m.validity_end_date IS NULL)
-        ORDER BY 1"""
-        sFileName = os.path.join(self.SOURCE_DIR, "siv_products.csv")
-        with open(sFileName, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
-        for i in temp:
-            self.siv_list.append(i[0])
-
-    def getCountryAdValoremForSIV(self):
-        # MPP: Not used
-        sql = """SELECT m.goods_nomenclature_item_id, mcc.duty_amount,
-        mcc.duty_expression_id, m.validity_start_date, m.validity_end_date
-        FROM measures m, measure_conditions mc, measure_condition_components mcc
-        WHERE m.measure_sid = mc.measure_sid
-        AND mcc.measure_condition_sid = mc.measure_condition_sid
-        AND m.geographical_area_id IN (""" + self.geo_ids + """)
-        AND mc.condition_code = 'V'
-        AND mcc.duty_expression_id = '01'
-        AND validity_start_date <= CURRENT_DATE
-        AND (validity_end_date >= CURRENT_DATE OR validity_end_date IS NULL)
-        ORDER BY validity_start_date DESC"""
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
-        self.partial_temporary_stops = []
-        for rw in rows:
-            goods_nomenclature_item_id = rw[0]
-            duty_amount = rw[1]
-            duty_expression_id = rw[2]
-            validity_start_date = rw[3]
-            validity_end_date = rw[4]
-
-            siv = siv_data(
-                goods_nomenclature_item_id,
-                duty_amount,
-                duty_expression_id,
-                validity_start_date,
-                validity_end_date
-            )
-            self.siv_data_list.append(siv)
-
-        # Ensure that there is only one (the latest record listed here; delete all the others)
-        unique_siv_data_list_commodities_only = []
-        unique_siv_data_list = []
-        for item in self.siv_data_list:
-            if item.goods_nomenclature_item_id not in unique_siv_data_list_commodities_only:
-                unique_siv_data_list.append(item)
-
-            unique_siv_data_list_commodities_only.append(item.goods_nomenclature_item_id)
-
-        self.siv_data_list = unique_siv_data_list
-
-    def getMeursingProducts(self):
-        # MPP: Not used
-        # The SQL below gets all products that have a V condition,
-        # therefore entry price system against them
-        """SELECT DISTINCT goods_nomenclature_item_id FROM measures m, measure_conditions mc
-        WHERE m.measure_sid = mc.measure_sid
-        AND mc.condition_code = 'V'
-        AND m.validity_start_date >= '2018-01-01'
-        AND (m.validity_end_date <= '2020-01-01' OR m.validity_end_date IS NULL)
-        ORDER BY 1"""
-        sFileName = os.path.join(self.SOURCE_DIR, "meursing_products.csv")
-        with open(sFileName, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
-        for i in temp:
-            self.meursing_list.append(i[0])
-
-    def getSeasonalProducts(self):
-        # MPP: Not used
-        sFileName = os.path.join(self.SOURCE_DIR, "seasonal_fta_duties.csv")
-        with open(sFileName, "r") as f:
-            reader = csv.reader(f)
-            file = list(reader)
-
-        for row in file:
-            goods_nomenclature_item_id = row[0]
-            geographical_area_id = row[1]
-            extent = row[2]
-            duty = row[3]
-
-            s = seasonal_small(goods_nomenclature_item_id, geographical_area_id, extent, duty)
-            self.seasonal_fta_duties.append(s)
-
-    def get_mfn_duty(self, goods_nomenclature_item_id, validity_start_date, validity_end_date):
-        # MPP: Not used
-        productline_suffix = "80"
-        sql = """
-        SELECT goods_nomenclature_item_id, producline_suffix as productline_suffix, number_indents,
-        description
-        FROM ml.goods_nomenclature_export('""" + goods_nomenclature_item_id + """')
-        WHERE producline_suffix = '80';"""
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
-        for row in rows:
-            number_indents = row[2]
-            description = row[3]
-            print(number_indents)
-            hier = Hierarchy(
-                goods_nomenclature_item_id,
-                productline_suffix,
-                number_indents,
-                description
-            )
-            hier.get_hierarchy("up")
-            clause = ""
-            for o in hier.ar_hierarchies:
-                print(o.goods_nomenclature_item_id, o.productline_suffix)
-                if o.productline_suffix == "80":
-                    clause += "'" + o.goods_nomenclature_item_id + "', "
-            clause = clause.strip()
-            clause = clause.strip(",")
-            print(clause)
-
-        sql = """
-        SELECT * FROM measures
-        WHERE goods_nomenclature_item_id IN (""" + clause + """)
-        AND measure_type_id IN ('103', '105')
-        AND validity_start_date < '2019-10-31'
-        AND (validity_end_date >= '2019-10-31' OR validity_end_date IS NULL)"""
-
-    def list_to_where_clause_numeric(self, my_list):
-        # MPP: Not used
-        s = ""
-        for obj in my_list:
-            s += str(obj) + ", "
-        s = s.strip()
-        s = s.strip(",")
-        return s
 
     def get_mfns_for_siv_products(self):
         print(" - Getting MFNs for SIV products")
