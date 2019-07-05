@@ -6,6 +6,7 @@ import codecs
 
 import documents.fta.functions as f
 
+from documents.fta.constants import *
 from documents.fta.duty import Duty
 from documents.fta.quota_order_number import QuotaOrderNumber
 from documents.fta.quota_definition import QuotaDefinition
@@ -33,11 +34,9 @@ class Document:
         self.document_xml = ""
 
     def check_for_quotas(self):
-        sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
-        AND m.geographical_area_id IN (""" + self.application.geo_ids + """) ORDER BY 1"""
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.application.execute_sql(
+            CHECK_FOR_QUOTAS_SQL.format(geo_ids=self.application.geo_ids)
+        )
         if len(rows) == 0:
             self.has_quotas = False
             print(" - This FTA has no quotas")
@@ -62,20 +61,10 @@ class Document:
         # due to the fact that there are SIVs applied via measure components
         print(" - Getting measure conditions")
         self.measure_condition_list = []
-        sql = """
-        SELECT DISTINCT mc.measure_sid, mcc.duty_amount FROM measure_conditions mc,
-        measure_condition_components mcc, measures m
-        WHERE mc.measure_condition_sid = mcc.measure_condition_sid
-        AND m.measure_sid = mc.measure_sid AND condition_code = 'V' AND mcc.duty_expression_id = '01'
-        AND m.measure_type_id IN (""" + measure_type_list + """)
-        AND m.geographical_area_id IN (""" + self.application.geo_ids + """)
-        AND m.validity_start_date < '2019-12-31' AND m.validity_end_date >= '2018-01-01'
-        ORDER BY measure_sid;
-        """
-        # print(sql)
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+
+        rows = self.application.execute_sql(
+            GET_MEASURE_COMPONENTS_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
+        )
         for row in rows:
             measure_sid = row[0]
             condition_duty_amount = row[1]
@@ -85,36 +74,19 @@ class Document:
         # Now get the country exclusions
         exclusion_list = []
         if self.application.exclusion_check != "":
-            sql = """SELECT m.measure_sid FROM measure_excluded_geographical_areas mega, ml.v5_2019 m
-            WHERE m.measure_sid = mega.measure_sid
-            AND excluded_geographical_area = '""" + self.application.exclusion_check + """'
-            ORDER BY validity_start_date DESC"""
-            cur = self.application.conn.cursor()
-            cur.execute(sql)
-            rows = cur.fetchall()
+            rows = self.application.execute_sql(
+                CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.exclusion_check)
+            )
             for row in rows:
                 measure_sid = row[0]
                 exclusion_list.append(measure_sid)
 
         # Get the duties (i.e the measure components)
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
-        sql = """
-        SELECT DISTINCT m.goods_nomenclature_item_id, m.additional_code_type_id, m.additional_code_id,
-        m.measure_type_id, mc.duty_expression_id, mc.duty_amount, mc.monetary_unit_code,
-        mc.measurement_unit_code, mc.measurement_unit_qualifier_code, m.measure_sid, m.ordernumber,
-        m.validity_start_date, m.validity_end_date, m.geographical_area_id, m.reduction_indicator
-        FROM goods_nomenclatures gn, ml.v5_2019 m
-        LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
-        WHERE (m.measure_type_id IN (""" + measure_type_list + """)
-        AND m.geographical_area_id IN (""" + self.application.geo_ids + """)
-        AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
-        AND gn.validity_end_date IS NULL AND gn.producline_suffix = '80'
-        ) ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
-        """
 
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.application.execute_sql(
+            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
+        )
 
         # Do a pass through the duties table and create a
         # full Duty expression - Duty is a mnemonic for Measure component
@@ -212,12 +184,10 @@ class Document:
     def get_quota_order_numbers(self):
         print(" - Getting unique quota order numbers")
         # Get unique order numbers
-        sql = """SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
-        AND m.geographical_area_id IN (""" + self.application.geo_ids + """) ORDER BY 1"""
 
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.application.execute_sql(
+            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.geo_ids),
+        )
         if len(rows) == 0:
             self.has_quotas = False
             return
@@ -240,16 +210,6 @@ class Document:
         quota_order_number_list_flattened = quota_order_number_list_flattened.strip(",")
 
         # Get the partial temporary stops, so that we can omit the suspended measures
-        """
-        if quota_order_number_list_flattened != "":
-            g.app.getPartialTemporaryStops(quota_order_number_list_flattened)
-
-        for qon in self.quota_order_number_list:
-            for mpts in app.partial_temporary_stops:
-                if mpts.quota_order_number_id == qon.quota_order_number_id:
-                    qon.suspended = True
-        """
-
         filename = os.path.join(self.application.CSV_DIR, self.application.country_profile + "_quotas.csv")
         file = codecs.open(filename, "w", "utf-8")
         file.write(csv_text)
@@ -259,15 +219,9 @@ class Document:
         # print(len(self.commodity_list))
         # Get the measures - in order to get the commodity codes and the duties
         # Just get the commodities and add to an array
-        sql = """
-        SELECT DISTINCT measure_sid, goods_nomenclature_item_id, ordernumber, validity_start_date,
-        validity_end_date, geographical_area_id, reduction_indicator FROM ml.v5_2019 m
-        WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN (""" + self.application.geo_ids + """)
-        ORDER BY goods_nomenclature_item_id, measure_sid
-        """
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.application.execute_sql(
+            GET_QUOTA_MEASURES_SQL.format(geo_ids=self.application.geo_ids),
+        )
         if len(rows) == 0:
             self.has_quotas = False
             return
@@ -372,11 +326,11 @@ class Document:
         # from a CSV file - as per function "get_quota_balances_from_csv" above
 
         my_order_numbers = f.list_to_sql(self.q)
-        sql = """SELECT * FROM quota_definitions WHERE quota_order_number_id IN (""" + my_order_numbers + """)
-        AND validity_start_date >= '2018-01-01' ORDER BY quota_order_number_id, validity_start_date DESC"""
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+
+        rows = self.application.execute_sql(
+            GET_QUOTA_DEFINITIONS_SQL.format(order_numbers=my_order_numbers)
+        )
+
         self.quota_definition_list = []
         for row in rows:
             quota_definition_sid = row[0]
@@ -399,6 +353,7 @@ class Document:
                 critical_state, critical_threshold, monetary_unit_code, measurement_unit_qualifier_code
             )
 
+            found_matching_balance = None
             if len(self.balance_list) > 0:
                 found_matching_balance = False
                 for qb in self.balance_list:
