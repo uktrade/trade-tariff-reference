@@ -1,12 +1,12 @@
 import sys
 import os
 import os.path
-from os import system, name
 import json
 
 from datetime import datetime
 
 import documents.fta.functions as f
+from documents.fta.constants import *
 from documents.fta.database import DatabaseConnect
 from documents.fta.document import Document
 from documents.fta.mfn_duty import MfnDuty
@@ -17,7 +17,6 @@ class Application(DatabaseConnect):
 
     def __init__(self, country_profile):
         self.country_profile = country_profile
-        self.clear()
         self.siv_list = []
         self.meursing_list = []
         self.vessels_list = []
@@ -60,7 +59,10 @@ class Application(DatabaseConnect):
 
         # For the output folders
         self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
+        self._get_config()
 
+
+    def _get_config(self):
         self.get_config()
 
         # Unless we are running a sequence, find the country code
@@ -77,21 +79,9 @@ class Application(DatabaseConnect):
 
         # Get commodities where there is a local SIV
 
-        sql = """
-        SELECT DISTINCT m.goods_nomenclature_item_id, m.validity_start_date,
-         mc.condition_duty_amount, mc.condition_monetary_unit_code,
-         mc.condition_measurement_unit_code
-        FROM ml.v5_2019 m, measure_conditions mc, measure_condition_components mcm
-        WHERE mc.measure_sid = m.measure_sid
-        AND mc.measure_condition_sid = mcm.measure_condition_sid
-        AND mc.condition_code = 'V' AND
-         geographical_area_id IN (""" + self.geo_ids + """) AND mcm.duty_amount != 0
-        ORDER BY 1, 2 DESC, 3 DESC
-        """
-
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.execute_sql(
+            GET_COMMODITIES_SQL.format(geo_ids=self.geo_ids)
+        )
 
         self.local_sivs = []
         self.local_sivs_commodities_only = []
@@ -129,15 +119,6 @@ class Application(DatabaseConnect):
         my_document.create_core()
         my_document.write()
         print("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
-
-    def clear(self):
-        pass
-        # for windows
-        if name == 'nt':
-            _ = system('cls')
-        # for mac and linux(here, os.name is 'posix')
-        else:
-            _ = system('clear')
 
     def get_config(self):
         # Get global config items
@@ -178,15 +159,7 @@ class Application(DatabaseConnect):
         self.country_name = profile["country_name"]
 
     def get_sections_chapters(self):
-        sql = """
-        SELECT LEFT(gn.goods_nomenclature_item_id, 2) as chapter, cs.section_id
-        FROM chapters_sections cs, goods_nomenclatures gn
-        WHERE cs.goods_nomenclature_sid = gn.goods_nomenclature_sid AND gn.producline_suffix = '80'
-        ORDER BY 1
-        """
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows_sections_chapters = cur.fetchall()
+        rows_sections_chapters = self.execute_sql(GET_SECTIONS_CHAPTERS_SQL)
         self.section_chapter_list = []
         for rd in rows_sections_chapters:
             sChapter = rd[0]
@@ -277,23 +250,7 @@ class Application(DatabaseConnect):
 
     def get_mfns_for_siv_products(self):
         print(" - Getting MFNs for SIV products")
-
-        sql = """
-        SELECT DISTINCT m.goods_nomenclature_item_id,
-         mcc.duty_amount, m.validity_start_date, m.validity_end_date
-        FROM measures m, measure_conditions mc, measure_condition_components mcc
-        WHERE mcc.measure_condition_sid = mc.measure_condition_sid
-        AND m.measure_sid = mc.measure_sid
-        AND mcc.duty_expression_id = '01'
-        AND (m.validity_start_date > '2018-01-01')
-        AND mc.condition_code = 'V'
-        AND m.measure_type_id IN ('103', '105')
-        AND m.geographical_area_id = '1011'
-        ORDER BY m.goods_nomenclature_item_id, m.validity_start_date
-        """
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.execute_sql(GET_MFNS_FOR_SIV_PRODUCTS_SQL)
         self.mfn_list = []
         for r in rows:
             goods_nomenclature_item_id = r[0]
@@ -309,13 +266,6 @@ class Application(DatabaseConnect):
             self.mfn_list.append(mfn)
 
     def get_mfn_rate(self, commodity_code, validity_start_date, validity_end_date):
-        """
-        for mfn in self.mfn_list:
-            if commodity_code == "0805290011":
-                print(mfn.duty_amount)
-            print(mfn.commodity_code, mfn.duty_amount)
-        sys.exit()
-        """
         mfn_rate = 0.0
         found = False
         for mfn in self.mfn_list:
@@ -342,25 +292,17 @@ class Application(DatabaseConnect):
         return mfn_rate
 
     def get_meursing_components(self):
-        sql = """
-        SELECT AVG(duty_amount)
-        FROM ml.meursing_components WHERE geographical_area_id = '1011'
-        """
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        row = cur.fetchone()
-        self.erga_omnes_average = row[0]
+        self.erga_omnes_average = self.execute_sql(GET_MEUSRING_COMPONENTS_SQL, only_one_row=True)[0]
 
     def get_meursing_percentage(self, reduction_indicator, geographical_area_id):
         # Get the Erga Omnes Meursing average
-        sql = """
-        SELECT AVG(duty_amount) FROM ml.meursing_components
-         WHERE geographical_area_id = '""" + geographical_area_id + """' AND
-         reduction_indicator = """ + str(reduction_indicator)
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        row = cur.fetchone()
-        reduced_average = row[0]
+        reduced_average = self.execute_sql(
+            GET_MEUSRING_PERCENTAGE_SQL.format(
+                geographical_area_id=geographical_area_id,
+                reduction_indicator=reduction_indicator
+            ),
+            only_one_row=True
+        )[0]
         try:
             reduction = round((reduced_average / self.erga_omnes_average) * 100)
         except:
