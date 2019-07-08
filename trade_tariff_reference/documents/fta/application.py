@@ -60,7 +60,7 @@ class Application(DatabaseConnect):
         # For the output folders
         self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
         self._get_config()
-
+        self.connect()
 
     def _get_config(self):
         self.get_config()
@@ -131,8 +131,6 @@ class Application(DatabaseConnect):
 
         self.all_country_profiles = my_dict['country_profiles']
 
-        self.connect()
-
     def get_country_list(self):
         try:
             self.country_codes = self.all_country_profiles[self.country_profile]["country_codes"]
@@ -159,12 +157,11 @@ class Application(DatabaseConnect):
         self.country_name = profile["country_name"]
 
     def get_sections_chapters(self):
-        rows_sections_chapters = self.execute_sql(GET_SECTIONS_CHAPTERS_SQL)
-        self.section_chapter_list = []
+        # MPP: TODO Section chapters not used removed from create_fta
+
+        rows_sections_chapters = self.execute_sql(GET_SECTIONS_CHAPTERS_SQL, dict_cursor=True)
         for rd in rows_sections_chapters:
-            sChapter = rd[0]
-            iSection = rd[1]
-            self.section_chapter_list.append([sChapter, iSection, False])
+            self.section_chapter_list.append([rd['chapter'], ['section_id'], False])
 
         # The last parameter is "1" if the chapter equates to a new section
         iLastSection = -1

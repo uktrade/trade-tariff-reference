@@ -12,6 +12,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         app = Application(country_profile=options['country_profile'])
-        app.get_sections_chapters()
         app.create_document()
         app.shutDown()

@@ -11,15 +11,19 @@ class Router:
         """
         if model._meta.app_label == 'tariff':
             return 'tariff'
-        return None
+        return ''
 
     def db_for_write(self, model, **hints):
         """
         Attempts to write to the tariff application raises an exception as db is readonly.
         """
-        if model._meta.app_label == 'tariff' and not settings.MANAGE_TARIFF_DATABASE:
-            raise Exception("This data is readonly")
-        return None
+        if model._meta.app_label != 'tariff':
+            return ''
+
+        if settings.MANAGE_TARIFF_DATABASE:
+            return 'tariff'
+        raise Exception("This data is readonly")
+
 
     def allow_relation(self, obj1, obj2, **hints):
         """
