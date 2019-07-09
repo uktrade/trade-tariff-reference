@@ -5,6 +5,7 @@ from .base import *
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -26,3 +27,8 @@ DATABASES = {
 DATABASE_ROUTERS = [
     'trade_tariff_reference.core.router.Router',
 ]
+
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_AUTO_INCLUDE = True
+
+SASS_OUTPUT_STYLE = 'nested'
