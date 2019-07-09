@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-
+#!/bin/bash -xe
 
 python manage.py compilescss --delete-files
 python manage.py compilescss
