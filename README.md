@@ -17,7 +17,7 @@
     ```shell
     docker-compose build
     ```
-4.  Import the databases:
+4.  Import the databases (optional):
 
     ```shell
     docker-compose run tariffs ./import_db.sh
@@ -27,3 +27,34 @@
     ```shell
     docker-compose up
     ```
+    
+6.  Enter container
+
+    ```shell
+    docker exec -ti trade-tariff-reference_tariffs_1 /bin/bash
+    ```
+    
+7.  Run setup from within the container
+
+    ```shell
+    ./setup.sh
+    ```
+
+8.  Run application from within the container
+
+    ```shell
+    ./run.sh
+    ```
+    
+9.  Visit website
+
+    ```shell
+    http://localhost:8000/
+    ```
+
+
+To run tests
+
+```shell
+./run_tests.sh
+```

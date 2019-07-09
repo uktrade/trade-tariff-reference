@@ -1,0 +1,23 @@
+{
+  "name": "trade-tariff-reference",
+  "version": "1.0.0",
+  "description": "1.  Clone the repository:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uktrade/trade-tariff-reference.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uktrade/trade-tariff-reference/issues"
+  },
+  "homepage": "https://github.com/uktrade/trade-tariff-reference#readme",
+  "dependencies": {
+    "govuk-frontend": "^2.13.0",
+    "nunjucks": "^3.2.0"
+  }
+}

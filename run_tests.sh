@@ -1,2 +1,3 @@
-#!/usr/bin/env bash
+#!/bin/bash -xe
+
 pytest -Wa -rAxXs -s "$@"

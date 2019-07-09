@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'trade_tariff_reference.schedule',
     'trade_tariff_reference.tariff',
     'trade_tariff_reference.documents',
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -114,4 +115,24 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
+
+STATIC_ROOT = '/app/assets'
+
+STATICFILES_DIRS = [
+    ('tariff', '/app/static'),
+]
+
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    '/app/static',
+]
+
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
+
 MANAGE_TARIFF_DATABASE = False
+
+SASS_OUTPUT_STYLE = 'compressed'
