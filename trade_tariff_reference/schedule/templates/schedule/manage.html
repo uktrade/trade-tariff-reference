@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block back_button %}
-    <a href="{% url 'homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
 {% endblock back_button %}
 
 
@@ -13,7 +13,7 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{% trans 'Manage agreement schedules' %}</h1>
             <ul class="govuk-list">
                 <li>
-                    <a class="govuk-link" href="{% url 'manage-schedule' %}">{% trans 'Create new agreement schedule' %}</a>
+                    <a class="govuk-link" href="#">{% trans 'Create new agreement schedule' %}</a>
                 </li>
             </ul>
             <table class="govuk-table">
