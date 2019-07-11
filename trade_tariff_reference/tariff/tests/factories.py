@@ -16,9 +16,9 @@ class MeasureFactory(factory.django.DjangoModelFactory):
 
 
 class MeursingComponentsFactory(factory.django.DjangoModelFactory):
-    measure_sid = factory.LazyFunction(get_random_id)
     geographical_area_id = '1011'  # I think UK
     duty_amount = float(2)
+    reduction_indicator = 0
 
     class Meta:
         model = 'tariff.MeursingComponents'
