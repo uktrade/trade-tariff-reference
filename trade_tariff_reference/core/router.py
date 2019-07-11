@@ -9,31 +9,32 @@ class Router:
         """
         Attempts to read auth models go to the tariff db.
         """
-        if model._meta.app_label == 'tariff':
+        app_label = model._meta.app_label
+        if app_label == 'tariff':
             return 'tariff'
-        return ''
+        return None
 
     def db_for_write(self, model, **hints):
         """
         Attempts to write to the tariff application raises an exception as db is readonly.
         """
-        if model._meta.app_label != 'tariff':
-            return ''
-
+        app_label = model._meta.app_label
+        if app_label != 'tariff':
+            return None
         if settings.MANAGE_TARIFF_DATABASE:
             return 'tariff'
         raise Exception("This data is readonly")
 
-
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allow relations if a model in the auth app is involved.
+        Allow relations.
         """
-        return None
+        return True
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
-        Make sure the auth app only appears in the 'auth_db'
-        database.
+        Make sure tariff only appears in the 'tariff' database.
         """
+        if app_label == 'tariff':
+            return db == 'tariff'
         return None
