@@ -2086,12 +2086,12 @@ class CurrentMeasures(models.Model):
     regulation_group_id = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False  # Created from a view. Don't remove. Current Measures
+        managed = False  # Created from a view. Don't remove.
         db_table = u'"ml\".\"v5_2019"'
 
 
 class MeursingComponents(models.Model):
-    measure_sid = models.IntegerField(primary_key=True)
+    measure_sid = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     measure_type_id = models.CharField(max_length=3, blank=True, null=True)
     additional_code_id = models.CharField(max_length=3, blank=True, null=True)
     duty_amount = models.FloatField(blank=True, null=True)
@@ -2101,5 +2101,5 @@ class MeursingComponents(models.Model):
     reduction_indicator = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False  # Created from a view. Don't remove. u'"ml\".\"meursing_components"'
+        managed = False  # Created from a view. Don't remove.
         db_table = u'"ml\".\"meursing_components"'

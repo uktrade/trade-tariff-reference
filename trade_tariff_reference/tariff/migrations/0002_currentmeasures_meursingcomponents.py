@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('CREATE SCHEMA IF NOT EXISTS ml'),
+        migrations.RunSQL('CREATE SCHEMA IF NOT EXISTS ml', migrations.RunSQL.noop),
         migrations.CreateModel(
             name='CurrentMeasures',
             fields=[
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MeursingComponents',
             fields=[
-                ('measure_sid', models.IntegerField(primary_key=True, serialize=False)),
+                ('measure_sid', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('measure_type_id', models.CharField(blank=True, max_length=3, null=True)),
                 ('additional_code_id', models.CharField(blank=True, max_length=3, null=True)),
                 ('duty_amount', models.FloatField(blank=True, null=True)),
