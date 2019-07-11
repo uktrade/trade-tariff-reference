@@ -1,3 +1,3 @@
 #!/bin/bash -xe
 
-pytest -Wa -rAxXs -s "$@"
+pytest -Wa -rAxXs -s -v "$@"
