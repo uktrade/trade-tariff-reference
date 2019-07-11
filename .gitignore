@@ -127,5 +127,3 @@ docker-compose.env
 .DS_Store
 
 .env
-tariff_eu.sql
-tariff_uk.sql
