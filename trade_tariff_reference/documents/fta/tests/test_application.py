@@ -35,16 +35,14 @@ def test_get_section_chapters():
     assert application.section_chapter_list == []
 
 
-@pytest.mark.usefixtures('create_meursing_components')
-def test_get_meursing_components():
+def test_get_meursing_components(create_meursing_components):
     assert MeursingComponents.objects.count() == 5
     application = get_application('israel')
     application.get_meursing_components()
     assert application.erga_omnes_average == float(10)
 
 
-@pytest.mark.usefixtures('create_meursing_components')
-def test_get_meursing_percentage():
+def test_get_meursing_percentage(create_meursing_components):
     application = get_application('israel')
     application.get_meursing_components()
     actual_percentage = application.get_meursing_percentage(2, '2000')
