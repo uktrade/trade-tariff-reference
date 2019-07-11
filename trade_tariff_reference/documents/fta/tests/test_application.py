@@ -55,25 +55,52 @@ def test_get_meursing_percentage_when_erga_omnes_average_none():
     assert actual_percentage == 100
 
 
-def test_get_meursing_percentage_when_reduced_average_is_none():
+def test_get_meursing_percentage_when_reduced_average_is_none(create_meursing_components):
     application = get_application('israel')
     actual_percentage = application.get_meursing_percentage(0, '2000')
     assert actual_percentage == 100
 
 
-def test_get_mfn_rate():
-    application = get_application('israel')
-    application.mfn_list = [
-        MfnDuty(None, 1, None, None),
-    ]
-    actual_rate = application.get_mfn_rate('1234', '2019-01-01')
-    assert actual_rate == 0
+@pytest.mark.parametrize(
+    'mfn_list,expected_rate',
+    (
+        (
+            [],
+            0
+        ),
+        (
+            [MfnDuty(None, 1, None, None)],
+            0
+        ),
+        (
+            [
+                MfnDuty('1234567800', 100, '2019-02-01', None),
+                MfnDuty('1234567800', 200, '2019-01-01', None),
+                MfnDuty('1234560000', 300, '2019-01-01', None),
+                MfnDuty('1234567890', 150, '2019-01-01', None),
+            ],
+            150
+        ),
+        (
+            [
+                MfnDuty('1234567800', 100, '2019-02-01', None),
+                MfnDuty('1234567800', 200, '2019-01-01', None),
+                MfnDuty('1234560000', 300, '2019-01-01', None),
+            ],
+            200
+        ),
+        (
+            [
+                MfnDuty('1234567800', 100, '2019-02-01', None),
+                MfnDuty('1234560000', 300, '2019-01-01', None),
+            ],
+            300
+        ),
 
-
-def test_get_mfn_rate_find_match():
+    ),
+)
+def test_get_mfn_rate(mfn_list, expected_rate):
     application = get_application('israel')
-    application.mfn_list = [
-        MfnDuty('1234', 1, '2019-01-01', None),
-    ]
-    actual_rate = application.get_mfn_rate('1234', '2019-01-01')
-    assert actual_rate == 1
+    application.mfn_list = mfn_list
+    actual_rate = application.get_mfn_rate('1234567890', '2019-01-01')
+    assert actual_rate == expected_rate
