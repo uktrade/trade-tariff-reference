@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from trade_tariff_reference.core.views import Homepage
+from trade_tariff_reference.core.views import HomepageView
+from trade_tariff_reference.schedule.views import ManageAgreementScheduleView
 
 urlpatterns = [
-    path('', Homepage.as_view(), name='homepage'),
+    path('', HomepageView.as_view(), name='homepage'),
+    path('manage-schedule/', ManageAgreementScheduleView.as_view(), name='manage-schedule'),
     path('admin/', admin.site.urls),
 ]
