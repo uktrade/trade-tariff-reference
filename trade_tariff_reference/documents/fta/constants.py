@@ -34,7 +34,7 @@ ORDER BY m.goods_nomenclature_item_id, m.validity_start_date
 """
 
 
-GET_MEUSRING_COMPONENTS_SQL = """
+GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL = """
 SELECT AVG(duty_amount)
 FROM ml.meursing_components WHERE geographical_area_id = '1011'
 """

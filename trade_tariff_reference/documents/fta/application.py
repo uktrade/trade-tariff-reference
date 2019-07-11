@@ -62,6 +62,10 @@ class Application(DatabaseConnect):
         self._get_config()
         self.connect()
 
+        # MPP TODO: Move these
+        self.erga_omnes_average = None
+        self.mfn_list = []
+
     def _get_config(self):
         self.get_config()
 
@@ -248,7 +252,7 @@ class Application(DatabaseConnect):
     def get_mfns_for_siv_products(self):
         print(" - Getting MFNs for SIV products")
         rows = self.execute_sql(GET_MFNS_FOR_SIV_PRODUCTS_SQL)
-        self.mfn_list = []
+
         for r in rows:
             goods_nomenclature_item_id = r[0]
             duty_amount = r[1]
@@ -277,19 +281,17 @@ class Application(DatabaseConnect):
                 mfn_rate = self.get_mfn_rate(
                     commodity_code,
                     validity_start_date,
-                    validity_end_date
                 )
             elif commodity_code[6:10] != "0000":
                 commodity_code = commodity_code[0:6] + "00"
                 mfn_rate = self.get_mfn_rate(
                     commodity_code,
                     validity_start_date,
-                    validity_end_date
                 )
         return mfn_rate
 
     def get_meursing_components(self):
-        self.erga_omnes_average = self.execute_sql(GET_MEUSRING_COMPONENTS_SQL, only_one_row=True)[0]
+        self.erga_omnes_average = self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
 
     def get_meursing_percentage(self, reduction_indicator, geographical_area_id):
         # Get the Erga Omnes Meursing average
