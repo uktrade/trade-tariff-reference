@@ -6,6 +6,7 @@ from unittest import mock
 from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.tariff.tests.factories import MeursingComponentsFactory
 from trade_tariff_reference.tariff.models import MeursingComponents
+from documents.fta.mfn_duty import MfnDuty
 
 
 pytestmark = pytest.mark.django_db
@@ -60,3 +61,21 @@ def test_get_meursing_percentage_when_reduced_average_is_none():
     application = get_application('israel')
     actual_percentage = application.get_meursing_percentage(0, '2000')
     assert actual_percentage == 100
+
+
+def test_get_mfn_rate():
+    application = get_application('israel')
+    application.mfn_list = [
+        MfnDuty(None, 1, None, None),
+    ]
+    actual_rate = application.get_mfn_rate('1234', '2019-01-01')
+    assert actual_rate == 0
+
+
+def test_get_mfn_rate_find_match():
+    application = get_application('israel')
+    application.mfn_list = [
+        MfnDuty('1234', 1, '2019-01-01', None),
+    ]
+    actual_rate = application.get_mfn_rate('1234', '2019-01-01')
+    assert actual_rate == 1

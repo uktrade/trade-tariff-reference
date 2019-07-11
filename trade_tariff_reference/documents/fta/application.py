@@ -266,7 +266,7 @@ class Application(DatabaseConnect):
             )
             self.mfn_list.append(mfn)
 
-    def get_mfn_rate(self, commodity_code, validity_start_date, validity_end_date):
+    def get_mfn_rate(self, commodity_code, validity_start_date):
         mfn_rate = 0.0
         found = False
         for mfn in self.mfn_list:
@@ -304,7 +304,6 @@ class Application(DatabaseConnect):
         )[0]
         try:
             reduction = round((reduced_average / self.erga_omnes_average) * 100)
-        except:
+        except TypeError:
             reduction = 100
-            print(reduction_indicator, reduction, reduced_average, self.erga_omnes_average)
         return reduction
