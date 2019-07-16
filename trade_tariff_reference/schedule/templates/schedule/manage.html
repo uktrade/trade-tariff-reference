@@ -40,8 +40,8 @@
                         <td class="govuk-table__cell">
                             <ul class="govuk-list">
                                 <li>
-                                    <a href="" class="govuk-link">{% trans 'Download schedule' %}</a>
-                                    <a href="" class="govuk-link" >{% trans 'Edit agreement' %}</a>
+                                    <a href="{{ agreement.download_url }}" class="govuk-link">{% trans 'Download schedule' %}</a>
+                                    <a href="{{ agreement.edit_url }}" class="govuk-link" >{% trans 'Edit agreement' %}</a>
                                 </li>
                             </ul>
                         </td>
