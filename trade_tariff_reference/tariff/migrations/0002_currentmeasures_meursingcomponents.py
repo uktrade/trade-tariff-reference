@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CurrentMeasures',
             fields=[
-                ('measure_sid', models.IntegerField(primary_key=True, serialize=False)),
+                ('measure_sid', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('reformat_regulation_id', models.CharField(blank=True, max_length=100, null=True)),
                 ('regulation_id', models.TextField(blank=True, null=True)),
                 ('regulation_id_full', models.TextField(blank=True, null=True)),

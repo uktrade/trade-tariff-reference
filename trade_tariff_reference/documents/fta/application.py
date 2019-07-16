@@ -1,4 +1,3 @@
-import sys
 import os
 import os.path
 import json
@@ -6,6 +5,7 @@ import json
 from datetime import datetime
 
 import documents.fta.functions as f
+from documents.fta.exceptions import CountryProfileError
 from documents.fta.constants import *
 from documents.fta.database import DatabaseConnect
 from documents.fta.document import Document
@@ -65,6 +65,8 @@ class Application(DatabaseConnect):
         # MPP TODO: Move these
         self.erga_omnes_average = None
         self.mfn_list = []
+        self.all_country_profiles = {}
+        self.exclusion_check = ""
 
     def _get_config(self):
         self.get_config()
@@ -78,8 +80,8 @@ class Application(DatabaseConnect):
         # Create the document
         my_document = Document(self)
         self.get_meursing_components()
-        my_document.check_for_quotas()
-        self.readTemplates(my_document.has_quotas)
+        has_quotas = my_document.check_for_quotas()
+        self.readTemplates(has_quotas)
 
         # Get commodities where there is a local SIV
 
@@ -122,7 +124,7 @@ class Application(DatabaseConnect):
         # Personalise and write the document
         my_document.create_core()
         my_document.write()
-        print("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
+        f.log("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
 
     def get_config(self):
         # Get global config items
@@ -137,17 +139,17 @@ class Application(DatabaseConnect):
 
     def get_country_list(self):
         try:
-            self.country_codes = self.all_country_profiles[self.country_profile]["country_codes"]
-        except:
-            print("Country profile does not exist")
-            sys.exit()
+            profile = self.all_country_profiles[self.country_profile]
+        except KeyError:
+            raise CountryProfileError("Country profile does not exist")
+
+        try:
+            self.country_codes = profile['country_codes']
+        except KeyError:
+            raise CountryProfileError("Country profile has no country codes")
 
         # Get exclusions
-        profile = self.all_country_profiles[self.country_profile]
-        try:
-            self.exclusion_check = profile["exclusion_check"]
-        except:
-            self.exclusion_check = ""
+        self.exclusion_check = profile.get("exclusion_check", "")
 
         # Get agreement name
         self.agreement_name = profile["agreement_name"]
@@ -250,10 +252,10 @@ class Application(DatabaseConnect):
         self.sCoreXML = fCore.read()
 
     def get_mfns_for_siv_products(self):
-        print(" - Getting MFNs for SIV products")
+        f.log(" - Getting MFNs for SIV products")
         rows = self.execute_sql(GET_MFNS_FOR_SIV_PRODUCTS_SQL)
-
         for r in rows:
+            f.log(r)
             goods_nomenclature_item_id = r[0]
             duty_amount = r[1]
             validity_start_date = r[2]

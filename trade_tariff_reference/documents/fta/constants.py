@@ -46,10 +46,6 @@ SELECT AVG(duty_amount) FROM ml.meursing_components
  reduction_indicator =  '{reduction_indicator}'
 """
 
-CHECK_FOR_QUOTAS_SQL = """
-SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
-AND m.geographical_area_id IN ({geo_ids}) ORDER BY 1
-"""
 
 GET_MEASURE_COMPONENTS_SQL = """
 SELECT DISTINCT mc.measure_sid, mcc.duty_amount FROM measure_conditions mc,
@@ -87,6 +83,7 @@ GET_QUOTA_ORDER_NUMBERS_SQL = """
 SELECT DISTINCT ordernumber FROM ml.v5_2019 m WHERE m.measure_type_id IN ('143', '146')
 AND m.geographical_area_id IN ({geo_ids}) ORDER BY 1
 """
+
 
 GET_QUOTA_MEASURES_SQL = """
 SELECT DISTINCT measure_sid, goods_nomenclature_item_id, ordernumber, validity_start_date,

@@ -1,11 +1,4 @@
-import random
-
 import factory
-
-
-def get_random_id():
-    # Temporary hack to allow reuse-db to be used.
-    return random.randint(0, 1000)
 
 
 class MeasureFactory(factory.django.DjangoModelFactory):
@@ -15,6 +8,20 @@ class MeasureFactory(factory.django.DjangoModelFactory):
         model = 'tariff.Measures'
 
 
+class MeasureConditionFactory(factory.django.DjangoModelFactory):
+    pass
+
+    class Meta:
+        model = 'tariff.MeasureConditions'
+
+
+class MeasureConditionComponentFactory(factory.django.DjangoModelFactory):
+    pass
+
+    class Meta:
+        model = 'tariff.MeasureConditionComponents'
+
+
 class MeursingComponentsFactory(factory.django.DjangoModelFactory):
     geographical_area_id = '1011'  # I think UK
     duty_amount = float(2)
@@ -22,3 +29,15 @@ class MeursingComponentsFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'tariff.MeursingComponents'
+
+
+class CurrentMeasureFactory(factory.django.DjangoModelFactory):
+    pass
+
+    class Meta:
+        model = 'tariff.CurrentMeasures'
+
+
+class MeasureExcludedGeographicalAreaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = 'tariff.MeasureExcludedGeographicalAreas'
