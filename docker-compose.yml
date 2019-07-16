@@ -1,7 +1,7 @@
 version: '2'
 services:
 
-  tariffs:
+  trade_application:
     build:
       context: .
     ports:
@@ -9,14 +9,12 @@ services:
     volumes:
       - .:/app
     env_file: .env
-    entrypoint: dockerize -wait tcp://postgres:5432
+    entrypoint: dockerize -wait tcp://trade_application_db:5432
     depends_on:
-      - postgres
+      - trade_application_db
     command: /app/start.sh
 
-  postgres:
+  trade_application_db:
     image: postgres:11
     restart: always
-    ports:
-      - "5432:5432"
     env_file: .env
