@@ -8,17 +8,17 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DATABASE', 'default'),
+        'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('POSTGRES_HOST'),
     },
     'tariff': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_TARIFF_DATABASE', 'tariff'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST'),
+        'NAME': os.environ.get('UK_TARIFF_DB'),
+        'USER': os.environ.get('UK_TARIFF_USER'),
+        'PASSWORD': os.environ.get('UK_TARIFF_PASSWORD'),
+        'HOST': os.environ.get('UK_TARIFF_HOST'),
     }
 }
 
