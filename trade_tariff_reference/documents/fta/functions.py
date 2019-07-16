@@ -116,3 +116,7 @@ def getMeasurementUnit(s):
         # return "1000 kg" # 1005900020
     else:
         return s
+
+
+def log(msg):
+    print(msg)

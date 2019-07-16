@@ -1,4 +1,5 @@
 from django.db import connections
+import documents.fta.functions as f
 
 
 class DatabaseConnect:
@@ -8,6 +9,7 @@ class DatabaseConnect:
 
     def execute_sql(self, sql, only_one_row=False, dict_cursor=False):
         cur = self.conn.cursor()
+        f.log(sql)
         cur.execute(sql)
         if dict_cursor:
             result = self.dict_cursor(cur)
@@ -15,6 +17,7 @@ class DatabaseConnect:
             result = cur.fetchone()
         else:
             result = cur.fetchall()
+        f.log(result)
         return result
 
     def shutDown(self):

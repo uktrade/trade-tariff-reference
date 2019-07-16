@@ -93,9 +93,7 @@ class Duty:
         siv_duty_amount = 0
 
         if self.duty_amount > 0:
-            mfn_rate = self.application.get_mfn_rate(
-                self.commodity_code, self.validity_start_date, self.validity_end_date
-            )
+            mfn_rate = self.application.get_mfn_rate(self.commodity_code, self.validity_start_date)
             if mfn_rate:
                 siv_duty_amount = (self.duty_amount / mfn_rate) * 100
 

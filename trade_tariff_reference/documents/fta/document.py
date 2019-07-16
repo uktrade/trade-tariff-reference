@@ -28,65 +28,79 @@ class Document:
         self.seasonal_records = 0
         self.wide_duty = False
 
-        print("Creating FTA document for " + application.country_name + "\n")
+        f.log("Creating FTA document for " + application.country_name + "\n")
         self.application.get_mfns_for_siv_products()
 
         self.document_xml = ""
 
     def check_for_quotas(self):
         rows = self.application.execute_sql(
-            CHECK_FOR_QUOTAS_SQL.format(geo_ids=self.application.geo_ids)
+            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.geo_ids)
         )
         if len(rows) == 0:
-            self.has_quotas = False
-            print(" - This FTA has no quotas")
+            f.log(" - This FTA has no quotas")
+            result = False
         else:
-            self.has_quotas = True
-            print(" - This FTA has quotas")
+            f.log(" - This FTA has quotas")
+            result = True
+        self.has_quotas = result
+        return result
+
+    def get_measure_type_list_for_instrument_type(self, instrument_type):
+        if instrument_type == "preferences":
+            return "'142', '145'"
+        return "'143', '146'"
+
+    def get_measure_conditions(self, measure_type_list):
+        measure_condition_list = []
+
+        rows = self.application.execute_sql(
+            GET_MEASURE_COMPONENTS_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids),
+            dict_cursor=True
+        )
+        for row in rows:
+            mc = MeasureCondition(0, row['measure_sid'], "V", 1, row['duty_amount'], "", "", "", "", "", "")
+            measure_condition_list.append(mc)
+        return measure_condition_list
+
+    def get_exclusion_list(self):
+        exclusion_list = []
+
+        if not self.application.exclusion_check:
+            return exclusion_list
+
+        rows = self.application.execute_sql(
+            CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.exclusion_check), dict_cursor=True
+        )
+
+        return [row['measure_sid'] for row in rows]
+
+    def _get_duties(self, measure_type_list):
+        return self.application.execute_sql(
+            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
+        )
 
     def get_duties(self, instrument_type):
-        print(" - Getting duties for " + instrument_type)
+        f.log(" - Getting duties for " + instrument_type)
 
         ###############################################################
         # Work out which measures to capture
-        ###############################################################
-        if instrument_type == "preferences":
-            measure_type_list = "'142', '145'"
-        else:
-            measure_type_list = "'143', '146'"
+        measure_type_list = self.get_measure_type_list_for_instrument_type(instrument_type)
 
         ###############################################################
         # Before getting the duties, get the measure component conditions
         # These are used in adding in SIV components whenever the duty is no present
         # due to the fact that there are SIVs applied via measure components
-        print(" - Getting measure conditions")
-        self.measure_condition_list = []
-
-        rows = self.application.execute_sql(
-            GET_MEASURE_COMPONENTS_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
-        )
-        for row in rows:
-            measure_sid = row[0]
-            condition_duty_amount = row[1]
-            mc = MeasureCondition(0, measure_sid, "V", 1, condition_duty_amount, "", "", "", "", "", "")
-            self.measure_condition_list.append(mc)
+        f.log(" - Getting measure conditions")
+        measure_condition_list = self.get_measure_conditions(measure_type_list)
 
         # Now get the country exclusions
-        exclusion_list = []
-        if self.application.exclusion_check != "":
-            rows = self.application.execute_sql(
-                CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.exclusion_check)
-            )
-            for row in rows:
-                measure_sid = row[0]
-                exclusion_list.append(measure_sid)
+        exclusion_list = self.get_exclusion_list()
 
         # Get the duties (i.e the measure components)
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
 
-        rows = self.application.execute_sql(
-            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
-        )
+        duties = self._get_duties(measure_type_list)
 
         # Do a pass through the duties table and create a
         # full Duty expression - Duty is a mnemonic for Measure component
@@ -98,7 +112,7 @@ class Document:
         self.commodity_list = []
         self.quota_order_number_list = []
 
-        for row in rows:
+        for row in duties:
             measure_sid = row[9]
             if measure_sid not in exclusion_list:
                 commodity_code = f.mstr(row[0])
@@ -122,7 +136,7 @@ class Document:
                 # if ((duty_amount is None) and (duty_expression_id == "01")):
                 if duty_amount is None and duty_expression_id is None:
                     is_siv = True
-                    for mc in self.measure_condition_list:
+                    for mc in measure_condition_list:
                         # print(mc.measure_sid, measure_sid)
                         if mc.measure_sid == measure_sid:
                             duty_expression_id = "01"
@@ -158,31 +172,37 @@ class Document:
                         self.quota_order_number_list.append(obj_quota_order_number)
                         temp_quota_order_number_list.append(quota_order_number_id)
 
-                # temp_commodity_list.append(commodity_code)
-                # temp_quota_order_number_list.append(commodityquota_order_number_id_code)
+        self.assign_duties_to_measures()
+        self.assign_measures_to_commodities()
+        self.combine_duties()
+        self.resolve_measures()
 
+    def assign_duties_to_measures(self):
         # Loop through the measures and assign duties to them
         for m in self.measure_list:
             for d in self.duty_list:
                 if m.measure_sid == d.measure_sid:
                     m.duty_list.append(d)
-                    # break
 
-        #  Loop through the commodities and assign measures to them
+    def assign_measures_to_commodities(self):
+        # Loop through the commodities and assign measures to them
         for c in self.commodity_list:
             for m in self.measure_list:
                 if m.commodity_code == c.commodity_code:
                     c.measure_list.append(m)
 
+    def combine_duties(self):
         # Combine duties into a string
         for m in self.measure_list:
             m.combine_duties(self.application)
+
+    def resolve_measures(self):
         # Finally, form the measures into a consolidated string
         for c in self.commodity_list:
             c.resolve_measures()
 
     def get_quota_order_numbers(self):
-        print(" - Getting unique quota order numbers")
+        f.log(" - Getting unique quota order numbers")
         # Get unique order numbers
 
         rows = self.application.execute_sql(
@@ -285,7 +305,7 @@ class Document:
                     break
 
     def get_quota_balances_from_csv(self):
-        print(" - Getting quota balances from CSV")
+        f.log(" - Getting quota balances from CSV")
         if self.has_quotas is False:
             return
         with open(self.application.BALANCE_FILE, "r") as f:
@@ -368,13 +388,13 @@ class Document:
                         break
 
             if found_matching_balance is False:
-                print("Matching balance not found", qd.quota_order_number_id)
+                f.log(f"Matching balance not found {qd.quota_order_number_id}")
             qd.format_volumes()
             self.quota_definition_list.append(qd)
 
         # This process goes through the balance list (derived from the CSV) and assigns both the 2020 balance to the
         # quota definition object, as well as assigning the 2019 and 2020 balance to the licensed quotas
-        # Stop press: I need to also assign the 2019 balance from the CSV, as this is a process run entirely againt
+        # Stop press: I need to also assign the 2019 balance from the CSV, as this is a process run entirely against
         # the EU's files, not the UK's
         for qon in self.quota_order_number_list:
             if qon.quota_order_number_id[0:3] == "094":
@@ -424,7 +444,7 @@ class Document:
                         break
 
     def print_quotas(self):
-        print(" - Getting quotas")
+        f.log(" - Getting quotas")
         if self.has_quotas is False:
             self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", "")
             return
@@ -444,7 +464,7 @@ class Document:
 
             if balance_found:
                 if len(qon.quota_definition_list) > 1:
-                    print("More than one definition - we must be in Morocco")
+                    f.log("More than one definition - we must be in Morocco")
 
                 if len(qon.quota_definition_list) == 0:
                     # if there are no definitions, then, either this is a screwed quota and the database is
@@ -452,7 +472,7 @@ class Document:
                     # Check get_quota_definitions which should avoid this eventuality.
                     qon.validity_start_date = datetime.strptime("2019-03-29", "%Y-%m-%d")
                     qon.validity_end_date = datetime.strptime("2019-12-31", "%Y-%m-%d")
-                    print("No quota definitions found for quota", str(qon.quota_order_number_id))
+                    f.log(f"No quota definitions found for quota {qon.quota_order_number_id}")
                     qon.initial_volume = ""
                     qon.volume_yx = ""
                     qon.addendum = ""

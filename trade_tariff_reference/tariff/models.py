@@ -1056,7 +1056,7 @@ class MeasureConditionCodes(models.Model):
 
 
 class MeasureConditionComponents(models.Model):
-    measure_condition_sid = models.IntegerField(blank=True, null=True)
+    measure_condition_sid = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     duty_expression_id = models.CharField(max_length=255, blank=True, null=True)
     duty_amount = models.FloatField(blank=True, null=True)
     monetary_unit_code = models.CharField(max_length=255, blank=True, null=True)
@@ -1079,7 +1079,7 @@ class MeasureConditionComponents(models.Model):
 
 
 class MeasureConditions(models.Model):
-    measure_condition_sid = models.IntegerField(blank=True, null=True)
+    measure_condition_sid = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     measure_sid = models.IntegerField(blank=True, null=True)
     condition_code = models.CharField(max_length=255, blank=True, null=True)
     component_sequence_number = models.IntegerField(blank=True, null=True)
@@ -1304,7 +1304,7 @@ class Measurements(models.Model):
 
 
 class Measures(models.Model):
-    measure_sid = models.IntegerField(primary_key=True)
+    measure_sid = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     measure_type = models.ForeignKey(
         'tariff.MeasureTypes',
         blank=True,
@@ -1318,7 +1318,6 @@ class Measures(models.Model):
         blank=True,
         null=True,
         on_delete=models.PROTECT,
-        db_column='geographical_area_sid',
         related_name='measures',
     )
 
@@ -2059,7 +2058,7 @@ class TransmissionComments(models.Model):
 # { 'OPTIONS': { 'options': '-c search_path=ml'}
 
 class CurrentMeasures(models.Model):
-    measure_sid = models.IntegerField(primary_key=True)
+    measure_sid = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     reformat_regulation_id = models.CharField(max_length=100, blank=True, null=True)
     regulation_id = models.TextField(blank=True, null=True)
     regulation_id_full = models.TextField(blank=True, null=True)

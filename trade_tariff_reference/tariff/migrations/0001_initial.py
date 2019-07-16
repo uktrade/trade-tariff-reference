@@ -1212,8 +1212,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MeasureConditionComponents',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('measure_condition_sid', models.IntegerField(blank=True, null=True)),
+                ('measure_condition_sid', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('duty_expression_id', models.CharField(blank=True, max_length=255, null=True)),
                 ('duty_amount', models.FloatField(blank=True, null=True)),
                 ('monetary_unit_code', models.CharField(blank=True, max_length=255, null=True)),
@@ -1238,8 +1237,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MeasureConditions',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('measure_condition_sid', models.IntegerField(blank=True, null=True)),
+                ('measure_condition_sid', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('measure_sid', models.IntegerField(blank=True, null=True)),
                 ('condition_code', models.CharField(blank=True, max_length=255, null=True)),
                 ('component_sequence_number', models.IntegerField(blank=True, null=True)),
@@ -1412,8 +1410,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Measures',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('measure_sid', models.IntegerField(blank=True, null=True)),
+                ('measure_sid', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('measure_type_id', models.CharField(blank=True, max_length=3, null=True)),
                 ('geographical_area_id', models.CharField(blank=True, max_length=255, null=True)),
                 ('goods_nomenclature_item_id', models.CharField(blank=True, max_length=10, null=True)),
