@@ -13,7 +13,7 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{% trans 'Manage agreement schedules' %}</h1>
             <ul class="govuk-list">
                 <li>
-                    <a class="govuk-link" href="#">{% trans 'Create new agreement schedule' %}</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'schedule:create' %}">{% trans 'Create new agreement schedule' %}</a>
                 </li>
             </ul>
             <table class="govuk-table">
@@ -39,9 +39,11 @@
                         <td class="govuk-table__cell">{{ agreement.version }}</td>
                         <td class="govuk-table__cell">
                             <ul class="govuk-list">
-                                <li>
-                                    <a href="{{ agreement.download_url }}" class="govuk-link">{% trans 'Download schedule' %}</a>
-                                    <a href="{{ agreement.edit_url }}" class="govuk-link" >{% trans 'Edit agreement' %}</a>
+                                <li class="govuk-!-padding-top-1">
+                                    <a href="{{ agreement.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download schedule' %}</a>
+                                </li>
+                                <li class="govuk-!-padding-top-2">
+                                    <a href="{{ agreement.edit_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Edit agreement' %}</a>
                                 </li>
                             </ul>
                         </td>

@@ -1,6 +1,7 @@
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, FormView
 from django.templatetags import static
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
+from .forms import CreateAgreementForm, ManageExtendedInformationForm
 
 
 class ManageAgreementScheduleView(TemplateView):
@@ -31,3 +32,21 @@ class DownloadAgreementScheduleView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         country = kwargs['country']
         return static.static(f'/tariff/documents/{country}_annex.docx')
+
+
+class CreateAgreementScheduleView(FormView):
+    template_name = 'schedule/create.html'
+    form_class = CreateAgreementForm
+
+    def form_valid(self, form):
+        if form.cleaned_data['extended_information']:
+            return redirect(reverse('schedule:manage-extended-info'))
+        return redirect(reverse('schedule:manage'))
+
+
+class ManageExtendedInformationAgreementScheduleView(FormView):
+    template_name = 'schedule/manage_extended_information.html'
+    form_class = ManageExtendedInformationForm
+
+    def form_valid(self, form):
+        return redirect(reverse('schedule:manage'))
