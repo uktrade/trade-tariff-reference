@@ -1,0 +1,100 @@
+{% extends 'core/base.html' %}
+
+{% load i18n %}
+
+{% block back_button %}
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+{% endblock back_button %}
+
+
+{% block content %}
+<form action="." method="post">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% csrf_token %}
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">{% trans 'Create new agreement' %}</h1>
+                </legend>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="id_unique_id">{{ form.unique_id.label }}</label>
+                    {{ form.unique_id }}
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="id_geographical_area_name">{{ form.geographical_area_name.label }}</label>
+                    {{ form.geographical_area_name }}
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="id_country_code">{{ form.country_code.label }}</label>
+                    {{ form.country_code }}
+                </div>
+                <div class="govuk-form-group">
+                    <a href="#" class="govuk-link govuk-!-font-size-19">{% trans 'Add another country' %}</a>
+                </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="id_agreement_title">{{ form.agreement_title.label }}</label>
+                    {{ form.agreement_title }}
+                </div>
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="agreement-date-hint" role="group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <label class="govuk-label" for="id_agreement_date">Agreement date</label>
+                        </legend>
+                        <div class="govuk-date-input" id="agreement-date">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-day">Day</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="agreement-date-day" name="agreement-date-day" type="number" pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-month">Month</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="agreement-date-month" name="agreement-date-month" type="number" pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-year">Year</label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="agreement-date-year" name="agreement-date-year" type="number" pattern="[0-9]*">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="id_agreement_version">{{ form.agreement_version.label }}</label>
+                    {{ form.agreement_version }}
+                </div>
+
+                <div class="govuk-form-group govuk-!-padding-top-6">
+                    <fieldset class="govuk-fieldset" aria-describedby="extended-information-hint">
+                        <div class="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="id_extended_information" name="extended_information" type="checkbox" value="1">
+                                <label class="govuk-label govuk-checkboxes__label" for="id_extended_information-1">{% trans 'Do you want to manage extended information?' %}</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="gov-form-group govuk-!-padding-top-6">
+                    <ul class="govuk-list">
+                        <li>
+                            <input type="submit" value="{% trans 'Continue' %}" class="govuk-button govuk-!-margin-bottom-4">
+                        </li>
+                        <li>
+                            <a href="{% url 'schedule:manage' %}" class="govuk-link">{% trans 'Cancel' %}</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</form>
+{% endblock content %}
