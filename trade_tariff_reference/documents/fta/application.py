@@ -3,6 +3,7 @@ import os.path
 import json
 
 from datetime import datetime
+from django.template.loader import render_to_string
 
 import documents.fta.functions as f
 from documents.fta.exceptions import CountryProfileError
@@ -177,40 +178,31 @@ class Application(DatabaseConnect):
             iLastSection = iSection
 
     def readTemplates(self, has_quotas):
-        self.COMPONENT_DIR = os.path.join(self.COMPONENT_DIR, "")
+        document_template = "xml/document_noquotas.xml"
         if has_quotas:
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_hasquotas.xml"), "r")
-        else:
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_noquotas.xml"), "r")
-        self.sDocumentXML = fDocument.read()
-        self.sDocumentXML = self.sDocumentXML.replace("{AGREEMENT_NAME}", self.agreement_name)
-        self.sDocumentXML = self.sDocumentXML.replace("{VERSION}", self.version)
-        self.sDocumentXML = self.sDocumentXML.replace("{AGREEMENT_DATE}", self.agreement_date_long)
-        self.sDocumentXML = self.sDocumentXML.replace(
-            "{AGREEMENT_DATE_SHORT}", self.agreement_date_short,
-        )
-        self.sDocumentXML = self.sDocumentXML.replace("{COUNTRY_NAME}",	self.country_name)
+            document_template = "xml/document_hasquotas.xml"
 
-        fTable = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
-        self.sTableXML = fTable.read()
+        agreement_data = {
+            'AGREEMENT_NAME': self.agreement_name,
+            'VERSION': self.version,
+            'AGREEMENT_DATE': self.agreement_date_long,
+            'AGREEMENT_DATE_SHORT': self.agreement_date_short,
+            'COUNTRY_NAME': self.country_name,
+        }
 
-        fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
-        self.sTableRowXML = fTableRow.read()
+        self.sDocumentXML = render_to_string(document_template, agreement_data)
 
-        fQuotaTable = open(os.path.join(self.COMPONENT_DIR, "table_quota.xml"), "r")
-        fQuotaTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_quota.xml"), "r")
+        self.sTableXML = render_to_string('xml/table_schedule.xml')
 
-        self.sQuotaTableXML = fQuotaTable.read()
-        self.sQuotaTableRowXML = fQuotaTableRow.read()
+        self.sTableRowXML = render_to_string('xml/tablerow_schedule.xml')
 
-        # Horizontal line for putting dividers into the quota table
-        fHorizLine = open(os.path.join(self.COMPONENT_DIR, "horiz_line.xml"), "r")
-        self.sHorizLineXML = fHorizLine.read()
+        self.sQuotaTableXML = render_to_string('xml/table_quota.xml')
 
-        # Soft horizontal line for putting dividers into the quota table
-        fHorizLineSoft = open(os.path.join(self.COMPONENT_DIR, "horiz_line_soft.xml"), "r")
-        self.sHorizLineSoftXML = fHorizLineSoft.read()
+        self.sQuotaTableRowXML = render_to_string('xml/tablerow_quota.xml')
 
+        self.sHorizLineXML = render_to_string('xml/horiz_line.xml')
+
+        self.sHorizLineSoftXML = render_to_string('xml/horiz_line_soft.xml')
 
     def get_mfns_for_siv_products(self):
         f.log(" - Getting MFNs for SIV products")

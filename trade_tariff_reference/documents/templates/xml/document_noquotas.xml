@@ -6,7 +6,7 @@
         <w:pStyle w:val="Title"/>
       </w:pPr>
       <w:r>
-        <w:t>The Preferential Tariff implementing the {AGREEMENT_NAME}, version {VERSION}, dated {AGREEMENT_DATE}</w:t>
+        <w:t>The Preferential Tariff implementing the {{ AGREEMENT_NAME }}, version {{ VERSION }}, dated {{ AGREEMENT_DATE }}</w:t>
       </w:r>
     </w:p>
     <w:p/>
@@ -52,7 +52,7 @@
         <w:ind w:left="284" w:hanging="284"/>
       </w:pPr>
       <w:r>
-        <w:t xml:space="preserve">This document is the Preferential Tariff Document made under the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 for the Free Trade Agreement between the Government of the United Kingdom, of the one part, and the Government of {COUNTRY_NAME}, of the other part, signed on {AGREEMENT_DATE_SHORT} ("the Agreement"). It is made pursuant to regulations 2 and 3 and column 1 and 2 of the Schedule to the Regulations.</w:t>
+        <w:t xml:space="preserve">This document is the Preferential Tariff Document made under the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 for the Free Trade Agreement between the Government of the United Kingdom, of the one part, and the Government of {{ COUNTRY_NAME }}, of the other part, signed on {{ AGREEMENT_DATE_SHORT }} ("the Agreement"). It is made pursuant to regulations 2 and 3 and column 1 and 2 of the Schedule to the Regulations.</w:t>
       </w:r>
     </w:p>
     <w:p>
