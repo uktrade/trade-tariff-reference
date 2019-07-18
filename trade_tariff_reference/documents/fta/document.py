@@ -308,8 +308,8 @@ class Document:
         f.log(" - Getting quota balances from CSV")
         if self.has_quotas is False:
             return
-        with open(self.application.BALANCE_FILE, "r") as f:
-            reader = csv.reader(f)
+        with open(self.application.BALANCE_FILE, "r") as balance_file:
+            reader = csv.reader(balance_file)
             temp = list(reader)
         for balance in temp:
             try:
@@ -653,18 +653,6 @@ class Document:
 
         self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", quota_xml)
 
-    def create_core(self):
-        s = self.application.sCoreXML
-        s = s.replace("{COUNTRY_NAME}",	self.application.country_name)
-        s = s.replace("{AGREEMENT_NAME}", self.application.agreement_name)
-        s = s.replace("{AGREEMENT_DATE}", self.application.agreement_date_long)
-        s = s.replace("{VERSION}", self.application.version)
-        s = s.replace("{DATE}",	self.application.agreement_date_short)
-
-        FILENAME = os.path.join(self.application.DOCPROPS_DIR, "core.xml")
-        file = codecs.open(FILENAME, "w", "utf-8")
-        file.write(s)
-        file.close()
 
     def write(self):
         ###########################################################################

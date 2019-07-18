@@ -44,7 +44,7 @@ class Application(DatabaseConnect):
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
         self.CSV_DIR = os.path.join(self.BASE_DIR, "csv")
-        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "xmlcomponents")
+        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
 
         self.CONFIG_DIR = os.path.join(self.BASE_DIR, "config")
         self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config_common.json")
@@ -122,7 +122,6 @@ class Application(DatabaseConnect):
         my_document.print_quotas()
 
         # Personalise and write the document
-        my_document.create_core()
         my_document.write()
         f.log("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
 
@@ -192,52 +191,17 @@ class Application(DatabaseConnect):
         )
         self.sDocumentXML = self.sDocumentXML.replace("{COUNTRY_NAME}",	self.country_name)
 
-        fFootnoteTable = open(os.path.join(self.COMPONENT_DIR, "table_footnote.xml"), "r")
-        self.sFootnoteTableXML = fFootnoteTable.read()
-
-        fFootnoteTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_footnote.xml"), "r")
-        self.sFootnoteTableRowXML = fFootnoteTableRow.read()
-
-        fHeading1 = open(os.path.join(self.COMPONENT_DIR, "heading1.xml"), "r")
-        self.sHeading1XML = fHeading1.read()
-
-        fHeading2 = open(os.path.join(self.COMPONENT_DIR, "heading2.xml"), "r")
-        self.sHeading2XML = fHeading2.read()
-
-        fHeading3 = open(os.path.join(self.COMPONENT_DIR, "heading3.xml"), "r")
-        self.sHeading3XML = fHeading3.read()
-
-        fPara = open(os.path.join(self.COMPONENT_DIR, "paragraph.xml"), "r")
-        self.sParaXML = fPara.read()
-
-        fBullet = open(os.path.join(self.COMPONENT_DIR, "bullet.xml"), "r")
-        self.sBulletXML = fBullet.read()
-
-        fBanner = open(os.path.join(self.COMPONENT_DIR, "banner.xml"), "r")
-        self.sBannerXML = fBanner.read()
-
-        fPageBreak = open(os.path.join(self.COMPONENT_DIR, "pagebreak.xml"), "r")
-        self.sPageBreakXML = fPageBreak.read()
-
         fTable = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
-        fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
-
         self.sTableXML = fTable.read()
+
+        fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
         self.sTableRowXML = fTableRow.read()
 
-        # Get quota templates
         fQuotaTable = open(os.path.join(self.COMPONENT_DIR, "table_quota.xml"), "r")
         fQuotaTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_quota.xml"), "r")
 
         self.sQuotaTableXML = fQuotaTable.read()
         self.sQuotaTableRowXML = fQuotaTableRow.read()
-
-        fFootnoteReference = open(os.path.join(self.COMPONENT_DIR, "footnotereference.xml"), "r")
-        self.sFootnoteReferenceXML = fFootnoteReference.read()
-
-        # Footnote templates
-        fFootnotes = open(os.path.join(self.COMPONENT_DIR, "footnotes.xml"), "r")
-        self.sFootnotesXML = fFootnotes.read()
 
         # Horizontal line for putting dividers into the quota table
         fHorizLine = open(os.path.join(self.COMPONENT_DIR, "horiz_line.xml"), "r")
@@ -247,9 +211,6 @@ class Application(DatabaseConnect):
         fHorizLineSoft = open(os.path.join(self.COMPONENT_DIR, "horiz_line_soft.xml"), "r")
         self.sHorizLineSoftXML = fHorizLineSoft.read()
 
-        # core.xml that contains document information
-        fCore = open(os.path.join(self.COMPONENT_DIR, "core.xml"), "r")
-        self.sCoreXML = fCore.read()
 
     def get_mfns_for_siv_products(self):
         f.log(" - Getting MFNs for SIV products")
