@@ -1,4 +1,4 @@
-     <w:tr>
+{% for row in TARIFF_TABLE_ROWS %}     <w:tr>
         <w:trPr>
           <w:cantSplit/>
         </w:trPr>
@@ -15,7 +15,7 @@
             </w:pPr>
             <w:r>
 				<w:rPr><w:b/></w:rPr>
-              <w:t>{COMMODITY}</w:t>
+              <w:t>{{ row.COMMODITY }}</w:t>
             </w:r>
           </w:p>
         </w:tc>
@@ -35,7 +35,8 @@
               </w:tabs>
               <w:jc w:val="left"/>
             </w:pPr>
-            {DUTY}
+            {{ row.DUTY }}
           </w:p>
         </w:tc>
       </w:tr>
+{% endfor %}

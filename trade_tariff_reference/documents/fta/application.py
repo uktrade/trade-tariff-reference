@@ -82,7 +82,6 @@ class Application(DatabaseConnect):
         my_document = Document(self)
         self.get_meursing_components()
         has_quotas = my_document.check_for_quotas()
-        self.readTemplates(has_quotas)
 
         # Get commodities where there is a local SIV
 
@@ -112,7 +111,7 @@ class Application(DatabaseConnect):
 
         # Create the measures table
         my_document.get_duties("preferences")
-        my_document.print_tariffs()
+        context_data = my_document.print_tariffs()
 
         # Create the quotas table
         my_document.get_duties("quotas")
@@ -120,8 +119,9 @@ class Application(DatabaseConnect):
         my_document.get_quota_balances_from_csv()
         my_document.get_quota_measures()
         my_document.get_quota_definitions()
-        my_document.print_quotas()
+        quota_data = my_document.print_quotas()
 
+        self.readTemplates(has_quotas, context_data, quota_data)
         # Personalise and write the document
         my_document.write()
         f.log("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
@@ -177,7 +177,7 @@ class Application(DatabaseConnect):
                 r[2] = True
             iLastSection = iSection
 
-    def readTemplates(self, has_quotas):
+    def readTemplates(self, has_quotas, context, quota_data):
         document_template = "xml/document_noquotas.xml"
         if has_quotas:
             document_template = "xml/document_hasquotas.xml"
@@ -188,21 +188,11 @@ class Application(DatabaseConnect):
             'AGREEMENT_DATE': self.agreement_date_long,
             'AGREEMENT_DATE_SHORT': self.agreement_date_short,
             'COUNTRY_NAME': self.country_name,
+            **context,
+            **quota_data,
         }
 
         self.sDocumentXML = render_to_string(document_template, agreement_data)
-
-        self.sTableXML = render_to_string('xml/table_schedule.xml')
-
-        self.sTableRowXML = render_to_string('xml/tablerow_schedule.xml')
-
-        self.sQuotaTableXML = render_to_string('xml/table_quota.xml')
-
-        self.sQuotaTableRowXML = render_to_string('xml/tablerow_quota.xml')
-
-        self.sHorizLineXML = render_to_string('xml/horiz_line.xml')
-
-        self.sHorizLineSoftXML = render_to_string('xml/horiz_line_soft.xml')
 
     def get_mfns_for_siv_products(self):
         f.log(" - Getting MFNs for SIV products")
