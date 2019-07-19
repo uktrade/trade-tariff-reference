@@ -4,6 +4,7 @@ import re
 import csv
 import codecs
 
+from django.utils.safestring import mark_safe
 import documents.fta.functions as f
 
 from documents.fta.constants import *
@@ -308,8 +309,8 @@ class Document:
         f.log(" - Getting quota balances from CSV")
         if self.has_quotas is False:
             return
-        with open(self.application.BALANCE_FILE, "r") as f:
-            reader = csv.reader(f)
+        with open(self.application.BALANCE_FILE, "r") as balance_file:
+            reader = csv.reader(balance_file)
             temp = list(reader)
         for balance in temp:
             try:
@@ -445,11 +446,8 @@ class Document:
 
     def print_quotas(self):
         f.log(" - Getting quotas")
-        if self.has_quotas is False:
-            self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", "")
-            return
-        table_content = ""
 
+        quota_list = []
         for qon in self.quota_order_number_list:
 
             # Check balance info has been provided, if not then do not display
@@ -461,7 +459,6 @@ class Document:
 
             # if not balance_found:
             # print("Quota balance not found", qon.quota_order_number_id)
-
             if balance_found:
                 if len(qon.quota_definition_list) > 1:
                     f.log("More than one definition - we must be in Morocco")
@@ -484,6 +481,7 @@ class Document:
                     qon.validity_start_date = qon.quota_definition_list[0].validity_start_date
                     qon.validity_end_date = qon.quota_definition_list[0].validity_end_date
                     qon.validity_end_date_2019 = qon.quota_definition_list[0].validity_end_date
+                    qon.validity_start_date_2019 = qon.quota_definition_list[0].validity_start_date
 
                     qon.initial_volume = qon.quota_definition_list[0].formatted_initial_volume
                     qon.volume_yx = qon.quota_definition_list[0].formatted_volume_yx
@@ -507,32 +505,22 @@ class Document:
                             if sub_commodity.commodity_code == comm.commodity_code[0:8] + "00":
                                 if sub_commodity.duty_string == my_duty:
                                     comm.suppress = True
-
+                    table_row = {}
                     if comm.suppress is False:
-                        insert_divider = False
-                        insert_duty_divider = False
-                        row_string = self.application.sQuotaTableRowXML
-                        row_string = row_string.replace("{COMMODITY_CODE}", comm.commodity_code_formatted)
-                        # row_string = row_string.replace("{COMMODITY_CODE}", comm.commodity_code)
 
                         if last_order_number == qon.quota_order_number_id:
-                            row_string = row_string.replace("{QUOTA_ORDER_NUMBER}",		"")
-                            row_string = row_string.replace("{ORIGIN_QUOTA}",   		"")
-                            row_string = row_string.replace("{QUOTA_VOLUME}",			"")
-                            row_string = row_string.replace("{QUOTA_OPEN_DATE}",		"")
-                            row_string = row_string.replace("{QUOTA_CLOSE_DATE}",		"")
-                            row_string = row_string.replace("{QUOTA_OPEN_DATE_2019}",	"")
-                            row_string = row_string.replace("{QUOTA_CLOSE_DATE_2019}",	"")
-                            row_string = row_string.replace("{2019_QUOTA_VOLUME}",		"")
-                            # row_string = row_string.replace("<!--OPT//--><w:r><w:br/></w:r><!--OPT//-->",		"")
-                            row_string = re.sub(
-                                "<!-- Begin Quota Volume cell //-->.*<!-- End Quota Volume cell //-->",
-                                '<!-- Begin Quota Volume cell //-->\n'
-                                '<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/>'
-                                '</w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Quota Volume cell //-->',
-                                row_string,
-                                flags=re.DOTALL
-                            )
+                            table_row = {
+                                'QUOTA_ORDER_NUMBER': '',
+                                'ORIGIN_QUOTA': '',
+                                'QUOTA_VOLUME': '',
+                                'QUOTA_OPEN_DATE': '',
+                                'QUOTA_CLOSE_DATE': '',
+                                '2019_QUOTA_VOLUME': '',
+                                'QUOTA_OPEN_DATE_2019': '',
+                                'QUOTA_CLOSE_DATE_2019': '',
+                                'INSERT_DIVIDER': False,
+                                'EMPTY_QUOTA_VOLUME_CELL': True,
+                            }
 
                         else:
                             qon.format_order_number()
@@ -541,130 +529,68 @@ class Document:
                             # print(qon.quota_order_number_id, qon.validity_start_date_2019, qon.validity_end_date_2019,
                             # (qon.validity_end_date_2019 - qon.validity_start_date_2019).days)
 
+                            quota_order_number = qon.quota_order_number_id_formatted
                             if qon.suspended:
-                                row_string = row_string.replace(
-                                    "{QUOTA_ORDER_NUMBER}",	qon.quota_order_number_id_formatted + " (suspended)"
-                                )
-                            else:
-                                row_string = row_string.replace(
-                                    "{QUOTA_ORDER_NUMBER}",	qon.quota_order_number_id_formatted
-                                )
+                                quota_order_number = f'{quota_order_number} (suspended)'
 
-                            row_string = row_string.replace(
-                                "{ORIGIN_QUOTA}", qon.origin_quota
-                            )
+                            quota_volume = qon.volume_yx
                             if qon.addendum != "":
-                                row_string = row_string.replace(
-                                    "{QUOTA_VOLUME}", qon.volume_yx + " + " + qon.addendum
-                                )
-                            else:
-                                row_string = row_string.replace(
-                                    "{QUOTA_VOLUME}", qon.volume_yx
-                                )
+                                quota_volume = f'{quota_volume} + {qon.addendum}'
 
-                            row_string = row_string.replace(
-                                "{QUOTA_OPEN_DATE}", datetime.strftime(qon.validity_start_date, '%d/%m')
-                            )
-                            row_string = row_string.replace(
-                                "{QUOTA_CLOSE_DATE}", datetime.strftime(qon.validity_end_date, '%d/%m')
-                            )
+                            table_row = {
+                                'QUOTA_ORDER_NUMBER': quota_order_number,
+                                'ORIGIN_QUOTA': qon.origin_quota,
+                                'QUOTA_VOLUME': quota_volume,
+                                'QUOTA_OPEN_DATE': datetime.strftime(qon.validity_start_date, '%d/%m'),
+                                'QUOTA_CLOSE_DATE': datetime.strftime(qon.validity_end_date, '%d/%m'),
+                                '2019_QUOTA_VOLUME': '',
+                                'QUOTA_OPEN_DATE_2019': '',
+                                'QUOTA_CLOSE_DATE_2019': '',
+                                'INSERT_DIVIDER': True
+                            }
 
-                            if qon.initial_volume[0] == "0":
-                                row_string = row_string.replace("{2019_QUOTA_VOLUME}",		"")
-                                row_string = row_string.replace("{QUOTA_OPEN_DATE_2019}",	"")
-                                row_string = row_string.replace("{QUOTA_CLOSE_DATE_2019}",	"")
-                                row_string = row_string.replace("<!--OPT//--><w:r><w:br/></w:r><!--OPT//-->",		"")
-                                row_string = re.sub(
-                                    "<!--19VStart//-->.*<!--19VEnd//-->", "", row_string, flags=re.DOTALL
-                                )
-                                row_string = re.sub(
-                                    "<!--19VStartb//-->.*<!--19VEndb//-->", "", row_string, flags=re.DOTALL
-                                )
-                                row_string = re.sub(
-                                    "<!--19VStartc//-->.*<!--19VEndc//-->", "", row_string, flags=re.DOTALL
-                                )
-                            else:
-                                row_string = row_string.replace(
-                                    "{2019_QUOTA_VOLUME}", str(qon.initial_volume).strip() + " (2019)"
-                                )
-                                row_string = row_string.replace(
-                                    "{QUOTA_OPEN_DATE_2019}",
-                                    datetime.strftime(qon.validity_start_date_2019, '%d/%m/%Y')
-                                )
-                                row_string = row_string.replace(
-                                    "{QUOTA_CLOSE_DATE_2019}",
-                                    datetime.strftime(qon.validity_end_date_2019, '%d/%m/%Y')
-                                )
+                            if qon.initial_volume[0] != "0":
+                                table_row['2019_QUOTA_VOLUME'] = f'{str(qon.initial_volume).strip()} (2019)'
+                                table_row['QUOTA_OPEN_DATE_2019'] = datetime.strftime(qon.validity_start_date_2019, '%d/%m/%Y')
+                                table_row['QUOTA_CLOSE_DATE_2019'] = datetime.strftime(qon.validity_end_date_2019, '%d/%m/%Y')
 
-                            insert_divider = True
+                        table_row['COMMODITY_CODE'] = comm.commodity_code_formatted
+
+                        table_row['PREFERENTIAL_DUTY_RATE'] = comm.duty_string
 
                         if comm.duty_string != last_duty:
-                            row_string = row_string.replace("{PREFERENTIAL_DUTY_RATE}",	comm.duty_string)
-                            insert_duty_divider = True
-                        else:
-                            row_string = row_string.replace("{PREFERENTIAL_DUTY_RATE}",	"")
-
-                        row_string = row_string.replace("{PREFERENTIAL_DUTY_RATE}",	comm.duty_string)
-
-                        if insert_divider:
-                            row_string = row_string.replace("<w:tc>", "<w:tc>\n" + self.application.sHorizLineXML)
-                        elif insert_duty_divider:
-                            row_string = row_string.replace("<w:tc>", "<w:tc>\n" + self.application.sHorizLineSoftXML)
-                            pass
+                            table_row['INSERT_DUTY_DIVIDER'] = True
 
                         if last_order_number == qon.quota_order_number_id:
-                            # Test code - replace the Origin quota cell with a merged cell
-                            row_string = re.sub("<!-- Begin quota number cell //-->.*<!-- End quota number cell //-->", '<!-- Begin quota number cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End quota number cell //-->', row_string, flags=re.DOTALL)
-                            row_string = re.sub("<!-- Begin origin quota cell //-->.*<!-- End origin quota cell //-->", '<!-- Begin origin quota cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End origin quota cell //-->', row_string, flags=re.DOTALL)
-                            row_string = re.sub("<!-- Begin Quota Volume cell //-->.*<!-- End Quota Volume cell //-->", '<!-- Begin Quota Volume cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Quota Volume cell //-->', row_string, flags=re.DOTALL)
-                            row_string = re.sub("<!-- Begin Quota Open Date cell //-->.*<!-- End Quota Open Date cell //-->", '<!-- Begin Quota Open Date cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Quota Open Date cell //-->', row_string, flags=re.DOTALL)
-                            row_string = re.sub("<!-- Begin Quota Close Date cell //-->.*<!-- End Quota Close Date cell //-->", '<!-- Begin Quota Close Date cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Quota Close Date cell //-->', row_string, flags=re.DOTALL)
-                            row_string = re.sub("<!-- Begin Quota Close Date cell //-->.*<!-- End Quota Close Date cell //-->", '<!-- Begin Quota Close Date cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Quota Close Date cell //-->', row_string, flags=re.DOTALL)
-                            pass
+                            table_row.update(
+                                {
+                                    'EMPTY_QUOTA_ORDER_NUMBER_CELL': True,
+                                    'EMPTY_ORIGIN_QUOTA_CELL': True,
+                                    'EMPTY_QUOTA_VOLUME_CELL': True,
+                                    'EMPTY_QUOTA_OPEN_DATE_CELL': True,
+                                    'EMPTY_QUOTA_CLOSE_DATE_CELL': True,
+                                }
+                            )
 
                         if last_duty == comm.duty_string:
-                            row_string = re.sub("<!-- Begin Preferential Quota Duty Rate cell //-->.*<!-- End Preferential Quota Duty Rate cell //-->", '<!-- Begin Preferential Quota Duty Rate cell //-->\n<w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>\n<!-- End Preferential Quota Duty Rate cell //-->', row_string, flags=re.DOTALL)
-
+                            table_row['EMPTY_PREFERENTIAL_DUTY_RATE_CELL'] = True
+                        
                         last_order_number = qon.quota_order_number_id
                         last_duty = comm.duty_string
+                    quota_list.append(table_row)
 
-                        table_content += row_string
-
-        ###########################################################################
-        # Write the main document
-        ###########################################################################
-
-        quota_xml = ""
-        sTableXML = self.application.sQuotaTableXML
-        width_list = [8, 7, 11, 22, 16, 10, 10, 16]
-
-        sTableXML = sTableXML.replace("{WIDTH_QUOTA_NUMBER}", str(width_list[0]))
-        sTableXML = sTableXML.replace("{WIDTH_ORIGIN_QUOTA}", str(width_list[1]))
-        sTableXML = sTableXML.replace("{WIDTH_COMMODITY_CODE}",	str(width_list[2]))
-        sTableXML = sTableXML.replace("{WIDTH_PREFERENTIAL_QUOTA_DUTY_RATE}", str(width_list[3]))
-        sTableXML = sTableXML.replace("{WIDTH_QUOTA_VOLUME}", str(width_list[4]))
-        sTableXML = sTableXML.replace("{WIDTH_QUOTA_OPEN_DATE}", str(width_list[5]))
-        sTableXML = sTableXML.replace("{WIDTH_QUOTA_CLOSE_DATE}", str(width_list[6]))
-        sTableXML = sTableXML.replace("{WIDTH_2019_QUOTA_VOLUME}", str(width_list[7]))
-
-        sTableXML = sTableXML.replace("{TABLEBODY}", table_content)
-
-        quota_xml += sTableXML
-
-        self.document_xml = self.document_xml.replace("{QUOTA TABLE GOES HERE}", quota_xml)
-
-    def create_core(self):
-        s = self.application.sCoreXML
-        s = s.replace("{COUNTRY_NAME}",	self.application.country_name)
-        s = s.replace("{AGREEMENT_NAME}", self.application.agreement_name)
-        s = s.replace("{AGREEMENT_DATE}", self.application.agreement_date_long)
-        s = s.replace("{VERSION}", self.application.version)
-        s = s.replace("{DATE}",	self.application.agreement_date_short)
-
-        FILENAME = os.path.join(self.application.DOCPROPS_DIR, "core.xml")
-        file = codecs.open(FILENAME, "w", "utf-8")
-        file.write(s)
-        file.close()
+        quota_data = {
+            'WIDTH_QUOTA_NUMBER': '8',
+            'WIDTH_ORIGIN_QUOTA': '7',
+            'WIDTH_COMMODITY_CODE': '11',
+            'WIDTH_PREFERENTIAL_QUOTA_DUTY_RATE': '22',
+            'WIDTH_QUOTA_VOLUME': '16',
+            'WIDTH_QUOTA_OPEN_DATE': '10',
+            'WIDTH_QUOTA_CLOSE_DATE': '10',
+            'WIDTH_2019_QUOTA_VOLUME': '16',
+            'QUOTA_TABLE_ROWS': quota_list,
+        }
+        return quota_data
 
     def write(self):
         ###########################################################################
@@ -673,7 +599,7 @@ class Document:
         FILENAME = os.path.join(self.application.WORD_DIR, "document.xml")
 
         file = codecs.open(FILENAME, "w", "utf-8")
-        file.write(self.document_xml)
+        file.write(self.application.sDocumentXML)
         file.close()
 
         ###########################################################################
@@ -703,29 +629,23 @@ class Document:
         # Output the rows to buffer
         ###########################################################################
 
-        table_content = ""
+        table_rows = []
         for c in self.commodity_list:
             if c.suppress is False:
-                row_string = self.application.sTableRowXML
-                row_string = row_string.replace("{COMMODITY}", c.commodity_code_formatted)
-                # row_string = row_string.replace("{COMMODITY}", c.commodity_code)
+                table_dict = {
+                    'COMMODITY': c.commodity_code_formatted,
+                }
                 if c.duty_string[-18:] == "<w:r><w:br/></w:r>":
                     c.duty_string = c.duty_string[:-18]
-                row_string = row_string.replace("{DUTY}", c.duty_string)
-                table_content += row_string
+                table_dict['DUTY'] = mark_safe(c.duty_string)
+                table_rows.append(table_dict)
 
         ###########################################################################
         # Write the main document
         ###########################################################################
 
-        tariff_xml = ""
-
-        sTableXML = self.application.sTableXML
-        width_list = [400, 1450, 1150, 2000]
-        sTableXML = sTableXML.replace("{WIDTH_CLASSIFICATION}", str(width_list[0]))
-        sTableXML = sTableXML.replace("{WIDTH_DUTY}", str(width_list[1]))
-        sTableXML = sTableXML.replace("{TABLEBODY}", table_content)
-
-        tariff_xml += sTableXML
-        self.document_xml = self.application.sDocumentXML
-        self.document_xml = self.document_xml.replace("{TARIFF TABLE GOES HERE}", tariff_xml)
+        return {
+            'TARIFF_WIDTH_CLASSIFICATION': '400',
+            'TARIFF_WIDTH_DUTY': '1450',
+            'TARIFF_TABLE_ROWS': table_rows,
+        }

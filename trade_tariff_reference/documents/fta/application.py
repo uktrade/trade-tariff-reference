@@ -3,6 +3,7 @@ import os.path
 import json
 
 from datetime import datetime
+from django.template.loader import render_to_string
 
 import documents.fta.functions as f
 from documents.fta.exceptions import CountryProfileError
@@ -44,7 +45,7 @@ class Application(DatabaseConnect):
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
         self.CSV_DIR = os.path.join(self.BASE_DIR, "csv")
-        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "xmlcomponents")
+        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
 
         self.CONFIG_DIR = os.path.join(self.BASE_DIR, "config")
         self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config_common.json")
@@ -81,7 +82,6 @@ class Application(DatabaseConnect):
         my_document = Document(self)
         self.get_meursing_components()
         has_quotas = my_document.check_for_quotas()
-        self.readTemplates(has_quotas)
 
         # Get commodities where there is a local SIV
 
@@ -111,7 +111,7 @@ class Application(DatabaseConnect):
 
         # Create the measures table
         my_document.get_duties("preferences")
-        my_document.print_tariffs()
+        context_data = my_document.print_tariffs()
 
         # Create the quotas table
         my_document.get_duties("quotas")
@@ -119,10 +119,10 @@ class Application(DatabaseConnect):
         my_document.get_quota_balances_from_csv()
         my_document.get_quota_measures()
         my_document.get_quota_definitions()
-        my_document.print_quotas()
+        quota_data = my_document.print_quotas()
 
+        self.readTemplates(has_quotas, context_data, quota_data)
         # Personalise and write the document
-        my_document.create_core()
         my_document.write()
         f.log("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
 
@@ -177,79 +177,22 @@ class Application(DatabaseConnect):
                 r[2] = True
             iLastSection = iSection
 
-    def readTemplates(self, has_quotas):
-        self.COMPONENT_DIR = os.path.join(self.COMPONENT_DIR, "")
+    def readTemplates(self, has_quotas, context, quota_data):
+        document_template = "xml/document_noquotas.xml"
         if has_quotas:
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_hasquotas.xml"), "r")
-        else:
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_noquotas.xml"), "r")
-        self.sDocumentXML = fDocument.read()
-        self.sDocumentXML = self.sDocumentXML.replace("{AGREEMENT_NAME}", self.agreement_name)
-        self.sDocumentXML = self.sDocumentXML.replace("{VERSION}", self.version)
-        self.sDocumentXML = self.sDocumentXML.replace("{AGREEMENT_DATE}", self.agreement_date_long)
-        self.sDocumentXML = self.sDocumentXML.replace(
-            "{AGREEMENT_DATE_SHORT}", self.agreement_date_short,
-        )
-        self.sDocumentXML = self.sDocumentXML.replace("{COUNTRY_NAME}",	self.country_name)
+            document_template = "xml/document_hasquotas.xml"
 
-        fFootnoteTable = open(os.path.join(self.COMPONENT_DIR, "table_footnote.xml"), "r")
-        self.sFootnoteTableXML = fFootnoteTable.read()
+        agreement_data = {
+            'AGREEMENT_NAME': self.agreement_name,
+            'VERSION': self.version,
+            'AGREEMENT_DATE': self.agreement_date_long,
+            'AGREEMENT_DATE_SHORT': self.agreement_date_short,
+            'COUNTRY_NAME': self.country_name,
+            **context,
+            **quota_data,
+        }
 
-        fFootnoteTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_footnote.xml"), "r")
-        self.sFootnoteTableRowXML = fFootnoteTableRow.read()
-
-        fHeading1 = open(os.path.join(self.COMPONENT_DIR, "heading1.xml"), "r")
-        self.sHeading1XML = fHeading1.read()
-
-        fHeading2 = open(os.path.join(self.COMPONENT_DIR, "heading2.xml"), "r")
-        self.sHeading2XML = fHeading2.read()
-
-        fHeading3 = open(os.path.join(self.COMPONENT_DIR, "heading3.xml"), "r")
-        self.sHeading3XML = fHeading3.read()
-
-        fPara = open(os.path.join(self.COMPONENT_DIR, "paragraph.xml"), "r")
-        self.sParaXML = fPara.read()
-
-        fBullet = open(os.path.join(self.COMPONENT_DIR, "bullet.xml"), "r")
-        self.sBulletXML = fBullet.read()
-
-        fBanner = open(os.path.join(self.COMPONENT_DIR, "banner.xml"), "r")
-        self.sBannerXML = fBanner.read()
-
-        fPageBreak = open(os.path.join(self.COMPONENT_DIR, "pagebreak.xml"), "r")
-        self.sPageBreakXML = fPageBreak.read()
-
-        fTable = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
-        fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
-
-        self.sTableXML = fTable.read()
-        self.sTableRowXML = fTableRow.read()
-
-        # Get quota templates
-        fQuotaTable = open(os.path.join(self.COMPONENT_DIR, "table_quota.xml"), "r")
-        fQuotaTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_quota.xml"), "r")
-
-        self.sQuotaTableXML = fQuotaTable.read()
-        self.sQuotaTableRowXML = fQuotaTableRow.read()
-
-        fFootnoteReference = open(os.path.join(self.COMPONENT_DIR, "footnotereference.xml"), "r")
-        self.sFootnoteReferenceXML = fFootnoteReference.read()
-
-        # Footnote templates
-        fFootnotes = open(os.path.join(self.COMPONENT_DIR, "footnotes.xml"), "r")
-        self.sFootnotesXML = fFootnotes.read()
-
-        # Horizontal line for putting dividers into the quota table
-        fHorizLine = open(os.path.join(self.COMPONENT_DIR, "horiz_line.xml"), "r")
-        self.sHorizLineXML = fHorizLine.read()
-
-        # Soft horizontal line for putting dividers into the quota table
-        fHorizLineSoft = open(os.path.join(self.COMPONENT_DIR, "horiz_line_soft.xml"), "r")
-        self.sHorizLineSoftXML = fHorizLineSoft.read()
-
-        # core.xml that contains document information
-        fCore = open(os.path.join(self.COMPONENT_DIR, "core.xml"), "r")
-        self.sCoreXML = fCore.read()
+        self.sDocumentXML = render_to_string(document_template, agreement_data)
 
     def get_mfns_for_siv_products(self):
         f.log(" - Getting MFNs for SIV products")

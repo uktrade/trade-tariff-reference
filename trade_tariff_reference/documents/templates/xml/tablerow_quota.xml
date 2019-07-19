@@ -1,0 +1,20 @@
+{% for row in QUOTA_TABLE_ROWS %}		 <w:tr>
+				<w:trPr>
+					<w:cantSplit/>
+				</w:trPr>
+<!-- Begin quota number cell //-->{% include 'xml/quota_row.xml' with value=row.QUOTA_ORDER_NUMBER bold=1 style_left=1 restart=1 is_empty=row.EMPTY_QUOTA_ORDER_NUMBER_CELL %}
+<!-- End quota number cell //-->
+<!-- Begin origin quota cell //-->{% include 'xml/quota_row.xml' with value=row.ORIGIN_QUOTA restart=1  is_empty=row.EMPTY_ORIGIN_QUOTA_CELL %}
+<!-- End origin quota cell //-->
+<!-- Begin commodity code cell //-->{% include 'xml/quota_row.xml' with value=row.COMMODITY_CODE is_empty=row.EMPTY_COMMODITY_CODE_CELL %}
+<!-- End commodity code cell //-->
+<!-- Begin Preferential Quota Duty Rate cell //-->{% include 'xml/quota_row.xml' with value=row.PREFERENTIAL_DUTY_RATE restart=1 is_empty=row.EMPTY_PREFERENTIAL_DUTY_RATE_CELL %}
+<!-- End Preferential Quota Duty Rate cell //-->
+<!-- Begin Quota Volume cell //-->{% include 'xml/quota_row.xml' with value=row.QUOTA_VOLUME restart=1 is_empty=row.EMPTY_QUOTA_VOLUME_CELL %}
+<!-- End Quota Volume cell //-->
+<!-- Begin Quota Open Date cell //-->{% include 'xml/quota_row.xml' with value=row.QUOTA_OPEN_DATE restart=1 is_empty=row.EMPTY_QUOTA_OPEN_DATE_CELL %}
+<!-- End Quota Open Date cell //-->
+<!-- Begin Quota Close Date cell //-->{% include 'xml/quota_row.xml' with value=row.QUOTA_CLOSE_DATE restart=1 is_empty=row.EMPTY_QUOTA_CLOSE_DATE_CELL %}
+<!-- End Quota Close Date cell //-->
+	</w:tr>
+{% endfor %}

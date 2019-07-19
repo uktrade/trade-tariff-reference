@@ -6,7 +6,7 @@
         <w:pStyle w:val="Title"/>
       </w:pPr>
       <w:r>
-        <w:t>The Preferential Tariff implementing the {AGREEMENT_NAME}, version {VERSION}, dated {AGREEMENT_DATE}</w:t>
+        <w:t>The Preferential Tariff implementing the {{ AGREEMENT_NAME }}, version {{ VERSION }}, dated {{ AGREEMENT_DATE }}</w:t>
       </w:r>
     </w:p>
     <w:p/>
@@ -60,7 +60,7 @@
         <w:ind w:left="284" w:hanging="284"/>
       </w:pPr>
       <w:r>
-        <w:t xml:space="preserve">This document is the Preferential Tariff Document made under the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 for the Free Trade Agreement between the Government of the United Kingdom, of the one part, and the Government of {COUNTRY_NAME}, of the other part, signed on {AGREEMENT_DATE_SHORT} ("the Agreement"). It is made pursuant to regulations 2 and 3 and column 1 and 2 of the Schedule to the Regulations.</w:t>
+        <w:t xml:space="preserve">This document is the Preferential Tariff Document made under the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 for the Free Trade Agreement between the Government of the United Kingdom, of the one part, and the Government of {{ COUNTRY_NAME }}, of the other part, signed on {{ AGREEMENT_DATE_SHORT }} ("the Agreement"). It is made pursuant to regulations 2 and 3 and column 1 and 2 of the Schedule to the Regulations.</w:t>
       </w:r>
     </w:p>
     <w:p>
@@ -203,7 +203,7 @@
         <w:t>The Preferential Duty Rate in column 2 is defined in regulation 2(2) of the Regulations.</w:t>
       </w:r>
     </w:p>
-{TARIFF TABLE GOES HERE}
+    {% if TARIFF_TABLE_ROWS %}{% include 'xml/table_schedule.xml' %}{% endif %}
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Heading3"/>
@@ -407,7 +407,7 @@
         <w:t>The Quota Close Date in column 7 is the date on which the quota period ends under regulations 9(1), 9(3) and 9(4) of the Regulations.</w:t>
       </w:r>
     </w:p>
-{QUOTA TABLE GOES HERE}
+    {% if QUOTA_TABLE_ROWS %}{% include 'xml/table_quota.xml' %}{% endif %}
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Heading3"/>
