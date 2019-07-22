@@ -581,22 +581,34 @@ class Document:
         self.write(document_xml)
 
     def write(self, document_xml):
-        ###########################################################################
-        # WRITE document.xml
-        ###########################################################################
+        import tempfile
+        import shutil
+        from distutils.dir_util import copy_tree
+
         model_dir = os.path.join(self.application.BASE_DIR, "model")
         word_dir = os.path.join(model_dir, "word")
-        file_name = os.path.join(word_dir, "document.xml")
 
-        file = codecs.open(file_name, "w", "utf-8")
-        file.write(document_xml)
-        file.close()
-
-        ###########################################################################
-        # Finally, ZIP everything up
-        ###########################################################################
         docx_file_name = self.application.country_profile + "_annex.docx"
-        f.zipdir(os.path.join(self.application.OUTPUT_DIR, docx_file_name))
+
+        with tempfile.TemporaryDirectory(prefix='docx_generation') as tmpdirname:
+            copy_tree(word_dir, tmpdirname)
+
+            xml_document_file_name = os.path.join(tmpdirname, "document.xml")
+            file = codecs.open(xml_document_file_name, "w", "utf-8")
+            file.write(document_xml)
+            file.close()
+
+            full_file_name = os.path.join(tmpdirname, docx_file_name)
+            f.zipdir(tmpdirname, full_file_name)
+
+            ###########################################################################
+            # Temporarily copy the files back to old locations so all changes are evident
+            # MPP: TODO: Remove the two copy commands
+            ###########################################################################
+
+            shutil.copy2(full_file_name, self.application.OUTPUT_DIR)
+            shutil.copy2(xml_document_file_name, word_dir)
+
         f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
 
     def print_tariffs(self):
