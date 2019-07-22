@@ -13,3 +13,4 @@ psycopg2==2.8.3
 django-sass-processor==0.7.3
 django-compressor==2.3
 libsass==0.19.2
+flake8-import-order==0.18.1

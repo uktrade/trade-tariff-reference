@@ -1,8 +1,9 @@
 from django.urls import path
+
 from .views import (
-    ManageAgreementScheduleView,
-    DownloadAgreementScheduleView,
     CreateAgreementScheduleView,
+    DownloadAgreementScheduleView,
+    ManageAgreementScheduleView,
     ManageExtendedInformationAgreementScheduleView,
 )
 

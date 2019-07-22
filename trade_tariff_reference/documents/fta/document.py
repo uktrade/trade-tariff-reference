@@ -1,21 +1,28 @@
-from datetime import datetime
-import os
-import csv
 import codecs
+import csv
+import os
+from datetime import datetime
 
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-import documents.fta.functions as f
 
-from documents.fta.constants import *
-from documents.fta.duty import Duty
-from documents.fta.quota_order_number import QuotaOrderNumber
-from documents.fta.quota_definition import QuotaDefinition
-from documents.fta.measure import Measure
-from documents.fta.measure_condition import MeasureCondition
-from documents.fta.commodity import Commodity
-from documents.fta.quota_commodity import QuotaCommodity
-from documents.fta.quota_balance import QuotaBalance
+import trade_tariff_reference.documents.fta.functions as f
+from trade_tariff_reference.documents.fta.commodity import Commodity
+from trade_tariff_reference.documents.fta.constants import (
+    CHECK_COUNTRY_EXCLUSION_SQL,
+    GET_DUTIES_SQL,
+    GET_MEASURE_COMPONENTS_SQL,
+    GET_QUOTA_DEFINITIONS_SQL,
+    GET_QUOTA_MEASURES_SQL,
+    GET_QUOTA_ORDER_NUMBERS_SQL,
+)
+from trade_tariff_reference.documents.fta.duty import Duty
+from trade_tariff_reference.documents.fta.measure import Measure
+from trade_tariff_reference.documents.fta.measure_condition import MeasureCondition
+from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
+from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
+from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
+from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
 
 
 class Document:
@@ -331,7 +338,8 @@ class Document:
                     )
                     if str(quota_order_number_id) in self.balance_dict:
                         pass
-                    # MPP: TODO old behaviour would use the first one added to the list this will use the last. Does it matter?
+                    # MPP: TODO old behaviour would use the first one added to the
+                    # list this will use the last. Does it matter?
                     self.balance_dict[str(quota_order_number_id)] = qb
             except:
                 pass
@@ -520,8 +528,12 @@ class Document:
 
                             if qon.initial_volume[0] != "0":
                                 table_row['2019_QUOTA_VOLUME'] = f'{str(qon.initial_volume).strip()} (2019)'
-                                table_row['QUOTA_OPEN_DATE_2019'] = datetime.strftime(qon.validity_start_date_2019, '%d/%m/%Y')
-                                table_row['QUOTA_CLOSE_DATE_2019'] = datetime.strftime(qon.validity_end_date_2019, '%d/%m/%Y')
+                                table_row['QUOTA_OPEN_DATE_2019'] = datetime.strftime(
+                                    qon.validity_start_date_2019, '%d/%m/%Y'
+                                )
+                                table_row['QUOTA_CLOSE_DATE_2019'] = datetime.strftime(
+                                    qon.validity_end_date_2019, '%d/%m/%Y'
+                                )
 
                         table_row['COMMODITY_CODE'] = comm.commodity_code_formatted
 
@@ -543,7 +555,6 @@ class Document:
 
                         if last_duty == comm.duty_string:
                             table_row['EMPTY_PREFERENTIAL_DUTY_RATE_CELL'] = True
-                        
                         last_order_number = qon.quota_order_number_id
                         last_duty = comm.duty_string
                     quota_list.append(table_row)

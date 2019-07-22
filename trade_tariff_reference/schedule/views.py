@@ -1,6 +1,7 @@
-from django.views.generic import TemplateView, RedirectView, FormView
+from django.shortcuts import redirect, reverse
 from django.templatetags import static
-from django.shortcuts import reverse, redirect
+from django.views.generic import FormView, RedirectView, TemplateView
+
 from .forms import CreateAgreementForm, ManageExtendedInformationForm
 
 
