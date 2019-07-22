@@ -3,7 +3,6 @@ import os.path
 import json
 
 from datetime import datetime
-from django.template.loader import render_to_string
 
 import documents.fta.functions as f
 from documents.fta.exceptions import CountryProfileError
@@ -18,45 +17,12 @@ class Application(DatabaseConnect):
 
     def __init__(self, country_profile):
         self.country_profile = country_profile
-        self.siv_list = []
-        self.meursing_list = []
-        self.vessels_list = []
-        self.civilair_list = []
-        self.airworthiness_list = []
-        self.aircraft_list = []
-        self.pharmaceuticals_list = []
-        self.ita_list = []
-        self.generalrelief_list = []
-        self.authoriseduse_list = []
-        self.seasonal_list = []
-        self.special_list = []
-        self.section_chapter_list = []
-        self.lstFootnotes = []
-        self.lstFootnotesUnique = []
         self.debug = False
-        self.suppress_duties = False
         self.country_codes = ""
-        self.siv_data_list = []
-        self.seasonal_fta_duties = []
-        self.meursing_components = []
-
-        self.partial_temporary_stops = []
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
         self.CSV_DIR = os.path.join(self.BASE_DIR, "csv")
         self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
-
-        self.CONFIG_DIR = os.path.join(self.BASE_DIR, "config")
-        self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config_common.json")
-        self.CONFIG_FILE_LOCAL = os.path.join(
-            self.CONFIG_DIR,
-            "config_migrate_measures_and_quotas.json",
-        )
-        self.BALANCE_FILE = os.path.join(self.CONFIG_DIR, "quota_volume_master.csv")
-        self.MODEL_DIR = os.path.join(self.BASE_DIR, "model")
-        self.WORD_DIR = os.path.join(self.MODEL_DIR, "word")
-        self.DOCPROPS_DIR = os.path.join(self.MODEL_DIR, "docProps")
 
         # For the output folders
         self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
@@ -69,7 +35,7 @@ class Application(DatabaseConnect):
         self.all_country_profiles = {}
         self.exclusion_check = ""
 
-    def _get_config(self):
+    def _get_config(self,):
         self.get_config()
 
         # Unless we are running a sequence, find the country code
@@ -77,14 +43,8 @@ class Application(DatabaseConnect):
         self.get_country_list()
         self.geo_ids = f.list_to_sql(self.country_codes)
 
-    def create_document(self):
-        # Create the document
-        my_document = Document(self)
-        self.get_meursing_components()
-        has_quotas = my_document.check_for_quotas()
-
+    def get_commodities_for_local_sivs(self):
         # Get commodities where there is a local SIV
-
         rows = self.execute_sql(
             GET_COMMODITIES_SQL.format(geo_ids=self.geo_ids)
         )
@@ -109,9 +69,17 @@ class Application(DatabaseConnect):
             self.local_sivs.append(obj)
             self.local_sivs_commodities_only.append(goods_nomenclature_item_id)
 
+    def create_document(self):
+        # Create the document
+        my_document = Document(self)
+        self.get_meursing_components()
+
+        # Get commodities where there is a local SIV
+        self.get_commodities_for_local_sivs()
+
         # Create the measures table
         my_document.get_duties("preferences")
-        context_data = my_document.print_tariffs()
+        tariff_data = my_document.print_tariffs()
 
         # Create the quotas table
         my_document.get_duties("quotas")
@@ -121,18 +89,32 @@ class Application(DatabaseConnect):
         my_document.get_quota_definitions()
         quota_data = my_document.print_quotas()
 
-        self.readTemplates(has_quotas, context_data, quota_data)
+        context_data = {
+            'AGREEMENT_NAME': self.agreement_name,
+            'VERSION': self.version,
+            'AGREEMENT_DATE': self.agreement_date_long,
+            'AGREEMENT_DATE_SHORT': self.agreement_date_short,
+            'COUNTRY_NAME': self.country_name,
+            **tariff_data,
+            **quota_data,
+        }
+
         # Personalise and write the document
-        my_document.write()
-        f.log("\nPROCESS COMPLETE - file written to " + my_document.FILENAME + "\n")
+        my_document.create_document(context_data)
 
     def get_config(self):
+        config_dir = os.path.join(self.BASE_DIR, "config")
+        config_file = os.path.join(config_dir, "config_common.json")
+        config_file_local = os.path.join(
+            config_dir,
+            "config_migrate_measures_and_quotas.json",
+        )
         # Get global config items
-        with open(self.CONFIG_FILE, 'r') as f:
+        with open(config_file, 'r') as f:
             my_dict = json.load(f)
 
         # Get local config items
-        with open(self.CONFIG_FILE_LOCAL, 'r') as f:
+        with open(config_file_local, 'r') as f:
             my_dict = json.load(f)
 
         self.all_country_profiles = my_dict['country_profiles']
@@ -161,38 +143,6 @@ class Application(DatabaseConnect):
         self.table_per_country = profile["table_per_country"]
         self.version = profile["version"]
         self.country_name = profile["country_name"]
-
-    def get_sections_chapters(self):
-        # MPP: TODO Section chapters not used removed from create_fta
-
-        rows_sections_chapters = self.execute_sql(GET_SECTIONS_CHAPTERS_SQL, dict_cursor=True)
-        for rd in rows_sections_chapters:
-            self.section_chapter_list.append([rd['chapter'], ['section_id'], False])
-
-        # The last parameter is "1" if the chapter equates to a new section
-        iLastSection = -1
-        for r in self.section_chapter_list:
-            iSection = r[1]
-            if iSection != iLastSection:
-                r[2] = True
-            iLastSection = iSection
-
-    def readTemplates(self, has_quotas, context, quota_data):
-        document_template = "xml/document_noquotas.xml"
-        if has_quotas:
-            document_template = "xml/document_hasquotas.xml"
-
-        agreement_data = {
-            'AGREEMENT_NAME': self.agreement_name,
-            'VERSION': self.version,
-            'AGREEMENT_DATE': self.agreement_date_long,
-            'AGREEMENT_DATE_SHORT': self.agreement_date_short,
-            'COUNTRY_NAME': self.country_name,
-            **context,
-            **quota_data,
-        }
-
-        self.sDocumentXML = render_to_string(document_template, agreement_data)
 
     def get_mfns_for_siv_products(self):
         f.log(" - Getting MFNs for SIV products")
