@@ -65,14 +65,6 @@ def get_application(country_profile):
         return Application(country_profile)
 
 
-@pytest.mark.xfail
-def test_get_section_chapters():
-    application = get_application('israel')
-    application.get_sections_chapters()
-    # MPP: TODO if required add Sections and ChaptersSections models and link to GoodsNomenclature
-    assert application.section_chapter_list == []
-
-
 def test_get_meursing_components(create_meursing_components):
     assert MeursingComponents.objects.count() == 5
     application = get_application('israel')

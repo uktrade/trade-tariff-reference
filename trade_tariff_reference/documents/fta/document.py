@@ -1,9 +1,9 @@
 from datetime import datetime
 import os
-import re
 import csv
 import codecs
 
+from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import documents.fta.functions as f
 
@@ -24,15 +24,13 @@ class Document:
         self.application = application
         self.footnote_list = []
         self.duty_list = []
-        self.balance_list = []
+        self.balance_dict = {}
         self.supplementary_unit_list = []
         self.seasonal_records = 0
         self.wide_duty = False
 
         f.log("Creating FTA document for " + application.country_name + "\n")
         self.application.get_mfns_for_siv_products()
-
-        self.document_xml = ""
 
     def check_for_quotas(self):
         rows = self.application.execute_sql(
@@ -309,8 +307,9 @@ class Document:
         f.log(" - Getting quota balances from CSV")
         if self.has_quotas is False:
             return
-        with open(self.application.BALANCE_FILE, "r") as balance_file:
-            reader = csv.reader(balance_file)
+        balance_file = os.path.join(self.application.BASE_DIR, "config/quota_volume_master.csv")
+        with open(balance_file, "r") as balance_file_contents:
+            reader = csv.reader(balance_file_contents)
             temp = list(reader)
         for balance in temp:
             try:
@@ -325,16 +324,15 @@ class Document:
                 addendum = balance[14].strip()
                 scope = balance[15].strip()
 
-                if measurement_unit_code == "KGM":
-                    measurement_unit_code = "KGM"
-
                 if quota_order_number_id not in ("", "Quota order number"):
                     qb = QuotaBalance(
                         quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
                         measurement_unit_code, origin_quota, addendum, scope
                     )
-
-                    self.balance_list.append(qb)
+                    if str(quota_order_number_id) in self.balance_dict:
+                        pass
+                    # MPP: TODO old behaviour would use the first one added to the list this will use the last. Does it matter?
+                    self.balance_dict[str(quota_order_number_id)] = qb
             except:
                 pass
 
@@ -374,21 +372,14 @@ class Document:
                 critical_state, critical_threshold, monetary_unit_code, measurement_unit_qualifier_code
             )
 
-            found_matching_balance = None
-            if len(self.balance_list) > 0:
-                found_matching_balance = False
-                for qb in self.balance_list:
-                    if str(qb.quota_order_number_id) == str(qd.quota_order_number_id):
-                        found_matching_balance = True
-                        # print(qd.quota_order_number_id)
-                        qd.initial_volume = f.mnum(qb.y1_balance)
-                        qd.volume_yx = f.mnum(qb.yx_balance)
-                        qd.addendum = qb.addendum
-                        qd.scope = qb.scope
-                        qd.format_volumes()
-                        break
-
-            if found_matching_balance is False:
+            qb = self.balance_dict.get(str(qd.quota_order_number_id))
+            if qb:
+                qd.initial_volume = f.mnum(qb.y1_balance)
+                qd.volume_yx = f.mnum(qb.yx_balance)
+                qd.addendum = qb.addendum
+                qd.scope = qb.scope
+                qd.format_volumes()
+            else:
                 f.log(f"Matching balance not found {qd.quota_order_number_id}")
             qd.format_volumes()
             self.quota_definition_list.append(qd)
@@ -398,26 +389,28 @@ class Document:
         # Stop press: I need to also assign the 2019 balance from the CSV, as this is a process run entirely against
         # the EU's files, not the UK's
         for qon in self.quota_order_number_list:
-            if qon.quota_order_number_id[0:3] == "094":
+            qb = self.balance_dict.get(str(qon.quota_order_number_id))
+            if qon.quota_order_number_id[0:3] == "094" and qb:
                 # For licensed quotas, we need to create a brand new (artifical, not DB-persisted)
                 # definition, for use in the creation of the FTA document only
-                if len(self.balance_list) > 0:
-                    for qb in self.balance_list:
-                        if qb.quota_order_number_id == qon.quota_order_number_id:
-                            if qb.measurement_unit_code == "":
-                                qb.measurement_unit_code = "KGM"
-                            d1 = datetime.strptime(qb.yx_start, "%d/%m/%Y")
-                            d2 = qb.yx_end
-                            qd = QuotaDefinition(
-                                0, qon.quota_order_number_id, d1, d2, 0, int(qb.y1_balance), int(qb.y1_balance),
-                                qb.measurement_unit_code, 3, "Y", 90, "", ""
-                            )
-                            qd.volume_yx = int(qb.yx_balance)
-                            qd.addendum = qb.addendum.strip()
-                            qd.scope = qb.scope.strip()
-                            qd.format_volumes()
-                            self.quota_definition_list.append(qd)
-                            break
+                if qb.measurement_unit_code == "":
+                    qb.measurement_unit_code = "KGM"
+                d1 = datetime.strptime(qb.yx_start, "%d/%m/%Y")
+                d2 = qb.yx_end
+                qd = QuotaDefinition(
+                    0, qon.quota_order_number_id, d1, d2, 0, int(qb.y1_balance), int(qb.y1_balance),
+                    qb.measurement_unit_code, 3, "Y", 90, "", ""
+                )
+                qd.volume_yx = int(qb.yx_balance)
+                qd.addendum = qb.addendum.strip()
+                qd.scope = qb.scope.strip()
+                qd.format_volumes()
+                self.quota_definition_list.append(qd)
+            if qb:
+                # Now get the quota origins from the balance file
+                # Now get the 2019 start date from the balance file
+                qon.origin_quota = qb.origin_quota
+                qon.validity_start_date_2019 = qb.validity_start_date_2019
 
         # Finally, add the quota definitions, replete with their new balances
         # to the relevant quota order numbers
@@ -427,39 +420,15 @@ class Document:
                     qon.quota_definition_list.append(qd)
                     break
 
-        # Now get the quota origins from the balance file
-        for qon in self.quota_order_number_list:
-            if len(self.balance_list) > 0:
-                for qb in self.balance_list:
-                    if qb.quota_order_number_id == qon.quota_order_number_id:
-                        qon.origin_quota = qb.origin_quota
-                        break
-
-        # Now get the 2019 start date from the balance file
-        for qon in self.quota_order_number_list:
-            if len(self.balance_list) > 0:
-                for qb in self.balance_list:
-                    if qb.quota_order_number_id == qon.quota_order_number_id:
-                        qon.validity_start_date_2019 = qb.validity_start_date_2019
-                        # qon.validity_end_date_2019 = qb.validity_end_date_2019
-                        break
-
     def print_quotas(self):
         f.log(" - Getting quotas")
-
         quota_list = []
         for qon in self.quota_order_number_list:
 
             # Check balance info has been provided, if not then do not display
-            balance_found = False
-            for bal in self.balance_list:
-                if bal.quota_order_number_id == qon.quota_order_number_id:
-                    balance_found = True
-                    break
+            qb = self.balance_dict.get(str(qon.quota_order_number_id))
 
-            # if not balance_found:
-            # print("Quota balance not found", qon.quota_order_number_id)
-            if balance_found:
+            if qb:
                 if len(qon.quota_definition_list) > 1:
                     f.log("More than one definition - we must be in Morocco")
 
@@ -589,25 +558,35 @@ class Document:
             'WIDTH_QUOTA_CLOSE_DATE': '10',
             'WIDTH_2019_QUOTA_VOLUME': '16',
             'QUOTA_TABLE_ROWS': quota_list,
+            'HAS_QUOTAS': True,
         }
         return quota_data
 
-    def write(self):
+    def create_document(self, context):
+        document_template = "xml/document_noquotas.xml"
+        if context.get('HAS_QUOTAS'):
+            document_template = "xml/document_hasquotas.xml"
+        document_xml = render_to_string(document_template, context)
+        self.write(document_xml)
+
+    def write(self, document_xml):
         ###########################################################################
         # WRITE document.xml
         ###########################################################################
-        FILENAME = os.path.join(self.application.WORD_DIR, "document.xml")
+        model_dir = os.path.join(self.application.BASE_DIR, "model")
+        word_dir = os.path.join(model_dir, "word")
+        file_name = os.path.join(word_dir, "document.xml")
 
-        file = codecs.open(FILENAME, "w", "utf-8")
-        file.write(self.application.sDocumentXML)
+        file = codecs.open(file_name, "w", "utf-8")
+        file.write(document_xml)
         file.close()
 
         ###########################################################################
         # Finally, ZIP everything up
         ###########################################################################
-        self.FILENAME = self.application.country_profile + "_annex.docx"
-        self.word_filename = os.path.join(self.application.OUTPUT_DIR, self.FILENAME)
-        f.zipdir(self.word_filename)
+        docx_file_name = self.application.country_profile + "_annex.docx"
+        f.zipdir(os.path.join(self.application.OUTPUT_DIR, docx_file_name))
+        f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
 
     def print_tariffs(self):
         print(" - Getting preferential duties")

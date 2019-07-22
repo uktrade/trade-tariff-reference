@@ -14,12 +14,11 @@ def test_document_initialise():
     document = Document(application)
     document.application.get_mfns_for_siv_products.assert_called_with()
     assert document.footnote_list == []
-    assert document.balance_list == []
+    assert document.balance_dict == {}
     assert document.duty_list == []
     assert document.supplementary_unit_list == []
     assert document.seasonal_records == 0
     assert document.wide_duty is False
-    assert document.document_xml == ""
 
 
 def test_check_for_quotas_is_false():
