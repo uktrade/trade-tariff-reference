@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class TariffConfig(AppConfig):
-    name = 'tariff'
+    name = 'trade_tariff_reference.tariff'

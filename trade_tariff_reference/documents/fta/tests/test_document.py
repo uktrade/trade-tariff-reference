@@ -1,10 +1,10 @@
-import pytest
-
 from unittest import mock
 
+import pytest
+
 from trade_tariff_reference.documents.fta.document import Document
-from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
 from trade_tariff_reference.documents.fta.tests.test_application import get_application, get_mfn_siv_product
+from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
 
 pytestmark = pytest.mark.django_db
 

@@ -1,19 +1,19 @@
-import pytest
-
-from unittest import mock
 import datetime
 from datetime import timezone
+from unittest import mock
+
+import pytest
 
 from trade_tariff_reference.documents.fta.application import Application
-from trade_tariff_reference.tariff.tests.factories import (
-    MeursingComponentsFactory,
-    MeasureFactory,
-    MeasureConditionFactory,
-    MeasureConditionComponentFactory,
-)
+from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
+from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.tariff.models import MeursingComponents
-from documents.fta.mfn_duty import MfnDuty
-from documents.fta.exceptions import CountryProfileError
+from trade_tariff_reference.tariff.tests.factories import (
+    MeasureConditionComponentFactory,
+    MeasureConditionFactory,
+    MeasureFactory,
+    MeursingComponentsFactory,
+)
 
 
 pytestmark = pytest.mark.django_db

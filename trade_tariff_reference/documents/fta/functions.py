@@ -1,8 +1,9 @@
 # Import standard modules
 from __future__ import with_statement
-from contextlib import closing
-from zipfile import ZipFile, ZIP_DEFLATED
+
 import os
+from contextlib import closing
+from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def zipdir(archivename):

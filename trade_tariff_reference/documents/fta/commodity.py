@@ -1,7 +1,7 @@
 from datetime import datetime
 
-import documents.fta.functions as functions
-from documents.fta.measure import Period
+import trade_tariff_reference.documents.fta.functions as functions
+from trade_tariff_reference.documents.fta.measure import Period
 
 
 class Commodity:

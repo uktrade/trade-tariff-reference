@@ -1,16 +1,20 @@
+import json
 import os
 import os.path
-import json
-
 from datetime import datetime
 
-import documents.fta.functions as f
-from documents.fta.exceptions import CountryProfileError
-from documents.fta.constants import *
-from documents.fta.database import DatabaseConnect
-from documents.fta.document import Document
-from documents.fta.mfn_duty import MfnDuty
-from documents.fta.local_siv import LocalSiv
+import trade_tariff_reference.documents.fta.functions as f
+from trade_tariff_reference.documents.fta.constants import (
+    GET_COMMODITIES_SQL,
+    GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
+    GET_MEUSRING_PERCENTAGE_SQL,
+    GET_MFNS_FOR_SIV_PRODUCTS_SQL,
+)
+from trade_tariff_reference.documents.fta.database import DatabaseConnect
+from trade_tariff_reference.documents.fta.document import Document
+from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
+from trade_tariff_reference.documents.fta.local_siv import LocalSiv
+from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 
 
 class Application(DatabaseConnect):
