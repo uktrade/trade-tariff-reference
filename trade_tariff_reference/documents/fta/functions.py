@@ -6,15 +6,13 @@ from contextlib import closing
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
-def zipdir(archivename):
-    BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-    MODEL_DIR = os.path.join(BASE_DIR, "model")
-    with closing(ZipFile(archivename, "w", ZIP_DEFLATED)) as z:
-        for root, dirs, files in os.walk(MODEL_DIR):
+def zipdir(directory_name, document_name):
+    with closing(ZipFile(document_name, "w", ZIP_DEFLATED)) as z:
+        for root, dirs, files in os.walk(directory_name):
             # NOTE: ignore empty directories
             for fn in files:
                 absfn = os.path.join(root, fn)
-                zfn = absfn[len(MODEL_DIR)+len(os.sep):]  # XXX: relative path
+                zfn = absfn[len(directory_name) + len(os.sep):]  # XXX: relative path
                 z.write(absfn, zfn)
 
 

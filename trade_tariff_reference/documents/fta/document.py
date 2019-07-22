@@ -1,7 +1,10 @@
 import codecs
 import csv
 import os
+import shutil
+import tempfile
 from datetime import datetime
+from distutils.dir_util import copy_tree
 
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -581,44 +584,36 @@ class Document:
         self.write(document_xml)
 
     def write(self, document_xml):
-        ###########################################################################
-        # WRITE document.xml
-        ###########################################################################
         model_dir = os.path.join(self.application.BASE_DIR, "model")
         word_dir = os.path.join(model_dir, "word")
-        file_name = os.path.join(word_dir, "document.xml")
 
-        file = codecs.open(file_name, "w", "utf-8")
-        file.write(document_xml)
-        file.close()
-
-        ###########################################################################
-        # Finally, ZIP everything up
-        ###########################################################################
         docx_file_name = self.application.country_profile + "_annex.docx"
-        f.zipdir(os.path.join(self.application.OUTPUT_DIR, docx_file_name))
+        self.build_word_document(word_dir, docx_file_name, document_xml)
+
+    def build_word_document(self, word_dir, docx_file_name, document_xml):
+        with tempfile.TemporaryDirectory(prefix='docx_generation') as tmp_directory_name:
+            copy_tree(word_dir, tmp_directory_name)
+
+            xml_document_file_name = os.path.join(tmp_directory_name, "document.xml")
+            file = codecs.open(xml_document_file_name, "w", "utf-8")
+            file.write(document_xml)
+            file.close()
+
+            full_file_name = os.path.join(tmp_directory_name, docx_file_name)
+            f.zipdir(tmp_directory_name, full_file_name)
+
+            ###########################################################################
+            # Temporarily copy the files back to old locations so all changes are evident
+            # MPP: TODO: Remove the two copy commands
+            ###########################################################################
+
+            shutil.copy2(full_file_name, self.application.OUTPUT_DIR)
+            shutil.copy2(xml_document_file_name, word_dir)
+
         f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
 
     def print_tariffs(self):
-        print(" - Getting preferential duties")
-
-        # Run a check to ensure that there are no 10 digit codes being added to the extract
-        # where the 8 digit code is also being displayed, and the duties are the same
-        # I may need this again
-        """
-        for my_measure in measure_list:
-            if my_measure.commodity_code[8:] != "00":
-                my_duty = my_measure.combined_duty
-                for sub_commodity in measure_list:
-                    if sub_commodity.commodity_code == my_measure.commodity_code[0:8] + "00":
-                        if sub_commodity.combined_duty == my_duty:
-                            my_measure.suppress_row = True
-        """
-
-        ###########################################################################
-        # Output the rows to buffer
-        ###########################################################################
-
+        f.log(" - Getting preferential duties")
         table_rows = []
         for c in self.commodity_list:
             if c.suppress is False:
