@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
+
+env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -138,4 +141,4 @@ MANAGE_TARIFF_DATABASE = False
 SASS_OUTPUT_STYLE = 'compressed'
 
 
-TARIFF_MANAGEMENT_URL = os.environ.get('TARIFF_MANAGEMENT_URL')
+TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
