@@ -107,6 +107,9 @@ class Application(DatabaseConnect):
         my_document.create_document(context_data)
 
     def get_config(self):
+        self.all_country_profiles = self.get_all_country_profiles()
+
+    def get_all_country_profiles(self):
         config_dir = os.path.join(self.BASE_DIR, "config")
         config_file = os.path.join(config_dir, "config_common.json")
         config_file_local = os.path.join(
@@ -120,8 +123,7 @@ class Application(DatabaseConnect):
         # Get local config items
         with open(config_file_local, 'r') as f:
             my_dict = json.load(f)
-
-        self.all_country_profiles = my_dict['country_profiles']
+        return my_dict['country_profiles']
 
     def get_country_list(self):
         try:
