@@ -142,3 +142,15 @@ SASS_OUTPUT_STYLE = 'compressed'
 
 
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
+
+CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
+CELERY_BROKER_URL = 'redis://trade_application_redis:6379'
+
+# from celery.schedules import crontab
+# CELERY_BEAT_SCHEDULE = {
+#     'generate-document': {
+#         'task': 'trade_tariff_reference.documents.tasks.generate_document',
+#         'schedule': crontab(minute='*/5'),
+#         'args': ('israel',),
+#     },
+# }

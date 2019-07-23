@@ -9,12 +9,29 @@ services:
     volumes:
       - .:/app
     env_file: .env
-    entrypoint: dockerize -wait tcp://trade_application_db:5432
+    entrypoint: dockerize -wait tcp://trade_application_db:5432 -wait tcp://trade_application_redis:6379 -timeout 120s
     depends_on:
       - trade_application_db
+      - trade_application_redis
+      - trade_application_celery
     command: /app/start.sh
 
   trade_application_db:
     image: postgres:11
     restart: always
     env_file: .env
+
+  trade_application_redis:
+    image: redis:3.2
+    restart: always
+    ports:
+      - "6378:6379"
+
+  trade_application_celery:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    entrypoint: dockerize -wait tcp://trade_application_db:5432 -wait tcp://trade_application_redis:6379 -timeout 120s
+    env_file: .env
+    command: watchmedo auto-restart -d . -R -p '*.py' -- celery worker -A config -l info -Q celery -B

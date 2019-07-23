@@ -3,7 +3,7 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path('', include('core.urls', namespace='core')),
-    path('schedule/', include('schedule.urls', namespace='schedule')),
+    path('', include('trade_tariff_reference.core.urls', namespace='core')),
+    path('schedule/', include('trade_tariff_reference.schedule.urls', namespace='schedule')),
     path('admin/', admin.site.urls)
 ]
