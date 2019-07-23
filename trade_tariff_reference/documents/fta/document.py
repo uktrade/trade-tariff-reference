@@ -1,7 +1,6 @@
 import codecs
 import csv
 import os
-import shutil
 import tempfile
 from datetime import datetime
 from distutils.dir_util import copy_tree
@@ -584,33 +583,27 @@ class Document:
         self.write(document_xml)
 
     def write(self, document_xml):
-        model_dir = os.path.join(self.application.BASE_DIR, "model")
-        word_dir = os.path.join(model_dir, "word")
-
+        ###########################################################################
+        # WRITE document.xml
+        ###########################################################################
+        model_dir = os.path.join(self.application.BASE_DIR, 'model')
         docx_file_name = self.application.country_profile + "_annex.docx"
-        self.build_word_document(word_dir, docx_file_name, document_xml)
 
-    def build_word_document(self, word_dir, docx_file_name, document_xml):
-        with tempfile.TemporaryDirectory(prefix='docx_generation') as tmp_directory_name:
-            copy_tree(word_dir, tmp_directory_name)
+        with tempfile.TemporaryDirectory(prefix='document_generation') as tmp_model_dir:
+            copy_tree(model_dir, tmp_model_dir)
 
-            xml_document_file_name = os.path.join(tmp_directory_name, "document.xml")
-            file = codecs.open(xml_document_file_name, "w", "utf-8")
+            tmp_word_dir = os.path.join(tmp_model_dir, "word")
+
+            file_name = os.path.join(tmp_word_dir, "document.xml")
+            file = codecs.open(file_name, "w", "utf-8")
             file.write(document_xml)
             file.close()
 
-            full_file_name = os.path.join(tmp_directory_name, docx_file_name)
-            f.zipdir(tmp_directory_name, full_file_name)
-
             ###########################################################################
-            # Temporarily copy the files back to old locations so all changes are evident
-            # MPP: TODO: Remove the two copy commands
+            # Finally, ZIP everything up
             ###########################################################################
-
-            shutil.copy2(full_file_name, self.application.OUTPUT_DIR)
-            shutil.copy2(xml_document_file_name, word_dir)
-
-        f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
+            f.zipdir(tmp_model_dir, os.path.join(self.application.OUTPUT_DIR, docx_file_name))
+            f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
 
     def print_tariffs(self):
         f.log(" - Getting preferential duties")
