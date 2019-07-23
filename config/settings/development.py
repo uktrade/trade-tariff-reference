@@ -1,24 +1,24 @@
 from .base import *
 
+DEBUG = env.bool('DEBUG')
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST'),
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
     },
     'tariff': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('UK_TARIFF_DB'),
-        'USER': os.environ.get('UK_TARIFF_USER'),
-        'PASSWORD': os.environ.get('UK_TARIFF_PASSWORD'),
-        'HOST': os.environ.get('UK_TARIFF_HOST'),
+        'NAME': env('UK_TARIFF_DB'),
+        'USER': env('UK_TARIFF_USER'),
+        'PASSWORD': env('UK_TARIFF_PASSWORD'),
+        'HOST': env('UK_TARIFF_HOST'),
     }
 }
 

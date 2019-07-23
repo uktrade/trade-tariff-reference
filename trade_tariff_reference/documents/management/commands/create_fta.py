@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from documents.fta.application import Application
+from trade_tariff_reference.documents.tasks import generate_document
 
 
 class Command(BaseCommand):
@@ -11,6 +11,4 @@ class Command(BaseCommand):
         parser.add_argument('country_profile', type=str)
 
     def handle(self, *args, **options):
-        app = Application(country_profile=options['country_profile'])
-        app.create_document()
-        app.shutDown()
+        generate_document.delay(options['country_profile'])
