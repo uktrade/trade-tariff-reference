@@ -38,12 +38,12 @@ class Document:
         self.seasonal_records = 0
         self.wide_duty = False
 
-        f.log("Creating FTA document for " + application.country_name + "\n")
+        f.log("Creating FTA document for " + application.agreement.country_name + "\n")
         self.application.get_mfns_for_siv_products()
 
     def check_for_quotas(self):
         rows = self.application.execute_sql(
-            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.geo_ids)
+            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.agreement.geo_ids)
         )
         if len(rows) == 0:
             f.log(" - This FTA has no quotas")
@@ -63,7 +63,10 @@ class Document:
         measure_condition_list = []
 
         rows = self.application.execute_sql(
-            GET_MEASURE_COMPONENTS_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids),
+            GET_MEASURE_COMPONENTS_SQL.format(
+                measure_type_list=measure_type_list,
+                geo_ids=self.application.agreement.geo_ids,
+            ),
             dict_cursor=True
         )
         for row in rows:
@@ -74,18 +77,19 @@ class Document:
     def get_exclusion_list(self):
         exclusion_list = []
 
-        if not self.application.exclusion_check:
+        if not self.application.agreement.exclusion_check:
             return exclusion_list
 
         rows = self.application.execute_sql(
-            CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.exclusion_check), dict_cursor=True
+            CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.agreement.exclusion_check),
+            dict_cursor=True
         )
 
         return [row['measure_sid'] for row in rows]
 
     def _get_duties(self, measure_type_list):
         return self.application.execute_sql(
-            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.geo_ids)
+            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids)
         )
 
     def get_duties(self, instrument_type):
@@ -214,7 +218,7 @@ class Document:
         # Get unique order numbers
 
         rows = self.application.execute_sql(
-            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.geo_ids),
+            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.agreement.geo_ids),
         )
         if len(rows) == 0:
             self.has_quotas = False
@@ -224,31 +228,18 @@ class Document:
 
         self.quota_order_number_list = []
         self.q = []
-        quota_order_number_list_flattened = ""
-        csv_text = ""
         for row in rows:
             quota_order_number_id = row[0]
             qon = QuotaOrderNumber(quota_order_number_id)
             self.quota_order_number_list.append(qon)
             self.q.append(quota_order_number_id)
-            quota_order_number_list_flattened += "'" + quota_order_number_id + "',"
-            csv_text += quota_order_number_id + "\n"
-
-        quota_order_number_list_flattened = quota_order_number_list_flattened.strip()
-        quota_order_number_list_flattened = quota_order_number_list_flattened.strip(",")
-
-        # Get the partial temporary stops, so that we can omit the suspended measures
-        filename = os.path.join(self.application.CSV_DIR, self.application.country_profile + "_quotas.csv")
-        file = codecs.open(filename, "w", "utf-8")
-        file.write(csv_text)
-        file.close()
 
     def get_quota_measures(self):
         # print(len(self.commodity_list))
         # Get the measures - in order to get the commodity codes and the duties
         # Just get the commodities and add to an array
         rows = self.application.execute_sql(
-            GET_QUOTA_MEASURES_SQL.format(geo_ids=self.application.geo_ids),
+            GET_QUOTA_MEASURES_SQL.format(geo_ids=self.application.agreement.geo_ids),
         )
         if len(rows) == 0:
             self.has_quotas = False
@@ -584,7 +575,7 @@ class Document:
         # WRITE document.xml
         ###########################################################################
         model_dir = os.path.join(self.application.BASE_DIR, 'model')
-        docx_file_name = self.application.country_profile + "_annex.docx"
+        docx_file_name = self.application.agreement.slug + "_annex.docx"
 
         with tempfile.TemporaryDirectory(prefix='document_generation') as tmp_model_dir:
             copy_tree(model_dir, tmp_model_dir)

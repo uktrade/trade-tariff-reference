@@ -1,12 +1,12 @@
 import datetime
 from datetime import timezone
-from unittest import mock
 
 import pytest
 
 from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.tariff.models import MeursingComponents
 from trade_tariff_reference.tariff.tests.factories import (
     MeasureConditionComponentFactory,
@@ -60,9 +60,8 @@ def get_mfn_siv_product(
 
 
 def get_application(country_profile):
-    with mock.patch('trade_tariff_reference.documents.fta.application.Application._get_config') as mock_get_config:
-        mock_get_config.return_value = None
-        return Application(country_profile)
+    AgreementFactory(country_name=country_profile, slug=country_profile)
+    return Application(country_profile)
 
 
 def test_get_meursing_components(create_meursing_components):
@@ -159,55 +158,37 @@ def test_get_mfns_for_siv_products_with_products():
     assert actual_mfn_duty.validity_end_date == datetime.datetime(2019, 1, 2, 1, 0, 0, tzinfo=timezone.utc)
 
 
-def test_get_country_list_unknown_profile_raises_exception():
-    application = get_application('israel')
+def test_unknown_country_profile_raises_exception():
     with pytest.raises(CountryProfileError) as error:
-        application.get_country_list()
+        Application('israel')
     assert str(error.value) == 'Country profile does not exist'
 
 
-def test_get_country_list_profile_without_country_codes_raises_exception():
-    application = get_application('israel')
-    application.all_country_profiles = {'israel': {}}
+def test_agreement_raises_error_when_no_country_codes_are_associated():
+    AgreementFactory(
+        slug='israel',
+        country_name='israel',
+        version='2.0',
+        country_codes=[],
+        agreement_date='2019-01-01',
+    )
+
     with pytest.raises(CountryProfileError) as error:
-        application.get_country_list()
+        Application('israel')
     assert str(error.value) == 'Country profile has no country codes'
 
 
-def test_get_country_list_profile_without_exclusion_check():
-    application = get_application('israel')
-    application.all_country_profiles = {
-        'israel': {
-            'country_name': 'country',
-            'version': '1.0',
-            'table_per_country': 0,
-            'agreement_name': 'Agreement',
-            'agreement_date': '05/02/2019',
-            'country_codes': []
-        }
-    }
-    application.get_country_list()
-    assert application.exclusion_check == ''
-
-
-def test_get_country_list_profile():
-    application = get_application('israel')
-    application.all_country_profiles = {
-        'israel': {
-            'country_name': 'country',
-            'version': '1.0',
-            'table_per_country': 0,
-            'agreement_name': 'Agreement',
-            'agreement_date': '05/02/2019',
-            'country_codes': [],
-            'exclusion_check': '12345'
-        }
-    }
-    application.get_country_list()
-    assert application.exclusion_check == '12345'
-    assert application.country_name == 'country'
-    assert application.version == '1.0'
-    assert application.agreement_name == 'Agreement'
-    assert application.agreement_date_short == '05/02/2019'
-    assert application.agreement_date_long == '5 February 2019'
-    assert application.country_codes == []
+def test_agreement_properties_set():
+    AgreementFactory(
+        slug='israel',
+        country_name='israel',
+        version='2.0',
+        country_codes=['IS', '2334'],
+        agreement_date='2019-01-01',
+    )
+    application = Application('israel')
+    assert application.agreement.exclusion_check == ''
+    assert application.agreement.slug == 'israel'
+    assert application.agreement.geo_ids == "'IS', '2334'"
+    assert application.agreement.agreement_date_short == '01/01/2019'
+    assert application.agreement.agreement_date_long == '1 January 2019'

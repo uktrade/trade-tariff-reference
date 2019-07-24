@@ -1,14 +1,16 @@
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
+from trade_tariff_reference.documents.fta.functions import list_to_sql
 from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
 
 
 class Agreement(models.Model):
-    slug = models.SlugField(null=True, blank=True, verbose_name='Unique ID')
+    slug = models.SlugField(null=True, blank=True, verbose_name='Unique ID', unique=True)
 
     country_codes = ArrayField(
         models.CharField(max_length=6),
@@ -19,6 +21,20 @@ class Agreement(models.Model):
     version = models.CharField(max_length=20)
 
     country_name = models.CharField(max_length=200)
+
+    exclusion_check = models.CharField(max_length=100, default="")
+
+    @property
+    def geo_ids(self):
+        return list_to_sql(self.country_codes)
+
+    @property
+    def agreement_date_short(self):
+        return self.agreement_date.strftime('%d/%m/%Y') if self.agreement_date else ""
+
+    @property
+    def agreement_date_long(self):
+        return datetime.strftime(self.agreement_date, "%d %B %Y").lstrip("0")if self.agreement_date else ""
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'

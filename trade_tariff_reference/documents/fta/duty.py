@@ -100,7 +100,7 @@ class Duty:
         rebased_price = ""
         if (
             self.commodity_code in self.application.local_sivs_commodities_only
-            and self.application.country_profile == "morocco"
+            and self.application.agreement.slug == "morocco"
         ):
             rebased_price = self.get_rebased_price_string()
 
