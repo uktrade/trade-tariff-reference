@@ -187,7 +187,6 @@ def test_agreement_properties_set():
         agreement_date='2019-01-01',
     )
     application = Application('israel')
-    assert application.agreement.exclusion_check == ''
     assert application.agreement.slug == 'israel'
     assert application.agreement.geo_ids == "'IS', '2334'"
     assert application.agreement.agreement_date_short == '01/01/2019'

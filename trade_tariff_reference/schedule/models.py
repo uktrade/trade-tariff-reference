@@ -22,8 +22,6 @@ class Agreement(models.Model):
 
     country_name = models.CharField(max_length=200)
 
-    exclusion_check = models.CharField(max_length=100, default="")
-
     @property
     def geo_ids(self):
         return list_to_sql(self.country_codes)

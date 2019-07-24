@@ -6,7 +6,7 @@ from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.tests.test_application import get_mfn_siv_product
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
-from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
+from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory
 
 
 pytestmark = pytest.mark.django_db
@@ -53,24 +53,6 @@ def test_get_measure_type_list_for_instrument_type(instrument_type, expected_res
     document = Document(application)
     actual_result = document.get_measure_type_list_for_instrument_type(instrument_type)
     assert actual_result == expected_result
-
-
-def test_check_exclusion_check():
-    measure = CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
-    MeasureExcludedGeographicalAreaFactory(measure_sid=measure.measure_sid, excluded_geographical_area='America')
-    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'], exclusion_check='America')
-    application = Application(country_profile='spain')
-    document = Document(application)
-    assert document.get_exclusion_list() == [measure.measure_sid]
-
-
-def test_check_exclusion_check_when_not_set():
-    measure = CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
-    MeasureExcludedGeographicalAreaFactory(measure_sid=measure.measure_sid, excluded_geographical_area='America')
-    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'], exclusion_check="")
-    application = Application(country_profile='spain')
-    document = Document(application)
-    assert document.get_exclusion_list() == []
 
 
 def test_get_measure_conditions():

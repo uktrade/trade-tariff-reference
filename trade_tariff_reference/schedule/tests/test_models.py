@@ -15,7 +15,6 @@ def test_agreement_model():
     )
 
     agreement.refresh_from_db()
-    assert agreement.exclusion_check == ''
     assert agreement.slug == 'israel'
     assert agreement.geo_ids == "'IS', '2334'"
     assert agreement.agreement_date_short == '01/01/2019'

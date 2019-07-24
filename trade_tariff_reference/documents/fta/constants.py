@@ -58,13 +58,6 @@ AND m.validity_start_date < '2019-12-31' AND m.validity_end_date >= '2018-01-01'
 ORDER BY measure_sid;
 """
 
-CHECK_COUNTRY_EXCLUSION_SQL = """
-SELECT m.measure_sid FROM measure_excluded_geographical_areas mega, ml.v5_2019 m
-WHERE m.measure_sid = mega.measure_sid
-AND excluded_geographical_area = '{exclusion_check}'
-ORDER BY validity_start_date DESC
-"""
-
 GET_DUTIES_SQL = """
 SELECT DISTINCT m.goods_nomenclature_item_id, m.additional_code_type_id, m.additional_code_id,
 m.measure_type_id, mc.duty_expression_id, mc.duty_amount, mc.monetary_unit_code,
