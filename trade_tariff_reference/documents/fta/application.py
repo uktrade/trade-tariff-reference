@@ -31,7 +31,6 @@ class Application(DatabaseConnect):
         self.connect()
 
         # MPP TODO: Move these
-        self.erga_omnes_average = None
         self.mfn_list = []
 
     def get_agreement(self, country_profile):
@@ -72,7 +71,6 @@ class Application(DatabaseConnect):
     def create_document(self):
         # Create the document
         my_document = Document(self)
-        self.get_meursing_components()
 
         # Get commodities where there is a local SIV
         self.get_commodities_for_local_sivs()
@@ -144,9 +142,10 @@ class Application(DatabaseConnect):
         return mfn_rate
 
     def get_meursing_components(self):
-        self.erga_omnes_average = self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
+        return self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
 
     def get_meursing_percentage(self, reduction_indicator, geographical_area_id):
+        erga_omnes_average = self.get_meursing_components()
         # Get the Erga Omnes Meursing average
         reduced_average = self.execute_sql(
             GET_MEUSRING_PERCENTAGE_SQL.format(
@@ -156,7 +155,7 @@ class Application(DatabaseConnect):
             only_one_row=True
         )[0]
         try:
-            reduction = round((reduced_average / self.erga_omnes_average) * 100)
+            reduction = round((reduced_average / erga_omnes_average) * 100)
         except TypeError:
             reduction = 100
         return reduction
