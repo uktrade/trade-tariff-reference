@@ -3,1444 +3,988 @@
     "model": "schedule.agreement",
     "pk": 1,
     "fields": {
-        "country_name": "All GSP",
-        "agreement_name": "n/a",
+        "slug": "southafrica",
+        "country_codes": "[\"ZA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and South Africa",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\", \"20\", \"20\", \"10\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "South Africa"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 2,
     "fields": {
-        "country_name": "1032 Transitional Protection Measure",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Albania",
+        "slug": "gsp",
+        "country_codes": "[\"2020\", \"2027\", \"2005\", \"1032\"]",
+        "gegraphical_area": null,
+        "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "All GSP"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 3,
     "fields": {
-        "country_name": "India and Pakistan",
-        "agreement_name": "n/a",
+        "slug": "tpm",
+        "country_codes": "[\"1032\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Albania",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"IN\", \"PK\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "1032 Transitional Protection Measure"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 4,
     "fields": {
-        "country_name": "Ceuta and Melilla",
+        "slug": "subcontinent",
+        "country_codes": "[\"IN\", \"PK\"]",
+        "gegraphical_area": null,
         "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\", \"XC\", \"XL\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "India and Pakistan"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 5,
     "fields": {
-        "country_name": "Ceuta and Melilla",
+        "slug": "ceutamelilla",
+        "country_codes": "[\"2050\", \"XC\", \"XL\"]",
+        "gegraphical_area": null,
         "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Ceuta and Melilla"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 6,
     "fields": {
-        "country_name": "Samoa",
+        "slug": "overseas_territories",
+        "country_codes": "[\"2080\"]",
+        "gegraphical_area": null,
         "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"WS\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Ceuta and Melilla"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 7,
     "fields": {
-        "country_name": "Miscellaneous",
+        "slug": "samoa",
+        "country_codes": "[\"WS\"]",
+        "gegraphical_area": null,
         "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"KH\"]",
-        "reg_list": "[\"n/a\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Samoa"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 8,
     "fields": {
-        "country_name": "Albania",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Albania",
+        "slug": "misc",
+        "country_codes": "[\"KH\"]",
+        "gegraphical_area": null,
+        "agreement_name": "n/a",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"AL\"]",
-        "reg_list": "[\"R090891\", \"D090332\", \"R061742\", \"R061916\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Miscellaneous"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 9,
     "fields": {
-        "country_name": "Algeria",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Algeria",
+        "slug": "albania",
+        "country_codes": "[\"AL\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Albania",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"DZ\"]",
-        "reg_list": "[\"R051460\", \"R051653\", \"D050690\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Albania"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 10,
     "fields": {
-        "country_name": "Andean",
-        "agreement_name": "TRADE AGREEMENT BETWEEN THE UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND, OF THE ONE PART, AND THE REPUBLIC OF COLOMBIA, THE REPUBLIC OF ECUADOR AND THE REPUBLIC OF PERU, OF THE OTHER PART",
+        "slug": "algeria",
+        "country_codes": "[\"DZ\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Algeria",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"CO\", \"EC\", \"PE\"]",
-        "reg_list": "[\"R130405\", \"R130741\", \"R170754\", \"R170120\", \"R130404\", \"R130740\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Algeria"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 11,
     "fields": {
-        "country_name": "Colombia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Colombia",
+        "slug": "andean",
+        "country_codes": "[\"CO\", \"EC\", \"PE\"]",
+        "gegraphical_area": null,
+        "agreement_name": "TRADE AGREEMENT BETWEEN THE UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND, OF THE ONE PART, AND THE REPUBLIC OF COLOMBIA, THE REPUBLIC OF ECUADOR AND THE REPUBLIC OF PERU, OF THE OTHER PART",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"CO\"]",
-        "reg_list": "[\"R130405\", \"R130741\", \"R170754\", \"R170120\", \"R130404\", \"R130740\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Andean"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 12,
     "fields": {
-        "country_name": "Ecuador",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Ecuador",
+        "slug": "colombia",
+        "country_codes": "[\"CO\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Colombia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"EC\"]",
-        "reg_list": "[\"R130405\", \"R130741\", \"R170754\", \"R170120\", \"R130404\", \"R130740\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Colombia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 13,
     "fields": {
-        "country_name": "Peru",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Peru",
+        "slug": "ecuador",
+        "country_codes": "[\"EC\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Ecuador",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"PE\"]",
-        "reg_list": "[\"R130405\", \"R130741\", \"R170754\", \"R170120\", \"R130404\", \"R130740\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Ecuador"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 14,
     "fields": {
-        "country_name": "Bosnia and Herzegovina",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Bosnia and Herzegovina",
+        "slug": "peru",
+        "country_codes": "[\"PE\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Peru",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"BA\"]",
-        "reg_list": "[\"R110343\", \"R110354\", \"R090891\", \"R101255\", \"D080474\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Peru"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 15,
     "fields": {
-        "country_name": "Cameroon",
-        "agreement_name": "Interim agreement with a view to an Economic Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Central Africa Party, of the other part",
+        "slug": "bosnia",
+        "country_codes": "[\"BA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Bosnia and Herzegovina",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"CM\"]",
-        "reg_list": "[\"D090152\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Bosnia and Herzegovina"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 16,
     "fields": {
-        "country_name": "Canada",
-        "agreement_name": "Agreement between the Government of the United Kingdom of Great Britain and Northern Ireland and the Government of Canada on Trade",
+        "slug": "cameroon",
+        "country_codes": "[\"CM\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Interim agreement with a view to an Economic Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Central Africa Party, of the other part",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"CA\", \"x1\"]",
-        "reg_list": "[\"R1585/17\", \"R1772/17\", \"R1781/17\", \"R1586/17\", \"D0037/17\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": "[\"142\", \"143\", \"145\", \"146\"]"
+        "country_name": "Cameroon"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 17,
     "fields": {
-        "country_name": "CARIFORUM",
-        "agreement_name": "Economic Partnership Agreement between the CARIFORUM States, of the one part, and the United Kingdom of Great Britain and Northern Ireland, of the other part",
+        "slug": "canada",
+        "country_codes": "[\"CA\", \"x1006\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the Government of the United Kingdom of Great Britain and Northern Ireland and the Government of Canada on Trade",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"D0805/08\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Canada"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 18,
     "fields": {
-        "country_name": "the Republic of Chile",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the Republic of Chile",
-        "agreement_date": "2019-03-22",
-        "table_per_country": 0,
+        "slug": "cariforum",
+        "country_codes": "[\"1033\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Economic Partnership Agreement between the CARIFORUM States, of the one part, and the United Kingdom of Great Britain and Northern Ireland, of the other part",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"CL\"]",
-        "reg_list": "[\"D0792/06\", \"R0610/09\", \"D0979/02\", \"R0312/03\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "CARIFORUM"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 19,
     "fields": {
-        "country_name": "Transitional Protection Arrangement",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Cote d'Ivoire",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 0,
+        "slug": "chile",
+        "country_codes": "[\"CL\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the Republic of Chile",
+        "agreement_date": "2019-03-22",
         "version": "1.0",
-        "country_codes": "[\"CI\", \"10\"]",
-        "reg_list": "[\"R161076\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "the Republic of Chile"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 20,
     "fields": {
-        "country_name": "Cote d'Ivoire",
-        "agreement_name": "Stepping Stone Economic Partnership Agreement between C\u00f4te d'Ivoire, of the one part, and the United Kingdom of Great Britain and Northern Ireland, of the other part",
+        "slug": "tpa",
+        "country_codes": "[\"CI\", \"1032\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Cote d'Ivoire",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"CI\", \"10\"]",
-        "reg_list": "[\"R161076\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Transitional Protection Arrangement"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 21,
     "fields": {
-        "country_name": "Egypt",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Egypt",
+        "slug": "cotedivoire",
+        "country_codes": "[\"CI\", \"1032\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Stepping Stone Economic Partnership Agreement between C\u00f4te d'Ivoire, of the one part, and the United Kingdom of Great Britain and Northern Ireland, of the other part",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"EG\"]",
-        "reg_list": "[\"D100240\", \"D040635\", \"R100449\", \"R071338\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Cote d'Ivoire"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 22,
     "fields": {
-        "country_name": "ESA",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the ESA States",
-        "agreement_date": "2019-02-21",
-        "table_per_country": 0,
+        "slug": "egypt",
+        "country_codes": "[\"EG\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Egypt",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"10\", \"MU\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\", \"Azed wil\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": "There are no quotas associated with this geo. area. Using the individual countries: Comoros ??, Madagascar, Mauritius, the Seychelles, Zambia and Zimbabwe; adding MU (Mauritius to the base)",
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Egypt"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 23,
     "fields": {
-        "country_name": "Mauritius",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Mauritius",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 0,
+        "slug": "esa",
+        "country_codes": "[\"1034\", \"MU\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the ESA States",
+        "agreement_date": "2019-02-21",
         "version": "1.0",
-        "country_codes": "[\"MU\", \"10\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "ESA"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 24,
     "fields": {
-        "country_name": "Madagascar",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Madagascar",
+        "slug": "mauritius",
+        "country_codes": "[\"MU\", \"1034\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Mauritius",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"MG\", \"10\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Mauritius"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 25,
     "fields": {
-        "country_name": "Zambia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Zambia",
+        "slug": "madagascar",
+        "country_codes": "[\"MG\", \"1034\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Madagascar",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Madagascar"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 26,
     "fields": {
-        "country_name": "Namibia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and SADC countries - Namibia",
+        "slug": "zambia",
+        "country_codes": "[\"1034\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Zambia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\", \"NA\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Zambia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 27,
     "fields": {
-        "country_name": "the Seychelles",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Seychelles",
+        "slug": "namibia",
+        "country_codes": "[\"1035\", \"NA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and SADC countries - Namibia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"SC\", \"10\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Namibia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 28,
     "fields": {
-        "country_name": "Zimbabwe",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Zimbabwe",
+        "slug": "seychelles",
+        "country_codes": "[\"SC\", \"1034\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Seychelles",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"ZW\", \"10\"]",
-        "reg_list": "[\"D1923/17\", \"D0196/12\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "the Seychelles"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 29,
     "fields": {
-        "country_name": "Faroe Islands",
-        "agreement_name": "Free Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Kingdom of Denmark in respect of the Faroe Islands",
+        "slug": "zimbabwe",
+        "country_codes": "[\"ZW\", \"1034\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and ESA countries - Zimbabwe",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"FO\"]",
-        "reg_list": "[\"R090054\", \"R071381\", \"R992471\", \"D970126\", \"D990456\", \"D060561\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Zimbabwe"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 30,
     "fields": {
-        "country_name": "Georgia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Georgia",
+        "slug": "faroeislands",
+        "country_codes": "[\"FO\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Free Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Kingdom of Denmark in respect of the Faroe Islands",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"GE\"]",
-        "reg_list": "[\"D140494\", \"R140989\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Faroe Islands"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 31,
     "fields": {
-        "country_name": "Ghana",
-        "agreement_name": "Trade Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland and Ghana TBC  ",
+        "slug": "georgia",
+        "country_codes": "[\"GE\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Georgia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"GH\"]",
-        "reg_list": "[\"D1850/16\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Georgia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 32,
     "fields": {
-        "country_name": "Israel",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Israel",
-        "agreement_date": "2019-02-21",
-        "table_per_country": 0,
+        "slug": "ghana",
+        "country_codes": "[\"GH\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Trade Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland and Ghana TBC  ",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"IL\"]",
-        "reg_list": "[\"R1474/00\", \"R1338/07\", \"R1153/09\", \"R1154/09\", \"R1831/96\", \"D0066/13\"]",
-        "meursing_reduction": 85,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Ghana"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 33,
     "fields": {
-        "country_name": "Jordan",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Jordan",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 0,
+        "slug": "israel",
+        "country_codes": "[\"IL\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Israel",
+        "agreement_date": "2019-02-21",
         "version": "1.0",
-        "country_codes": "[\"JO\"]",
-        "reg_list": "[\"D060067\", \"D020357\", \"R060019\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Israel"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 34,
     "fields": {
-        "country_name": "Kosovo",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Kosovo",
+        "slug": "jordan",
+        "country_codes": "[\"JO\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Jordan",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"XK\"]",
-        "reg_list": "[\"R120374\", \"R090891\", \"R171466\", \"D160342\", \"R171464\", \"R120374\", \"R090891\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Jordan"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 35,
     "fields": {
-        "country_name": "Lebanon",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Lebanon",
+        "slug": "kosovo",
+        "country_codes": "[\"XK\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Kosovo",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"LB\"]",
-        "reg_list": "[\"R030209\", \"R060973\", \"R961831\", \"D060356\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Kosovo"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 36,
     "fields": {
-        "country_name": "Macedonia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Macedonia",
+        "slug": "lebanon",
+        "country_codes": "[\"LB\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Lebanon",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"MK\"]",
-        "reg_list": "[\"R012597\", \"R120374\", \"R090891\", \"R101255\", \"D040239\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Lebanon"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 37,
     "fields": {
-        "country_name": "Mexico",
-        "agreement_name": "Economics Partnership, Political Coordination and Corporation Agreement between the United Kingdom of Great Britain and Northern Ireland and the United Mexican States",
+        "slug": "macedonia",
+        "country_codes": "[\"MK\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Macedonia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"MX\"]",
-        "reg_list": "[\"R080821\", \"D000415\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Macedonia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 38,
     "fields": {
-        "country_name": "Moldova",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Moldova",
+        "slug": "mexico",
+        "country_codes": "[\"MX\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Economics Partnership, Political Coordination and Corporation Agreement between the United Kingdom of Great Britain and Northern Ireland and the United Mexican States",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"MD\"]",
-        "reg_list": "[\"D140492\", \"R140988\", \"R152080\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Mexico"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 39,
     "fields": {
-        "country_name": "Montenegro",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Montenegro",
+        "slug": "moldova",
+        "country_codes": "[\"MD\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Moldova",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"ME\"]",
-        "reg_list": "[\"R080053\", \"R080497\", \"R101255\", \"D100224\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Moldova"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 40,
     "fields": {
-        "country_name": "Morocco",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Morocco",
-        "agreement_date": "2019-03-02",
-        "table_per_country": 0,
+        "slug": "montenegro",
+        "country_codes": "[\"ME\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Montenegro",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"MA\"]",
-        "reg_list": "[\"R120812\", \"D000204\", \"D120497\", \"D030914\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Montenegro"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 41,
     "fields": {
-        "country_name": "Pacific",
-        "agreement_name": "Interim Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland of the one part, and the Pacific States, of the other part",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 1,
+        "slug": "morocco",
+        "country_codes": "[\"MA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Morocco",
+        "agreement_date": "2019-03-02",
         "version": "1.0",
-        "country_codes": "[\"FJ\", \"PG\"]",
-        "reg_list": "[\"D0729/09\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Morocco"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 42,
     "fields": {
-        "country_name": "Fiji",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Fiji",
+        "slug": "pacific",
+        "country_codes": "[\"FJ\", \"PG\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Interim Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland of the one part, and the Pacific States, of the other part",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"FJ\"]",
-        "reg_list": "[\"D0729/09\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Pacific"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 43,
     "fields": {
-        "country_name": "Papua New Guinea",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Papua New Guinea",
+        "slug": "fiji",
+        "country_codes": "[\"FJ\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Fiji",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"PG\"]",
-        "reg_list": "[\"D0729/09\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Fiji"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 44,
     "fields": {
-        "country_name": "the Palestinian Authority",
-        "agreement_name": "Interim Political, Trade and Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Palestine Liberation Organization (PLO) for the benefit of the Palestinian Authority of the West Bank and the Gaza Strip, of the other part",
-        "agreement_date": "2019-02-21",
-        "table_per_country": 0,
+        "slug": "papuanewguinea",
+        "country_codes": "[\"PG\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Papua New Guinea",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"PS\"]",
-        "reg_list": "[\"D0430/97\", \"D0824/11\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Papua New Guinea"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 45,
     "fields": {
-        "country_name": "SADC",
-        "agreement_name": "Economic Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland on the one part, and the Southern African Customs Union and Mozambique on the other part ",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 1,
+        "slug": "palestine",
+        "country_codes": "[\"PS\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Interim Political, Trade and Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Palestine Liberation Organization (PLO) for the benefit of the Palestinian Authority of the West Bank and the Gaza Strip, of the other part",
+        "agreement_date": "2019-02-21",
         "version": "1.0",
-        "country_codes": "[\"10\", \"NA\"]",
-        "reg_list": "[\"R2253/16\", \"D1623/16\", \"R0882/17\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": "Exclude S. Africa",
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "the Palestinian Authority"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 46,
     "fields": {
-        "country_name": "Serbia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Serbia",
+        "slug": "sadc",
+        "country_codes": "[\"1035\", \"NA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Economic Partnership Agreement between the United Kingdom of Great Britain and Northern Ireland on the one part, and the Southern African Customs Union and Mozambique on the other part ",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"RS\", \"XS\"]",
-        "reg_list": "[\"R150781\", \"R090891\", \"R101255\", \"D100036\", \"D130490\", \"R110059\", \"R120374\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "SADC"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 47,
     "fields": {
-        "country_name": "South Korea",
-        "agreement_name": "Free trade Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Republic of Korea, of the other part",
+        "slug": "serbia",
+        "country_codes": "[\"RS\", \"XS\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Serbia",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"KR\"]",
-        "reg_list": "[\"R1093/11\", \"D0265/11\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Serbia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 48,
     "fields": {
-        "country_name": "the Swiss Confederation",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
-        "agreement_date": "2019-02-12",
-        "table_per_country": 0,
+        "slug": "southkorea",
+        "country_codes": "[\"KR\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Free trade Agreement between the United Kingdom of Great Britain and Northern Ireland, of the one part, and the Republic of Korea, of the other part",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"CH\", \"x1\"]",
-        "reg_list": "[\"D0123/01\", \"R2114/99\", \"R0050/04\", \"R1565/07\", \"R0082/13\", \"R1126/09\", \"R1223/12\", \"A0003/73\", \"D0093/06\", \"D0309/02\", \"D0559/86\", \"D0955/05\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": "[\"3231905\"]",
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "South Korea"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 49,
     "fields": {
-        "country_name": "West Balkan countries",
-        "agreement_name": "Dummy",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 1,
+        "slug": "switzerland",
+        "country_codes": "[\"CH\", \"x1007\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
+        "agreement_date": "2019-02-12",
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"Dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "the Swiss Confederation"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 50,
     "fields": {
-        "country_name": "Cambodia",
+        "slug": "balkans",
+        "country_codes": "[\"1098\"]",
+        "gegraphical_area": null,
         "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"KH\"]",
-        "reg_list": "[\"Dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "West Balkan countries"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 51,
     "fields": {
-        "country_name": "Andorra",
+        "slug": "cambodia",
+        "country_codes": "[\"KH\"]",
+        "gegraphical_area": null,
         "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"AD\"]",
-        "reg_list": "[\"Dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Cambodia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 52,
     "fields": {
-        "country_name": "Syria",
+        "slug": "andorra",
+        "country_codes": "[\"AD\"]",
+        "gegraphical_area": null,
         "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"SY\"]",
-        "reg_list": "[\"Dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Andorra"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 53,
     "fields": {
-        "country_name": "Cape Verde",
+        "slug": "syria",
+        "country_codes": "[\"SY\"]",
+        "gegraphical_area": null,
         "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"CV\"]",
-        "reg_list": "[\"Dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Syria"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 54,
     "fields": {
-        "country_name": "Central America",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America",
+        "slug": "capeverde",
+        "country_codes": "[\"CV\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Cape Verde"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 55,
     "fields": {
-        "country_name": "Nicaragua",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Nicaragua",
+        "slug": "centralamerica",
+        "country_codes": "[\"2200\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"NI\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Central America"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 56,
     "fields": {
-        "country_name": "Guatemala",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Guatemala",
+        "slug": "nicaragua",
+        "country_codes": "[\"2200\", \"NI\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Nicaragua",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"GT\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Nicaragua"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 57,
     "fields": {
-        "country_name": "Honduras",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Honduras",
+        "slug": "guatemala",
+        "country_codes": "[\"2200\", \"GT\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Guatemala",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"HN\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Guatemala"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 58,
     "fields": {
-        "country_name": "Panama",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Panama",
+        "slug": "honduras",
+        "country_codes": "[\"2200\", \"HN\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Honduras",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"PA\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Honduras"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 59,
     "fields": {
-        "country_name": "Costa Rica",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Costa Rica",
+        "slug": "panama",
+        "country_codes": "[\"2200\", \"PA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Panama",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"CR\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Panama"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 60,
     "fields": {
-        "country_name": "El Salvador",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - El Salvador",
+        "slug": "costarica",
+        "country_codes": "[\"2200\", \"CR\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - Costa Rica",
         "agreement_date": "2019-02-05",
-        "table_per_country": 1,
         "version": "1.0",
-        "country_codes": "[\"22\", \"SV\"]",
-        "reg_list": "[\"D120734\", \"R130974\", \"R130975\", \"R130976\", \"R130977\", \"R131011\", \"R131012\", \"R130922\", \"R130923\", \"R131366\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Costa Rica"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 61,
     "fields": {
-        "country_name": "Tunisia",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Tunisia",
-        "agreement_date": "2019-03-22",
-        "table_per_country": 0,
+        "slug": "elsalvador",
+        "country_codes": "[\"2200\", \"SV\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Central America - El Salvador",
+        "agreement_date": "2019-02-05",
         "version": "1.0",
-        "country_codes": "[\"TN\"]",
-        "reg_list": "[\"R010747\", \"R061918\", \"R060973\", \"D980238\", \"D000822\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "El Salvador"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 62,
     "fields": {
-        "country_name": "Norway",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Norway",
-        "agreement_date": "2019-02-05",
-        "table_per_country": 0,
+        "slug": "tunisia",
+        "country_codes": "[\"TN\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Tunisia",
+        "agreement_date": "2019-03-22",
         "version": "1.0",
-        "country_codes": "[\"20\", \"Fa\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Tunisia"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 63,
     "fields": {
-        "country_name": "Norway",
+        "slug": "norway",
+        "country_codes": "[\"2012\", \"False\"]",
+        "gegraphical_area": null,
         "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Norway",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"Fa\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Norway"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 64,
     "fields": {
-        "country_name": "Norway",
+        "slug": "norway_NO",
+        "country_codes": "[\"False\"]",
+        "gegraphical_area": null,
         "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Norway",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Norway"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 65,
     "fields": {
-        "country_name": "Iceland",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Iceland",
+        "slug": "norway_2012",
+        "country_codes": "[\"2012\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Norway",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\", \"20\", \"IS\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": "IS",
-        "measure_type_override": null
+        "country_name": "Norway"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 66,
     "fields": {
-        "country_name": "Iceland",
+        "slug": "iceland",
+        "country_codes": "[\"2014\", \"2012\", \"IS\"]",
+        "gegraphical_area": null,
         "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Iceland",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": "IS",
-        "measure_type_override": null
+        "country_name": "Iceland"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 67,
     "fields": {
-        "country_name": "Iceland",
+        "slug": "iceland_2012",
+        "country_codes": "[\"2012\"]",
+        "gegraphical_area": null,
         "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Iceland",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": "IS",
-        "measure_type_override": null
+        "country_name": "Iceland"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 68,
     "fields": {
-        "country_name": "Iceland",
+        "slug": "iceland_2014",
+        "country_codes": "[\"2014\"]",
+        "gegraphical_area": null,
         "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Iceland",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"IS\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Iceland"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 69,
     "fields": {
-        "country_name": "Liechtenstein",
-        "agreement_name": "Additional Agreement between the United Kingdom of Great Britain and Northern Ireland, the Swiss Confederation and the Principality of Liechtenstein extending to the Principality of Liechtenstein the provisions of the Agreement between the European Economic Community and the Swiss Confederation of 22 July 1972 and of the Agreement between the European Community and the Swiss Confederation on trade in agricultural products, as incorporated into and modified in the Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
+        "slug": "iceland_IS",
+        "country_codes": "[\"IS\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and the European Economic Area - Iceland",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"20\", \"LI\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Iceland"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 70,
     "fields": {
-        "country_name": "Japan",
+        "slug": "liechtenstein",
+        "country_codes": "[\"2012\", \"LI\"]",
+        "gegraphical_area": null,
         "agreement_name": "Additional Agreement between the United Kingdom of Great Britain and Northern Ireland, the Swiss Confederation and the Principality of Liechtenstein extending to the Principality of Liechtenstein the provisions of the Agreement between the European Economic Community and the Swiss Confederation of 22 July 1972 and of the Agreement between the European Community and the Swiss Confederation on trade in agricultural products, as incorporated into and modified in the Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"JP\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Liechtenstein"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 71,
     "fields": {
-        "country_name": "San Marino",
+        "slug": "japan",
+        "country_codes": "[\"JP\"]",
+        "gegraphical_area": null,
         "agreement_name": "Additional Agreement between the United Kingdom of Great Britain and Northern Ireland, the Swiss Confederation and the Principality of Liechtenstein extending to the Principality of Liechtenstein the provisions of the Agreement between the European Economic Community and the Swiss Confederation of 22 July 1972 and of the Agreement between the European Community and the Swiss Confederation on trade in agricultural products, as incorporated into and modified in the Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"SM\"]",
-        "reg_list": "[\"test\"]",
-        "meursing_reduction": null,
-        "produce_schedule": false,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Japan"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 72,
     "fields": {
-        "country_name": "Turkey",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Turkey",
+        "slug": "sanmarino",
+        "country_codes": "[\"SM\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Additional Agreement between the United Kingdom of Great Britain and Northern Ireland, the Swiss Confederation and the Principality of Liechtenstein extending to the Principality of Liechtenstein the provisions of the Agreement between the European Economic Community and the Swiss Confederation of 22 July 1972 and of the Agreement between the European Community and the Swiss Confederation on trade in agricultural products, as incorporated into and modified in the Trade Agreement between the United Kingdom of Great Britain and Northern Ireland and the Swiss Confederation",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"TR\"]",
-        "reg_list": "[\"R070816\", \"R061712\", \"R090933\", \"R141335\", \"D960142\", \"D980223\", \"D960528\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "San Marino"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 73,
     "fields": {
-        "country_name": "Ukraine",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Ukraine",
+        "slug": "turkey",
+        "country_codes": "[\"TR\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Turkey",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"UA\"]",
-        "reg_list": "[\"R152076\", \"R152077\", \"R152078\", \"R152079\", \"R152081\", \"R152405\", \"D140295\", \"R171566\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Turkey"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 74,
     "fields": {
-        "country_name": "Swiss re-imports",
-        "agreement_name": "Dummy",
+        "slug": "ukraine",
+        "country_codes": "[\"UA\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and Ukraine",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Ukraine"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 75,
     "fields": {
-        "country_name": "Canada re-imports",
+        "slug": "ch_imports",
+        "country_codes": "[\"1007\"]",
+        "gegraphical_area": null,
         "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"10\"]",
-        "reg_list": "[\"dummy\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Swiss re-imports"
     }
 },
 {
     "model": "schedule.agreement",
     "pk": 76,
     "fields": {
-        "country_name": "South Africa",
-        "agreement_name": "Agreement between the United Kingdom of Great Britain and Northern Ireland and South Africa",
+        "slug": "ca_imports",
+        "country_codes": "[\"1006\"]",
+        "gegraphical_area": null,
+        "agreement_name": "Dummy",
         "agreement_date": "2019-02-05",
-        "table_per_country": 0,
         "version": "1.0",
-        "country_codes": "[\"ZA\"]",
-        "reg_list": "[\"R152076\", \"R152077\", \"R152078\", \"R152079\", \"R152081\", \"R152405\", \"D140295\", \"R171566\"]",
-        "meursing_reduction": null,
-        "produce_schedule": true,
-        "notes": null,
-        "additional_measures": null,
-        "exclusion_check": null,
-        "measure_type_override": null
+        "country_name": "Canada re-imports"
     }
 }
 ]

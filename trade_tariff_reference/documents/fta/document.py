@@ -338,11 +338,8 @@ class Document:
                         quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
                         measurement_unit_code, origin_quota, addendum, scope
                     )
-                    if str(quota_order_number_id) in self.balance_dict:
-                        pass
-                    # MPP: TODO old behaviour would use the first one added to the
-                    # list this will use the last. Does it matter?
-                    self.balance_dict[str(quota_order_number_id)] = qb
+                    if str(quota_order_number_id) not in self.balance_dict:
+                        self.balance_dict[str(quota_order_number_id)] = qb
             except:
                 pass
 
