@@ -43,7 +43,6 @@ class Application(DatabaseConnect):
             raise CountryProfileError('Country profile has no country codes')
         return profile
 
-
     def get_commodities_for_local_sivs(self):
         # Get commodities where there is a local SIV
         rows = self.execute_sql(

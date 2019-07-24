@@ -1,11 +1,12 @@
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
-from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
 from trade_tariff_reference.documents.fta.functions import list_to_sql
+from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
 
 
 class Agreement(models.Model):

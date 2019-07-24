@@ -63,7 +63,10 @@ class Document:
         measure_condition_list = []
 
         rows = self.application.execute_sql(
-            GET_MEASURE_COMPONENTS_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids),
+            GET_MEASURE_COMPONENTS_SQL.format(
+                measure_type_list=measure_type_list,
+                geo_ids=self.application.agreement.geo_ids,
+            ),
             dict_cursor=True
         )
         for row in rows:

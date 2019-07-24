@@ -1,4 +1,5 @@
 from celery import shared_task
+
 from trade_tariff_reference.documents.fta.application import Application
 
 

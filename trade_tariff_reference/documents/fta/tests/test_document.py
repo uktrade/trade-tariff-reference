@@ -5,8 +5,8 @@ import pytest
 from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.tests.test_application import get_mfn_siv_product
-from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
 
 
 pytestmark = pytest.mark.django_db
