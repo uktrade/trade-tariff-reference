@@ -2,9 +2,12 @@ from unittest import mock
 
 import pytest
 
+from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.document import Document
-from trade_tariff_reference.documents.fta.tests.test_application import get_application, get_mfn_siv_product
+from trade_tariff_reference.documents.fta.tests.test_application import get_mfn_siv_product
 from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, MeasureExcludedGeographicalAreaFactory
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+
 
 pytestmark = pytest.mark.django_db
 
@@ -24,18 +27,16 @@ def test_document_initialise():
 def test_check_for_quotas_is_false():
     CurrentMeasureFactory(measure_type_id='140', geographical_area_id='1234', ordernumber=1)
     CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1235', ordernumber=2)
-    application = get_application('spain')
-    application.country_name = 'spain'
-    application.geo_ids = "'1234'"
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'])
+    application = Application(country_profile='spain')
     document = Document(application)
     assert document.check_for_quotas() is False
 
 
 def test_check_for_quotas_is_true():
     CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
-    application = get_application('spain')
-    application.country_name = 'spain'
-    application.geo_ids = "'1234'"
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'])
+    application = Application(country_profile='spain')
     document = Document(application)
     assert document.check_for_quotas() is True
 
@@ -57,9 +58,8 @@ def test_get_measure_type_list_for_instrument_type(instrument_type, expected_res
 def test_check_exclusion_check():
     measure = CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
     MeasureExcludedGeographicalAreaFactory(measure_sid=measure.measure_sid, excluded_geographical_area='America')
-    application = get_application('spain')
-    application.country_name = 'spain'
-    application.exclusion_check = 'America'
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'], exclusion_check='America')
+    application = Application(country_profile='spain')
     document = Document(application)
     assert document.get_exclusion_list() == [measure.measure_sid]
 
@@ -67,8 +67,8 @@ def test_check_exclusion_check():
 def test_check_exclusion_check_when_not_set():
     measure = CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
     MeasureExcludedGeographicalAreaFactory(measure_sid=measure.measure_sid, excluded_geographical_area='America')
-    application = get_application('spain')
-    application.country_name = 'spain'
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'], exclusion_check="")
+    application = Application(country_profile='spain')
     document = Document(application)
     assert document.get_exclusion_list() == []
 
@@ -76,9 +76,8 @@ def test_check_exclusion_check_when_not_set():
 def test_get_measure_conditions():
     duty_amount = 200
     measure = get_mfn_siv_product(1, duty_amount=duty_amount)
-    application = get_application('spain')
-    application.country_name = 'spain'
-    application.geo_ids = "'1011'"
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
     document = Document(application)
     actual_result = document.get_measure_conditions("'103'")
     assert len(actual_result) == 1

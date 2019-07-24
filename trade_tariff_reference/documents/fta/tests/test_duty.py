@@ -1,6 +1,10 @@
 import pytest
 
 from trade_tariff_reference.documents.fta.duty import Duty
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+
+
+pytestmark = pytest.mark.django_db
 
 
 class FakeApplication:
@@ -10,6 +14,10 @@ class FakeApplication:
         self.mfn_rate = mfn_rate
         self.country_profile = country_profile
         self.local_sivs = local_sivs or []
+        if country_profile:
+            self.agreement = AgreementFactory(country_name=country_profile)
+        else:
+            self.agreement = AgreementFactory()
 
     def get_mfn_rate(self, *args):
         return self.mfn_rate

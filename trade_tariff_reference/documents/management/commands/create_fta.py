@@ -11,4 +11,4 @@ class Command(BaseCommand):
         parser.add_argument('country_profile', type=str)
 
     def handle(self, *args, **options):
-        generate_document.delay(options['country_profile'])
+        generate_document(options['country_profile'])
