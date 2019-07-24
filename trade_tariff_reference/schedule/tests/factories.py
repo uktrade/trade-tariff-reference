@@ -14,7 +14,5 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     gegraphical_area = factory.Faker('country')
     slug = factory.Sequence(lambda n: f'country-{n}')
 
-    exclusion_check = ""
-
     class Meta:
         model = 'schedule.Agreement'

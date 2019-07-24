@@ -11,7 +11,6 @@ from django.utils.safestring import mark_safe
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
-    CHECK_COUNTRY_EXCLUSION_SQL,
     GET_DUTIES_SQL,
     GET_MEASURE_COMPONENTS_SQL,
     GET_QUOTA_DEFINITIONS_SQL,
@@ -74,19 +73,6 @@ class Document:
             measure_condition_list.append(mc)
         return measure_condition_list
 
-    def get_exclusion_list(self):
-        exclusion_list = []
-
-        if not self.application.agreement.exclusion_check:
-            return exclusion_list
-
-        rows = self.application.execute_sql(
-            CHECK_COUNTRY_EXCLUSION_SQL.format(exclusion_check=self.application.agreement.exclusion_check),
-            dict_cursor=True
-        )
-
-        return [row['measure_sid'] for row in rows]
-
     def _get_duties(self, measure_type_list):
         return self.application.execute_sql(
             GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids)
@@ -106,9 +92,6 @@ class Document:
         f.log(" - Getting measure conditions")
         measure_condition_list = self.get_measure_conditions(measure_type_list)
 
-        # Now get the country exclusions
-        exclusion_list = self.get_exclusion_list()
-
         # Get the duties (i.e the measure components)
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
 
@@ -126,63 +109,62 @@ class Document:
 
         for row in duties:
             measure_sid = row[9]
-            if measure_sid not in exclusion_list:
-                commodity_code = f.mstr(row[0])
-                additional_code_type_id = f.mstr(row[1])
-                additional_code_id = f.mstr(row[2])
-                measure_type_id = f.mstr(row[3])
-                duty_expression_id = row[4]
-                duty_amount = row[5]
-                monetary_unit_code = f.mstr(row[6])
-                monetary_unit_code = monetary_unit_code.replace("EUR", "€")
-                measurement_unit_code = f.mstr(row[7])
-                measurement_unit_qualifier_code = f.mstr(row[8])
-                quota_order_number_id = f.mstr(row[10])
-                validity_start_date = row[11]
-                validity_end_date = row[12]
-                geographical_area_id = f.mstr(row[13])
-                reduction_indicator = row[14]
+            commodity_code = f.mstr(row[0])
+            additional_code_type_id = f.mstr(row[1])
+            additional_code_id = f.mstr(row[2])
+            measure_type_id = f.mstr(row[3])
+            duty_expression_id = row[4]
+            duty_amount = row[5]
+            monetary_unit_code = f.mstr(row[6])
+            monetary_unit_code = monetary_unit_code.replace("EUR", "€")
+            measurement_unit_code = f.mstr(row[7])
+            measurement_unit_qualifier_code = f.mstr(row[8])
+            quota_order_number_id = f.mstr(row[10])
+            validity_start_date = row[11]
+            validity_end_date = row[12]
+            geographical_area_id = f.mstr(row[13])
+            reduction_indicator = row[14]
 
-                # Hypothesis would be that the only reason why the Duty amount is None is when
-                # there is a "V" code attached to the Measure
-                # if ((duty_amount is None) and (duty_expression_id == "01")):
-                if duty_amount is None and duty_expression_id is None:
-                    is_siv = True
-                    for mc in measure_condition_list:
-                        # print(mc.measure_sid, measure_sid)
-                        if mc.measure_sid == measure_sid:
-                            duty_expression_id = "01"
-                            duty_amount = mc.condition_duty_amount
-                            # break
-                else:
-                    is_siv = False
+            # Hypothesis would be that the only reason why the Duty amount is None is when
+            # there is a "V" code attached to the Measure
+            # if ((duty_amount is None) and (duty_expression_id == "01")):
+            if duty_amount is None and duty_expression_id is None:
+                is_siv = True
+                for mc in measure_condition_list:
+                    # print(mc.measure_sid, measure_sid)
+                    if mc.measure_sid == measure_sid:
+                        duty_expression_id = "01"
+                        duty_amount = mc.condition_duty_amount
+                        # break
+            else:
+                is_siv = False
 
-                obj_duty = Duty(
-                    self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
-                    duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code,
-                    measurement_unit_qualifier_code, measure_sid, quota_order_number_id, geographical_area_id,
-                    validity_start_date, validity_end_date, reduction_indicator, is_siv
+            obj_duty = Duty(
+                self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
+                duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code,
+                measurement_unit_qualifier_code, measure_sid, quota_order_number_id, geographical_area_id,
+                validity_start_date, validity_end_date, reduction_indicator, is_siv
+            )
+            self.duty_list.append(obj_duty)
+
+            if measure_sid not in temp_measure_list:
+                obj_measure = Measure(
+                    measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date,
+                    geographical_area_id, reduction_indicator
                 )
-                self.duty_list.append(obj_duty)
+                self.measure_list.append(obj_measure)
+                temp_measure_list.append(measure_sid)
 
-                if measure_sid not in temp_measure_list:
-                    obj_measure = Measure(
-                        measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date,
-                        geographical_area_id, reduction_indicator
-                    )
-                    self.measure_list.append(obj_measure)
-                    temp_measure_list.append(measure_sid)
+            if commodity_code not in temp_commodity_list:
+                obj_commodity = Commodity(commodity_code)
+                self.commodity_list.append(obj_commodity)
+                temp_commodity_list.append(commodity_code)
 
-                if commodity_code not in temp_commodity_list:
-                    obj_commodity = Commodity(commodity_code)
-                    self.commodity_list.append(obj_commodity)
-                    temp_commodity_list.append(commodity_code)
-
-                if quota_order_number_id not in temp_quota_order_number_list:
-                    if quota_order_number_id != "":
-                        obj_quota_order_number = QuotaOrderNumber(quota_order_number_id)
-                        self.quota_order_number_list.append(obj_quota_order_number)
-                        temp_quota_order_number_list.append(quota_order_number_id)
+            if quota_order_number_id not in temp_quota_order_number_list:
+                if quota_order_number_id != "":
+                    obj_quota_order_number = QuotaOrderNumber(quota_order_number_id)
+                    self.quota_order_number_list.append(obj_quota_order_number)
+                    temp_quota_order_number_list.append(quota_order_number_id)
 
         self.assign_duties_to_measures()
         self.assign_measures_to_commodities()
