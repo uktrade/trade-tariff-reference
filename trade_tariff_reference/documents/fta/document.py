@@ -4,13 +4,16 @@ import os
 import tempfile
 from datetime import datetime
 from distutils.dir_util import copy_tree
+from functools import lru_cache
+
+from deepdiff import DeepDiff
 
 from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
+    GET_COMMODITIES_SQL,
     GET_DUTIES_SQL,
     GET_MEASURE_COMPONENTS_SQL,
     GET_QUOTA_DEFINITIONS_SQL,
@@ -18,12 +21,14 @@ from trade_tariff_reference.documents.fta.constants import (
     GET_QUOTA_ORDER_NUMBERS_SQL,
 )
 from trade_tariff_reference.documents.fta.duty import Duty
+from trade_tariff_reference.documents.fta.local_siv import LocalSiv
 from trade_tariff_reference.documents.fta.measure import Measure
 from trade_tariff_reference.documents.fta.measure_condition import MeasureCondition
 from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
+from trade_tariff_reference.schedule.models import DocumentHistory
 
 
 class Document:
@@ -73,6 +78,34 @@ class Document:
             measure_condition_list.append(mc)
         return measure_condition_list
 
+    @lru_cache(maxsize=5)
+    def get_commodities_for_local_sivs(self):
+        # Get commodities where there is a local SIV
+        rows = self.application.execute_sql(
+            GET_COMMODITIES_SQL.format(geo_ids=self.application.agreement.geo_ids)
+        )
+
+        local_sivs = []
+        local_sivs_commodities_only = []
+
+        for rw in rows:
+            goods_nomenclature_item_id = rw[0]
+            validity_start_date = rw[1]
+            condition_duty_amount = rw[2]
+            condition_monetary_unit_code = rw[3]
+            condition_measurement_unit_code = rw[4]
+
+            obj = LocalSiv(
+                goods_nomenclature_item_id,
+                validity_start_date,
+                condition_duty_amount,
+                condition_monetary_unit_code,
+                condition_measurement_unit_code,
+            )
+            local_sivs.append(obj)
+            local_sivs_commodities_only.append(goods_nomenclature_item_id)
+        return local_sivs, local_sivs_commodities_only
+
     def _get_duties(self, measure_type_list):
         return self.application.execute_sql(
             GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids)
@@ -96,6 +129,8 @@ class Document:
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
 
         duties = self._get_duties(measure_type_list)
+
+        local_sivs, local_sivs_commodities_only = self.get_commodities_for_local_sivs()
 
         # Do a pass through the duties table and create a
         # full Duty expression - Duty is a mnemonic for Measure component
@@ -143,7 +178,8 @@ class Document:
                 self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
                 duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code,
                 measurement_unit_qualifier_code, measure_sid, quota_order_number_id, geographical_area_id,
-                validity_start_date, validity_end_date, reduction_indicator, is_siv
+                validity_start_date, validity_end_date, reduction_indicator, is_siv, local_sivs,
+                local_sivs_commodities_only
             )
             self.duty_list.append(obj_duty)
 
@@ -545,12 +581,39 @@ class Document:
         }
         return quota_data
 
+    def check_document_for_update(self, context):
+        history = DocumentHistory.objects.filter(
+            agreement=self.application.agreement,
+        ).first()
+
+        change = None
+        if history:
+            change = DeepDiff(history.data, context)
+        return change
+
+    def log_document_history(self, context, change):
+        if change:
+            f.log(f'Changes found\n{change}')
+
+        DocumentHistory.objects.create(
+            agreement=self.application.agreement,
+            data=context,
+            change=change,
+            forced=self.application.force_document_generation,
+        )
+
     def create_document(self, context):
+        change = self.check_document_for_update(context)
+        if not change and not self.application.force_document_generation:
+            f.log("\nPROCESS COMPLETE - Document unchanged no file generated")
+            return
+
         document_template = "xml/document_noquotas.xml"
         if context.get('HAS_QUOTAS'):
             document_template = "xml/document_hasquotas.xml"
         document_xml = render_to_string(document_template, context)
         self.write(document_xml)
+        self.log_document_history(context, change)
 
     def write(self, document_xml):
         ###########################################################################
@@ -585,7 +648,7 @@ class Document:
                 }
                 if c.duty_string[-18:] == "<w:r><w:br/></w:r>":
                     c.duty_string = c.duty_string[:-18]
-                table_dict['DUTY'] = mark_safe(c.duty_string)
+                table_dict['DUTY'] = c.duty_string
                 table_rows.append(table_dict)
 
         ###########################################################################

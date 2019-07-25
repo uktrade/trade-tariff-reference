@@ -2,8 +2,9 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.shortcuts import reverse
 
 from trade_tariff_reference.documents.fta.functions import list_to_sql
 from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
@@ -23,8 +24,16 @@ class Agreement(models.Model):
     country_name = models.CharField(max_length=200)
 
     @property
+    def country_profile(self):
+        return self.slug
+
+    @property
     def geo_ids(self):
         return list_to_sql(self.country_codes)
+
+    @property
+    def country_codes_string(self):
+        return ', '.join(self.country_codes)
 
     @property
     def agreement_date_short(self):
@@ -33,6 +42,14 @@ class Agreement(models.Model):
     @property
     def agreement_date_long(self):
         return datetime.strftime(self.agreement_date, "%d %B %Y").lstrip("0")if self.agreement_date else ""
+
+    @property
+    def download_url(self):
+        return reverse('schedule:download', kwargs={'country': self.slug})
+
+    @property
+    def edit_url(self):
+        return ''
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
@@ -73,3 +90,17 @@ class QuotaBalance(models.Model):
             return date + relativedelta(years=1, days=-1)
         except (TypeError, ValueError):
             return
+
+
+class DocumentHistory(models.Model):
+    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE)
+    data = JSONField(null=True, blank=True)
+    change = JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(db_index=True, null=True, blank=True, auto_now_add=True)
+    forced = models.BooleanField()
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'{self.agreement.slug} - Doc History - {self.created_at}'

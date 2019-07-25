@@ -1,9 +1,11 @@
 import os
 import os.path
+from functools import lru_cache
+
+from django.conf import settings
 
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.constants import (
-    GET_COMMODITIES_SQL,
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
     GET_MEUSRING_PERCENTAGE_SQL,
     GET_MFNS_FOR_SIV_PRODUCTS_SQL,
@@ -11,27 +13,25 @@ from trade_tariff_reference.documents.fta.constants import (
 from trade_tariff_reference.documents.fta.database import DatabaseConnect
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
-from trade_tariff_reference.documents.fta.local_siv import LocalSiv
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.schedule.models import Agreement
 
 
 class Application(DatabaseConnect):
 
-    def __init__(self, country_profile):
+    def __init__(self, country_profile, force_document_generation=True):
         self.agreement = self.get_agreement(country_profile)
-
+        self.force_document_generation = force_document_generation
         self.debug = False
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
 
         # For the output folders
-        self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
+        self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
         self.connect()
 
         # MPP TODO: Move these
-        self.erga_omnes_average = None
         self.mfn_list = []
 
     def get_agreement(self, country_profile):
@@ -43,39 +43,9 @@ class Application(DatabaseConnect):
             raise CountryProfileError('Country profile has no country codes')
         return profile
 
-    def get_commodities_for_local_sivs(self):
-        # Get commodities where there is a local SIV
-        rows = self.execute_sql(
-            GET_COMMODITIES_SQL.format(geo_ids=self.agreement.geo_ids)
-        )
-
-        self.local_sivs = []
-        self.local_sivs_commodities_only = []
-
-        for rw in rows:
-            goods_nomenclature_item_id = rw[0]
-            validity_start_date = rw[1]
-            condition_duty_amount = rw[2]
-            condition_monetary_unit_code = rw[3]
-            condition_measurement_unit_code = rw[4]
-
-            obj = LocalSiv(
-                goods_nomenclature_item_id,
-                validity_start_date,
-                condition_duty_amount,
-                condition_monetary_unit_code,
-                condition_measurement_unit_code,
-            )
-            self.local_sivs.append(obj)
-            self.local_sivs_commodities_only.append(goods_nomenclature_item_id)
-
     def create_document(self):
         # Create the document
         my_document = Document(self)
-        self.get_meursing_components()
-
-        # Get commodities where there is a local SIV
-        self.get_commodities_for_local_sivs()
 
         # Create the measures table
         my_document.get_duties("preferences")
@@ -143,10 +113,13 @@ class Application(DatabaseConnect):
                 )
         return mfn_rate
 
+    @lru_cache(maxsize=128)
     def get_meursing_components(self):
-        self.erga_omnes_average = self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
+        return self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
 
+    @lru_cache(maxsize=128)
     def get_meursing_percentage(self, reduction_indicator, geographical_area_id):
+        erga_omnes_average = self.get_meursing_components()
         # Get the Erga Omnes Meursing average
         reduced_average = self.execute_sql(
             GET_MEUSRING_PERCENTAGE_SQL.format(
@@ -156,7 +129,7 @@ class Application(DatabaseConnect):
             only_one_row=True
         )[0]
         try:
-            reduction = round((reduced_average / self.erga_omnes_average) * 100)
+            reduction = round((reduced_average / erga_omnes_average) * 100)
         except TypeError:
             reduction = 100
         return reduction

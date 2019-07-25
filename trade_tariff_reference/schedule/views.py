@@ -3,6 +3,7 @@ from django.templatetags import static
 from django.views.generic import FormView, RedirectView, TemplateView
 
 from .forms import CreateAgreementForm, ManageExtendedInformationForm
+from trade_tariff_reference.schedule.models import Agreement
 
 
 class ManageAgreementScheduleView(TemplateView):
@@ -10,18 +11,7 @@ class ManageAgreementScheduleView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['agreements'] = [
-            {
-                'id': 'Israel',
-                'area_name': 'Israel',
-                'country_code': '1L',
-                'title': 'Agreement between the United Kingdom of Great Britain and Northern Ireland and Israel',
-                'date': '21 February 2019',
-                'version': '1.0',
-                'download_url': reverse('schedule:download', kwargs={'country': 'israel'}),
-                'edit_url': '',
-            }
-        ]
+        context_data['agreements'] = Agreement.objects.all().order_by('slug')
         return context_data
 
 
