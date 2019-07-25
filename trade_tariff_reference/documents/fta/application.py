@@ -2,6 +2,8 @@ import os
 import os.path
 from functools import lru_cache
 
+from django.conf import settings
+
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.constants import (
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
@@ -26,7 +28,7 @@ class Application(DatabaseConnect):
         self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
 
         # For the output folders
-        self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
+        self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
         self.connect()
 
         # MPP TODO: Move these

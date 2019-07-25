@@ -31,11 +31,11 @@
                 <tbody class="govuk-table__body">
                 {% for agreement in agreements %}
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{{ agreement.id }}</td>
-                        <td class="govuk-table__cell">{{ agreement.area_name }}</td>
-                        <td class="govuk-table__cell">{{ agreement.country_code }}</td>
-                        <td class="govuk-table__cell">{{ agreement.title }}</td>
-                        <td class="govuk-table__cell">{{ agreement.date }}</td>
+                        <td class="govuk-table__cell">{{ agreement.slug }}</td>
+                        <td class="govuk-table__cell">{{ agreement.country_name }}</td>
+                        <td class="govuk-table__cell">{{ agreement.country_codes_string }}</td>
+                        <td class="govuk-table__cell">{{ agreement.agreement_name }}</td>
+                        <td class="govuk-table__cell">{{ agreement.agreement_date_long }}</td>
                         <td class="govuk-table__cell">{{ agreement.version }}</td>
                         <td class="govuk-table__cell">
                             <ul class="govuk-list">

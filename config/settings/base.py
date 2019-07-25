@@ -134,6 +134,9 @@ SASS_PROCESSOR_INCLUDE_DIRS = [
     '/app/static',
 ]
 
+GENERATED_DOCUMENT_LOCATION = '/app/static/documents'
+
+
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
 
 MANAGE_TARIFF_DATABASE = False

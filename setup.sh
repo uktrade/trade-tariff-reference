@@ -1,5 +1,9 @@
 #!/bin/bash -xe
 
 python manage.py migrate
-python manage.py createsuperuser
+
+if [ -z "$1" ]; then
+    python manage.py createsuperuser
+fi
+
 python manage.py loaddata agreement quotabalance
