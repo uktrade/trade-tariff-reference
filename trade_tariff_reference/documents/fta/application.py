@@ -1,9 +1,9 @@
 import os
 import os.path
+from functools import lru_cache
 
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.constants import (
-    GET_COMMODITIES_SQL,
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
     GET_MEUSRING_PERCENTAGE_SQL,
     GET_MFNS_FOR_SIV_PRODUCTS_SQL,
@@ -42,38 +42,9 @@ class Application(DatabaseConnect):
             raise CountryProfileError('Country profile has no country codes')
         return profile
 
-    def get_commodities_for_local_sivs(self):
-        # Get commodities where there is a local SIV
-        rows = self.execute_sql(
-            GET_COMMODITIES_SQL.format(geo_ids=self.agreement.geo_ids)
-        )
-
-        self.local_sivs = []
-        self.local_sivs_commodities_only = []
-
-        for rw in rows:
-            goods_nomenclature_item_id = rw[0]
-            validity_start_date = rw[1]
-            condition_duty_amount = rw[2]
-            condition_monetary_unit_code = rw[3]
-            condition_measurement_unit_code = rw[4]
-
-            obj = LocalSiv(
-                goods_nomenclature_item_id,
-                validity_start_date,
-                condition_duty_amount,
-                condition_monetary_unit_code,
-                condition_measurement_unit_code,
-            )
-            self.local_sivs.append(obj)
-            self.local_sivs_commodities_only.append(goods_nomenclature_item_id)
-
     def create_document(self):
         # Create the document
         my_document = Document(self)
-
-        # Get commodities where there is a local SIV
-        self.get_commodities_for_local_sivs()
 
         # Create the measures table
         my_document.get_duties("preferences")

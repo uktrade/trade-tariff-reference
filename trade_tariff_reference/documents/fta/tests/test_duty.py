@@ -42,13 +42,20 @@ def get_duty_object(
     application=None, commodity_code=None, additional_code_type_id=None, additional_code_id=None, measure_type_id=None,
     duty_expression_id=None, duty_amount=None, monetary_unit_code=None, measurement_unit_code=None,
     measurement_unit_qualifier_code=None, measure_sid=None, quota_order_number_id=None, geographical_area_id=None,
-    validity_start_date=None, validity_end_date=None, reduction_indicator=None, is_siv=None,
+    validity_start_date=None, validity_end_date=None, reduction_indicator=None, is_siv=None, local_sivs=None,
+    local_sivs_commodities_only=None,
 ):
+    if not local_sivs:
+        local_sivs = []
+
+    if not local_sivs_commodities_only:
+        local_sivs_commodities_only = []
+
     return Duty(
         application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
         duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
         measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date,
-        reduction_indicator, is_siv
+        reduction_indicator, is_siv, local_sivs, local_sivs_commodities_only
     )
 
 
@@ -273,10 +280,8 @@ def test_get_siv_duty_string(duty_amount, commodity_code, country_profile, mfn_r
     ),
 )
 def test_get_rebased_price_string(local_sivs, commodity_code, validity_start_date, expected_result):
-    application = FakeApplication(
-        local_sivs=local_sivs,
-    )
     duty = get_duty_object(
-        application=application, commodity_code=commodity_code, validity_start_date=validity_start_date
+        application=FakeApplication(), commodity_code=commodity_code, validity_start_date=validity_start_date,
+        local_sivs=local_sivs
     )
     assert duty.get_rebased_price_string() == expected_result

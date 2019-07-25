@@ -12,7 +12,7 @@ class Duty:
         self, application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
         duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code,
         measure_sid, quota_order_number_id, geographical_area_id, validity_start_date, validity_end_date,
-        reduction_indicator, is_siv,
+        reduction_indicator, is_siv, local_sivs, local_sivs_commodities_only,
     ):
         self.application = application
         self.commodity_code = functions.mstr(commodity_code)
@@ -33,7 +33,8 @@ class Duty:
         self.validity_end_date = validity_end_date
         self.reduction_indicator = reduction_indicator
         self.is_siv = is_siv
-
+        self.local_sivs = local_sivs
+        self.local_sivs_commodities_only = local_sivs_commodities_only
         self.duty_string = self.get_duty_string()
 
     def get_duty_string(self):
@@ -99,7 +100,7 @@ class Duty:
 
         rebased_price = ""
         if (
-            self.commodity_code in self.application.local_sivs_commodities_only
+            self.commodity_code in self.local_sivs_commodities_only
             and self.application.agreement.slug == "morocco"
         ):
             rebased_price = self.get_rebased_price_string()
@@ -108,7 +109,7 @@ class Duty:
 
     def get_rebased_price_string(self):
         out = ""
-        for obj in self.application.local_sivs:
+        for obj in self.local_sivs:
             if obj.goods_nomenclature_item_id != self.commodity_code:
                 continue
             elif self.validity_start_date == obj.validity_start_date:
