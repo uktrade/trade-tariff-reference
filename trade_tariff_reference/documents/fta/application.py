@@ -112,9 +112,11 @@ class Application(DatabaseConnect):
                 )
         return mfn_rate
 
+    @lru_cache(maxsize=128)
     def get_meursing_components(self):
         return self.execute_sql(GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL, only_one_row=True)[0]
 
+    @lru_cache(maxsize=128)
     def get_meursing_percentage(self, reduction_indicator, geographical_area_id):
         erga_omnes_average = self.get_meursing_components()
         # Get the Erga Omnes Meursing average
