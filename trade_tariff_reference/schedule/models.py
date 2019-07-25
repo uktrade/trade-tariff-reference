@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 from trade_tariff_reference.documents.fta.functions import list_to_sql
@@ -73,3 +73,17 @@ class QuotaBalance(models.Model):
             return date + relativedelta(years=1, days=-1)
         except (TypeError, ValueError):
             return
+
+
+class DocumentHistory(models.Model):
+    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE)
+    data = JSONField(null=True, blank=True)
+    change = JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(db_index=True, null=True, blank=True, auto_now_add=True)
+    forced = models.BooleanField()
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f'{self.agreement.slug} - Doc History - {self.created_at}'

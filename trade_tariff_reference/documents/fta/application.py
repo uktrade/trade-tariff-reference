@@ -11,16 +11,15 @@ from trade_tariff_reference.documents.fta.constants import (
 from trade_tariff_reference.documents.fta.database import DatabaseConnect
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
-from trade_tariff_reference.documents.fta.local_siv import LocalSiv
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.schedule.models import Agreement
 
 
 class Application(DatabaseConnect):
 
-    def __init__(self, country_profile):
+    def __init__(self, country_profile, force_document_generation=True):
         self.agreement = self.get_agreement(country_profile)
-
+        self.force_document_generation = force_document_generation
         self.debug = False
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))

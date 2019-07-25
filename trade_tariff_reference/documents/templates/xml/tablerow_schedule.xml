@@ -35,7 +35,7 @@
               </w:tabs>
               <w:jc w:val="left"/>
             </w:pPr>
-            {{ row.DUTY }}
+            {{ row.DUTY | safe }}
           </w:p>
         </w:tc>
       </w:tr>

@@ -21,12 +21,14 @@ from trade_tariff_reference.documents.fta.constants import (
     GET_QUOTA_ORDER_NUMBERS_SQL,
 )
 from trade_tariff_reference.documents.fta.duty import Duty
+from trade_tariff_reference.documents.fta.local_siv import LocalSiv
 from trade_tariff_reference.documents.fta.measure import Measure
 from trade_tariff_reference.documents.fta.measure_condition import MeasureCondition
 from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
+from trade_tariff_reference.schedule.models import DocumentHistory
 
 
 class Document:
@@ -579,12 +581,39 @@ class Document:
         }
         return quota_data
 
+    def check_document_for_update(self, context):
+        history = DocumentHistory.objects.filter(
+            agreement=self.application.agreement,
+        ).first()
+
+        change = None
+        if history:
+            change = DeepDiff(history.data, context)
+        return change
+
+    def log_document_history(self, context, change):
+        if change:
+            f.log(f'Changes found\n{change}')
+
+        DocumentHistory.objects.create(
+            agreement=self.application.agreement,
+            data=context,
+            change=change,
+            forced=self.application.force_document_generation,
+        )
+
     def create_document(self, context):
+        change = self.check_document_for_update(context)
+        if not change and not self.application.force_document_generation:
+            f.log("\nPROCESS COMPLETE - Document unchanged no file generated")
+            return
+
         document_template = "xml/document_noquotas.xml"
         if context.get('HAS_QUOTAS'):
             document_template = "xml/document_hasquotas.xml"
         document_xml = render_to_string(document_template, context)
         self.write(document_xml)
+        self.log_document_history(context, change)
 
     def write(self, document_xml):
         ###########################################################################
@@ -619,7 +648,7 @@ class Document:
                 }
                 if c.duty_string[-18:] == "<w:r><w:br/></w:r>":
                     c.duty_string = c.duty_string[:-18]
-                table_dict['DUTY'] = mark_safe(c.duty_string)
+                table_dict['DUTY'] = c.duty_string
                 table_rows.append(table_dict)
 
         ###########################################################################
