@@ -54,7 +54,7 @@ class Application(DatabaseConnect):
         # Create the quotas table
         my_document.get_duties("quotas")
         my_document.get_quota_order_numbers()
-        my_document.get_quota_balances_from_csv()
+        my_document.get_quota_balances()
         my_document.get_quota_measures()
         my_document.get_quota_definitions()
         quota_data = my_document.print_quotas()
