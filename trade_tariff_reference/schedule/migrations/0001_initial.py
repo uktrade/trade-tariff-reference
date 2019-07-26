@@ -26,20 +26,4 @@ class Migration(migrations.Migration):
                 ('country_name', models.CharField(max_length=200)),
             ],
         ),
-        migrations.CreateModel(
-            name='QuotaBalance',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quota_order_number_id', models.CharField(max_length=120)),
-                ('method', models.CharField(max_length=120)),
-                ('y1_balance', models.CharField(blank=True, max_length=120, null=True)),
-                ('yx_balance', models.CharField(blank=True, max_length=120, null=True)),
-                ('yx_start', models.DateField(blank=True, null=True)),
-                ('measurement_unit_code', models.CharField(blank=True, max_length=120, null=True)),
-                ('origin_quota', models.CharField(blank=True, max_length=120, null=True)),
-                ('addendum', models.CharField(blank=True, max_length=255, null=True)),
-                ('scope', models.CharField(blank=True, max_length=255, null=True)),
-                ('agreement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='schedule.Agreement')),
-            ],
-        ),
     ]
