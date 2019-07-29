@@ -1,9 +1,9 @@
 from django.shortcuts import redirect, reverse
 from django.templatetags import static
-from django.views.generic import FormView, RedirectView, TemplateView
+from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
-from .forms import CreateAgreementForm, ManageExtendedInformationForm
-from trade_tariff_reference.schedule.models import Agreement
+from .forms import AgreementModelForm, ManageExtendedInformationForm
+from .models import Agreement
 
 
 class ManageAgreementScheduleView(TemplateView):
@@ -25,14 +25,31 @@ class DownloadAgreementScheduleView(RedirectView):
         return static.static(f'/tariff/documents/{country}_annex.docx')
 
 
-class CreateAgreementScheduleView(FormView):
+class BaseAgreementScheduleView:
     template_name = 'schedule/create.html'
-    form_class = CreateAgreementForm
+    form_class = AgreementModelForm
 
-    def form_valid(self, form):
-        if form.cleaned_data['extended_information']:
-            return redirect(reverse('schedule:manage-extended-info'))
-        return redirect(reverse('schedule:manage'))
+    def get_success_url(self):
+        if 'extended_information' in self.request.POST.dict():
+            return reverse('schedule:manage-extended-info', kwargs={'slug': self.object.slug})
+        return reverse('schedule:manage')
+
+
+class CreateAgreementScheduleView(BaseAgreementScheduleView, CreateView):
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['heading'] = 'Create new agreement'
+        return context_data
+
+
+class EditAgreementScheduleView(BaseAgreementScheduleView, UpdateView):
+    model = Agreement
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['heading'] = 'Edit agreement'
+        return context_data
 
 
 class ManageExtendedInformationAgreementScheduleView(FormView):

@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     CreateAgreementScheduleView,
     DownloadAgreementScheduleView,
+    EditAgreementScheduleView,
     ManageAgreementScheduleView,
     ManageExtendedInformationAgreementScheduleView,
 )
@@ -16,7 +17,7 @@ urlpatterns = [
         name='create',
     ),
     path(
-        'manage/extended-info/',
+        'manage/<slug:slug>/extended-info/',
         ManageExtendedInformationAgreementScheduleView.as_view(),
         name='manage-extended-info',
     ),
@@ -26,8 +27,13 @@ urlpatterns = [
         name='manage',
     ),
     path(
-        'download/<country>/',
+        'download/<slug:slug>/',
         DownloadAgreementScheduleView.as_view(),
         name='download',
-        )
+    ),
+    path(
+        'edit/<slug:slug>/',
+        EditAgreementScheduleView.as_view(),
+        name='edit',
+    )
 ]
