@@ -1815,8 +1815,14 @@ class QuotaOrderNumberOriginExclusions(models.Model):
 
 
 class QuotaOrderNumberOrigins(models.Model):
-    quota_order_number_origin_sid = models.IntegerField(blank=True, null=True)
-    quota_order_number_sid = models.IntegerField(blank=True, null=True)
+    id = models.CharField(max_length=255, primary_key=True, db_column='quota_order_number_origin_sid')
+    quota_order_number = models.ForeignKey(
+        'tariff.QuotaOrderNumbers',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        db_column='quota_order_number_sid',
+    )
     geographical_area_id = models.CharField(max_length=255, blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
@@ -1837,8 +1843,8 @@ class QuotaOrderNumberOrigins(models.Model):
 
 
 class QuotaOrderNumbers(models.Model):
-    id = models.CharField(max_length=255, primary_key=True, db_column='quota_order_number_id')
-    quota_order_number_sid = models.IntegerField(blank=True, null=True)
+    id = models.CharField(max_length=255, primary_key=True, db_column='quota_order_number_sid')
+    quota_order_number_id = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     validity_end_date = models.DateTimeField(blank=True, null=True)
     oid = models.IntegerField(blank=True, null=True)

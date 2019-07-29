@@ -1,5 +1,4 @@
 import codecs
-import csv
 import os
 import tempfile
 from datetime import datetime
@@ -29,7 +28,7 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
-from trade_tariff_reference.schedule.models import ExtendedQuota, DocumentHistory
+from trade_tariff_reference.schedule.models import DocumentHistory, ExtendedQuota
 
 
 class Document:

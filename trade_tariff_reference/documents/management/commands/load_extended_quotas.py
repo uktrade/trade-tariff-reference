@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand
-
 from datetime import datetime
 
-from trade_tariff_reference.schedule.models import ExtendedQuota, Agreement
+from django.core.management.base import BaseCommand
+
+from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
 
 
 FILE_NAME = '/app/trade_tariff_reference/documents/fta/config/quota_volume_master.csv'
