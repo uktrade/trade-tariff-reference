@@ -1,5 +1,4 @@
 import codecs
-import csv
 import os
 import tempfile
 from datetime import datetime
@@ -7,6 +6,7 @@ from distutils.dir_util import copy_tree
 from functools import lru_cache
 
 from deepdiff import DeepDiff
+from deepdiff.model import PrettyOrderedSet
 
 from django.template.loader import render_to_string
 
@@ -28,7 +28,7 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
-from trade_tariff_reference.schedule.models import DocumentHistory
+from trade_tariff_reference.schedule.models import DocumentHistory, ExtendedQuota
 
 
 class Document:
@@ -321,36 +321,29 @@ class Document:
                     qon.commodity_list.append(my_commodity)
                     break
 
-    def get_quota_balances_from_csv(self):
-        f.log(" - Getting quota balances from CSV")
+    def get_quota_balances(self):
+        f.log(" - Getting quota balances")
         if self.has_quotas is False:
             return
-        balance_file = os.path.join(self.application.BASE_DIR, "config/quota_volume_master.csv")
-        with open(balance_file, "r") as balance_file_contents:
-            reader = csv.reader(balance_file_contents)
-            temp = list(reader)
-        for balance in temp:
-            try:
-                quota_order_number_id = balance[0].strip()
-                country = balance[1]
-                method = balance[2]
-                y1_balance = balance[9]
-                yx_balance = balance[10]
-                yx_start = balance[11]
-                measurement_unit_code = balance[12].strip()
-                origin_quota = balance[13].strip()
-                addendum = balance[14].strip()
-                scope = balance[15].strip()
 
-                if quota_order_number_id not in ("", "Quota order number"):
-                    qb = QuotaBalance(
-                        quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
-                        measurement_unit_code, origin_quota, addendum, scope
-                    )
-                    if str(quota_order_number_id) not in self.balance_dict:
-                        self.balance_dict[str(quota_order_number_id)] = qb
-            except:
-                pass
+        temp = ExtendedQuota.objects.all()
+        for balance in temp:
+            quota_order_number_id = balance.quota_order_number_id
+            country = balance.agreement.slug
+            method = balance.get_quota_type_display()
+            y1_balance = balance.year_start_balance
+            yx_balance = balance.opening_balance
+            yx_start = datetime.strftime(balance.start_date, "%d/%m/%Y") if balance.start_date else None
+            measurement_unit_code = balance.measurement_unit_code
+            origin_quota = "Y" if balance.is_origin_quota else ""
+            addendum = balance.addendum
+            scope = balance.scope
+            qb = QuotaBalance(
+                quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
+                measurement_unit_code, origin_quota, addendum, scope
+            )
+            if str(quota_order_number_id) not in self.balance_dict:
+                self.balance_dict[str(quota_order_number_id)] = qb
 
     def get_quota_definitions(self):
         if self.has_quotas is False:
@@ -358,7 +351,7 @@ class Document:
 
         # Now get the quota definitions - this just gets quota definitions for FCFS quota
         # Any licensed quotas with first three characters "094" needs there to be an additional step to get the balances
-        # from a CSV file - as per function "get_quota_balances_from_csv" above
+        # as per function "get_quota_balances" above
 
         my_order_numbers = f.list_to_sql(self.q)
 
@@ -598,13 +591,13 @@ class Document:
         DocumentHistory.objects.create(
             agreement=self.application.agreement,
             data=context,
-            change=change,
+            change=self.prepare_change(change),
             forced=self.application.force_document_generation,
         )
 
     def create_document(self, context):
         change = self.check_document_for_update(context)
-        if not change and not self.application.force_document_generation:
+        if change == dict() and not self.application.force_document_generation:
             f.log("\nPROCESS COMPLETE - Document unchanged no file generated")
             return
 
@@ -614,6 +607,14 @@ class Document:
         document_xml = render_to_string(document_template, context)
         self.write(document_xml)
         self.log_document_history(context, change)
+
+    def prepare_change(self, change):
+        if not change:
+            return change
+        for key in change.keys():
+            if isinstance(change[key], PrettyOrderedSet):
+                change[key] = list(change[key])
+        return change
 
     def write(self, document_xml):
         ###########################################################################

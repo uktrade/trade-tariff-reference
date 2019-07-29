@@ -6,4 +6,4 @@ if [ -z "$1" ]; then
     python manage.py createsuperuser
 fi
 
-python manage.py loaddata agreement quotabalance
+python manage.py loaddata agreement extendedquotas

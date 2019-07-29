@@ -31,6 +31,8 @@ class QuotaBalance:
         self.get_year_one_dates()
 
     def add_year(self, date):
+        if not date:
+            return
         try:
             if type(date) is str:
                 date = datetime.strptime(date, "%d/%m/%Y")
@@ -39,6 +41,8 @@ class QuotaBalance:
             return
 
     def get_year_one_dates(self):
+        if not self.yx_start:
+            return
         start_date = datetime.strptime(self.yx_start, "%d/%m/%Y")
         if start_date.month > 3:
             self.validity_start_date_2019 = start_date
