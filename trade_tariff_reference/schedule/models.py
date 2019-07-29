@@ -1,22 +1,19 @@
 from datetime import datetime
 
-from dateutil.relativedelta import relativedelta
-
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.shortcuts import reverse
 
 from trade_tariff_reference.documents.fta.functions import list_to_sql
-from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
 
 
 class Agreement(models.Model):
-    slug = models.SlugField(null=True, blank=True, verbose_name='Unique ID', unique=True)
+    slug = models.SlugField(verbose_name='Unique ID', unique=True)
 
     country_codes = ArrayField(
         models.CharField(max_length=6),
     )
-    gegraphical_area = models.CharField(null=True, blank=True, max_length=200)
+    geographical_area = models.CharField(null=True, blank=True, max_length=200)
     agreement_name = models.CharField(max_length=1024, verbose_name='Agreement title')
     agreement_date = models.DateField()
     version = models.CharField(max_length=20)
@@ -45,11 +42,11 @@ class Agreement(models.Model):
 
     @property
     def download_url(self):
-        return reverse('schedule:download', kwargs={'country': self.slug})
+        return reverse('schedule:download', kwargs={'slug': self.slug})
 
     @property
     def edit_url(self):
-        return ''
+        return reverse('schedule:edit', kwargs={'slug': self.slug})
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'

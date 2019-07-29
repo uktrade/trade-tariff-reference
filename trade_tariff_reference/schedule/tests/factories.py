@@ -11,8 +11,18 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     country_codes = factory.List(
         ["IR", "IN"]
     )
-    gegraphical_area = factory.Faker('country')
+    geographical_area = factory.Faker('country')
     slug = factory.Sequence(lambda n: f'country-{n}')
 
     class Meta:
         model = 'schedule.Agreement'
+
+
+class DocumentHistoryFactory(factory.django.DjangoModelFactory):
+    agreement = factory.SubFactory(AgreementFactory)
+    data = {}
+    change = {}
+    forced = True
+
+    class Meta:
+        model = 'schedule.DocumentHistory'

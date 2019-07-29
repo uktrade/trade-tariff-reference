@@ -8,58 +8,75 @@
 
 
 {% block content %}
-<form action="." method="post">
+<form action="." method="post" name="agreement_form">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             {% csrf_token %}
+            {% include 'schedule/error_summary.html' %}
+
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                    <h1 class="govuk-fieldset__heading">{% trans 'Create new agreement' %}</h1>
+                    <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
                 </legend>
 
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_unique_id">{{ form.unique_id.label }}</label>
-                    {{ form.unique_id }}
+                    <label class="govuk-label" for="id_slug">{{ form.slug.label }}</label>
+                    {{ form.slug }}
                 </div>
 
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_geographical_area_name">{{ form.geographical_area_name.label }}</label>
-                    {{ form.geographical_area_name }}
+                    <label class="govuk-label" for="id_geographical_area">{{ form.geographical_area.label }}</label>
+                    {{ form.geographical_area }}
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_country_code">{{ form.country_code.label }}</label>
-                    {{ form.country_code }}
-                </div>
+                {% if form.instance.country_codes %}
+                    {% for country_code in form.instance.country_codes %}
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="id_country_codes">{{ form.country_codes.label }}</label>
+                            <input type="text" name="country_codes" value="{{ country_code }}" class="govuk-input" required="" id="id_country_codes">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="id_country_codes">{{ form.country_codes.label }}</label>
+                        {{ form.country_codes }}
+                    </div>
+                {% endif %}
                 <div class="govuk-form-group">
                     <a href="#" class="govuk-link govuk-!-font-size-19">{% trans 'Add another country' %}</a>
                 </div>
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_agreement_title">{{ form.agreement_title.label }}</label>
-                    {{ form.agreement_title }}
+                    <label class="govuk-label" for="id_agreement_name">{{ form.agreement_name.label }}</label>
+                    {{ form.agreement_name }}
                 </div>
-
-                <div class="govuk-form-group">
+                <div class="govuk-form-group {% if form.agreement_date.errors %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="agreement-date-hint" role="group">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                             <label class="govuk-label" for="id_agreement_date">Agreement date</label>
                         </legend>
+                        {% if form.agreement_date.errors %}
+                            {% for error in form.agreement_date.errors %}
+                                <span class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>{{ error }}
+                                </span>
+                            {% endfor %}
+                        {% endif %}
                         <div class="govuk-date-input" id="agreement-date">
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-day">Day</label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="agreement-date-day" name="agreement-date-day" type="number" pattern="[0-9]*">
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_day">Day</label>
+                                    {{ form.agreement_date_day }}
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-month">Month</label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="agreement-date-month" name="agreement-date-month" type="number" pattern="[0-9]*">
+                                    <label class="govuk-label govuk-date-input__label" for=id_"agreement_date_month">Month</label>
+                                    {{ form.agreement_date_month }}
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="agreement-date-year">Year</label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="agreement-date-year" name="agreement-date-year" type="number" pattern="[0-9]*">
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_year">Year</label>
+                                    {{ form.agreement_date_year }}
                                 </div>
                             </div>
                         </div>
@@ -67,8 +84,8 @@
                 </div>
 
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_agreement_version">{{ form.agreement_version.label }}</label>
-                    {{ form.agreement_version }}
+                    <label class="govuk-label" for="id_version">{{ form.version.label }}</label>
+                    {{ form.version }}
                 </div>
 
                 <div class="govuk-form-group govuk-!-padding-top-6">

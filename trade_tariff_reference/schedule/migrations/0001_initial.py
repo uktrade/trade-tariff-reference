@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
             name='Agreement',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('slug', models.SlugField(blank=True, null=True, unique=True, verbose_name='Unique ID')),
+                ('slug', models.SlugField(unique=True, verbose_name='Unique ID')),
                 ('country_codes', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=6), size=None)),
-                ('gegraphical_area', models.CharField(blank=True, max_length=200, null=True)),
+                ('geographical_area', models.CharField(blank=True, max_length=200, null=True)),
                 ('agreement_name', models.CharField(max_length=1024, verbose_name='Agreement title')),
                 ('agreement_date', models.DateField()),
                 ('version', models.CharField(max_length=20)),
