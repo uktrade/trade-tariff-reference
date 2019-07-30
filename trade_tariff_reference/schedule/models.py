@@ -83,9 +83,12 @@ class DocumentHistory(models.Model):
 
 
 class ExtendedQuota(models.Model):
+    LICENSED = 'L'
+    FIRST_COME_FIRST_SERVED = 'F'
+
     QUOTA_CHOICES = (
-        ('F', 'FCFS'),
-        ('L', 'Licensed'),
+        (FIRST_COME_FIRST_SERVED, 'FCFS'),
+        (LICENSED, 'Licensed'),
     )
     agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE, related_name='quotas')
     quota_order_number_id = models.CharField(max_length=120)
