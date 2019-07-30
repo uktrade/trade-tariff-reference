@@ -4,7 +4,7 @@ from freezegun import freeze_time
 
 import pytest
 
-from schedule.tests.factories import AgreementFactory, DocumentHistoryFactory
+from schedule.tests.factories import AgreementFactory, DocumentHistoryFactory, ExtendedQuotaFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -35,3 +35,58 @@ def test_agreement_model():
 def test_document_history_model():
     document_history = DocumentHistoryFactory(agreement__slug='doc-history-slug')
     assert str(document_history) == 'doc-history-slug - Doc History - 2019-02-01 02:00:00+00:00'
+
+
+def test_extended_quota_model():
+    quota = ExtendedQuotaFactory(
+        quota_order_number_id=10000,
+        quota_type='F',
+        is_origin_quota=True,
+        opening_balance=123456,
+        measurement_unit_code='KG',
+        scope='my-scope',
+        addendum='my-addendum',
+    )
+    assert str(quota) == f'10000 - F - {quota.agreement}'
+    assert quota.origin_quota_string == '10000'
+    assert quota.licensed_quota_string == '10000,123456,KG'
+    assert quota.scope_quota_string == '10000,my-scope'
+    assert quota.staging_quota_string == '10000,my-addendum'
+
+
+def test_agreemeent_quotas():
+    agreement = AgreementFactory()
+    origin_quota = ExtendedQuotaFactory(
+        agreement=agreement,
+        is_origin_quota=True,
+        quota_order_number_id=10,
+        scope='',
+        addendum='',
+    )
+    licensed_quota = ExtendedQuotaFactory(
+        agreement=agreement,
+        is_origin_quota=False,
+        quota_order_number_id=11,
+        quota_type='L',
+        opening_balance=1000,
+        scope='',
+        addendum='',
+    )
+    scope_quota = ExtendedQuotaFactory(
+        agreement=agreement,
+        is_origin_quota=False,
+        quota_order_number_id=12,
+        scope='scope',
+        addendum='',
+    )
+    staging_quota = ExtendedQuotaFactory(
+        agreement=agreement,
+        is_origin_quota=False,
+        scope='',
+        addendum='addendum',
+        quota_order_number_id=13
+    )
+    assert list(agreement.origin_quotas.values_list('pk', flat=True)) == [origin_quota.pk]
+    assert list(agreement.licensed_quotas.values_list('pk', flat=True)) == [licensed_quota.pk]
+    assert list(agreement.scope_quotas.values_list('pk', flat=True)) == [scope_quota.pk]
+    assert list(agreement.staging_quotas.values_list('pk', flat=True)) == [staging_quota.pk]

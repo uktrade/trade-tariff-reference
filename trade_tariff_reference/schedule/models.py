@@ -48,6 +48,22 @@ class Agreement(models.Model):
     def edit_url(self):
         return reverse('schedule:edit', kwargs={'slug': self.slug})
 
+    @property
+    def origin_quotas(self):
+        return self.quotas.filter(is_origin_quota=True)
+
+    @property
+    def licensed_quotas(self):
+        return self.quotas.filter(quota_type='L')
+
+    @property
+    def scope_quotas(self):
+        return self.quotas.filter(scope__isnull=False).exclude(scope='')
+
+    @property
+    def staging_quotas(self):
+        return self.quotas.filter(addendum__isnull=False).exclude(addendum='')
+
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
 
@@ -71,7 +87,7 @@ class ExtendedQuota(models.Model):
         ('F', 'FCFS'),
         ('L', 'Licensed'),
     )
-    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE)
+    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE, related_name='quotas')
     quota_order_number_id = models.CharField(max_length=120)
     start_date = models.DateField(null=True, blank=True)
     year_start_balance = models.IntegerField(null=True, blank=True)
@@ -81,3 +97,22 @@ class ExtendedQuota(models.Model):
     quota_type = models.CharField(choices=QUOTA_CHOICES, max_length=20)
     is_origin_quota = models.BooleanField(default=False)
     measurement_unit_code = models.CharField(null=True, blank=True, max_length=20)
+
+    @property
+    def origin_quota_string(self):
+        return f'{self.quota_order_number_id}'
+
+    @property
+    def licensed_quota_string(self):
+        return f'{self.quota_order_number_id},{self.opening_balance},{self.measurement_unit_code}'
+
+    @property
+    def scope_quota_string(self):
+        return f'{self.quota_order_number_id},{self.scope}'
+
+    @property
+    def staging_quota_string(self):
+        return f'{self.quota_order_number_id},{self.addendum}'
+
+    def __str__(self):
+        return f'{self.quota_order_number_id} - {self.quota_type} - {self.agreement}'

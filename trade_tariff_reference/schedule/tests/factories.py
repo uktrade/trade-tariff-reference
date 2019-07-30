@@ -1,3 +1,4 @@
+import random
 from datetime import date
 
 import factory
@@ -26,3 +27,17 @@ class DocumentHistoryFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'schedule.DocumentHistory'
+
+
+class ExtendedQuotaFactory(factory.django.DjangoModelFactory):
+    agreement = factory.SubFactory(AgreementFactory)
+    quota_order_number_id = random.randrange(100000, 999999)
+    is_origin_quota = True
+    measurement_unit_code = 'KGM'
+    quota_type = 'F'
+    scope = factory.Faker('text')
+    addendum = factory.Faker('text')
+    opening_balance = 10000
+
+    class Meta:
+        model = 'schedule.ExtendedQuota'

@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('quota_type', models.CharField(choices=[('F', 'FCFS'), ('L', 'Licensed')], max_length=20)),
                 ('is_origin_quota', models.BooleanField(default=False)),
                 ('measurement_unit_code', models.CharField(blank=True, max_length=20, null=True)),
-                ('agreement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='schedule.Agreement')),
+                ('agreement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quotas', to='schedule.Agreement')),
             ],
         ),
     ]
