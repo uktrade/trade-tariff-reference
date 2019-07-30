@@ -111,11 +111,17 @@ class ExtendedQuota(models.Model):
 
     @property
     def scope_quota_string(self):
-        return f'{self.quota_order_number_id},{self.scope}'
+        scope = self.scope.replace('"', '') if self.scope else ''
+        if scope:
+            scope = f'"{scope}"'
+        return f'{self.quota_order_number_id},{scope}'
 
     @property
     def staging_quota_string(self):
-        return f'{self.quota_order_number_id},{self.addendum}'
+        addendum = self.addendum.replace('"', '') if self.addendum else ''
+        if addendum:
+            addendum = f'"{addendum}"'
+        return f'{self.quota_order_number_id},{addendum}'
 
     def __str__(self):
         return f'{self.quota_order_number_id} - {self.quota_type} - {self.agreement}'

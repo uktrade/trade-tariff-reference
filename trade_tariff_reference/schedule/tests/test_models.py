@@ -50,8 +50,8 @@ def test_extended_quota_model():
     assert str(quota) == f'10000 - F - {quota.agreement}'
     assert quota.origin_quota_string == '10000'
     assert quota.licensed_quota_string == '10000,123456,KG'
-    assert quota.scope_quota_string == '10000,my-scope'
-    assert quota.staging_quota_string == '10000,my-addendum'
+    assert quota.scope_quota_string == '10000,"my-scope"'
+    assert quota.staging_quota_string == '10000,"my-addendum"'
 
 
 def test_agreemeent_quotas():
