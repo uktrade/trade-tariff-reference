@@ -4,8 +4,11 @@ from django.http import QueryDict
 
 import pytest
 
-from trade_tariff_reference.schedule.forms import AgreementModelForm
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+from trade_tariff_reference.schedule.forms import AgreementModelForm, ManageExtendedInformationForm
+from trade_tariff_reference.schedule.tests.factories import (
+    AgreementFactory,
+    setup_quota_data,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -91,3 +94,26 @@ def test_create_agreement_slug_already_exists():
     assert form.errors == {
         'slug': ['Agreement with this Unique ID already exists.'],
     }
+
+
+def test_manage_extended_form_initial_data():
+    origin_quota, licensed_quota, scope_quota, staging_quota = setup_quota_data()
+    agreement = origin_quota.agreement
+    form = ManageExtendedInformationForm(agreement=agreement)
+    assert set(form.initial.keys()) == {'origin_quotas', 'licensed_quotas', 'scope_quotas', 'staging_quotas'}
+    assert form.initial['origin_quotas'] == (
+        f'{origin_quota.quota_order_number_id}'
+    )
+    assert form.initial['licensed_quotas'] == (
+        f'{licensed_quota.quota_order_number_id},'
+        f'{licensed_quota.opening_balance},'
+        f'{licensed_quota.measurement_unit_code}'
+    )
+    assert form.initial['scope_quotas'] == (
+        f'{scope_quota.quota_order_number_id},'
+        f'"{scope_quota.scope}"'
+    )
+    assert form.initial['staging_quotas'] == (
+        f'{staging_quota.quota_order_number_id},'
+        f'{staging_quota.addendum}'
+    )

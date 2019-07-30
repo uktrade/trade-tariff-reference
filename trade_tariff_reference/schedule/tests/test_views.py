@@ -4,8 +4,8 @@ from django.shortcuts import reverse
 
 import pytest
 
-from trade_tariff_reference.schedule.models import Agreement
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory, setup_quota_data
 
 pytestmark = pytest.mark.django_db
 
@@ -41,6 +41,19 @@ def test_view_edit_agreement_renders_successfully(client):
     agreement = AgreementFactory()
     uri = reverse('schedule:edit', kwargs={'slug': agreement.slug})
     _assert_view_propoerties(client, uri, 'schedule/create.html', 'Edit agreement', True)
+
+
+def test_view_manage_extended_information_renders_successfully(client):
+    origin_quota, licensed_quota, scope_quota, staging_quota = setup_quota_data()
+    agreement = origin_quota.agreement
+    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    _assert_view_propoerties(
+        client,
+        uri,
+        'schedule/manage_extended_information.html',
+        'Manage extended information',
+        True,
+    )
 
 
 def test_create_agreement_with_no_data(client):
@@ -117,3 +130,69 @@ def test_create_agreement_and_redirect_to_add_extended_information(client):
     )
     assert actual_agreement.agreement_name == data['agreement_name']
     assert actual_agreement.version == data['version']
+
+
+def test_manage_extended_information(client):
+    agreement = AgreementFactory()
+    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    data = {
+        'origin_quotas': '123\r\n456\r\n890\r\n\r\n',
+        'licensed_quotas': '123,1,A\r\n456,2,B\r\n890,1,C\r\n\r\n',
+        'scope_quotas': '123,scope1\r\n456,scope2\r\n890,scope3\r\n\r\n',
+        'staging_quotas': '123,add1\r\n456,add2\r\n890,add3\r\n\r\n',
+    }
+    response = client.post(uri, data=data, follow=True)
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse('schedule:manage'), 302)]
+    quotas = ExtendedQuota.objects.filter(agreement=agreement)
+    assert quotas.count() == 3
+
+    first_quota = quotas.get(quota_order_number_id=123)
+    assert first_quota.scope == 'scope1'
+    assert first_quota.quota_type == ExtendedQuota.LICENSED
+    assert first_quota.addendum == 'add1'
+    assert first_quota.is_origin_quota is True
+    assert first_quota.opening_balance == 1
+    assert first_quota.measurement_unit_code == 'A'
+
+    second_quota = quotas.get(quota_order_number_id=456)
+    assert second_quota.scope == 'scope2'
+    assert second_quota.quota_type == ExtendedQuota.LICENSED
+    assert second_quota.addendum == 'add2'
+    assert second_quota.is_origin_quota is True
+    assert second_quota.opening_balance == 2
+    assert second_quota.measurement_unit_code == 'B'
+
+    third_quota = quotas.get(quota_order_number_id=890)
+    assert third_quota.scope == 'scope3'
+    assert third_quota.quota_type == ExtendedQuota.LICENSED
+    assert third_quota.addendum == 'add3'
+    assert third_quota.is_origin_quota is True
+    assert third_quota.opening_balance == 1
+    assert third_quota.measurement_unit_code == 'C'
+
+
+def test_manage_extended_information_when_data_is_missing(client):
+    agreement = AgreementFactory()
+    agreement.save()
+    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    data = {
+        'licensed_quotas': '890,,C\r\n\r\n',
+    }
+    response = client.post(uri, data=data, follow=True)
+    assert response.status_code == 200
+    quotas = ExtendedQuota.objects.filter(agreement=agreement)
+    third_quota = quotas.get(quota_order_number_id=890)
+    assert not third_quota.scope
+    assert third_quota.quota_type == ExtendedQuota.LICENSED
+    assert not third_quota.addendum
+    assert third_quota.is_origin_quota is False
+    assert not third_quota.opening_balance
+    assert third_quota.measurement_unit_code == 'C'
+
+
+def test_download_document(client):
+    uri = reverse('schedule:download', kwargs={'slug': 'hello'})
+    response = client.get(uri)
+    assert response.status_code == 302
+    assert response.get('Location') == f'/static/tariff/documents/hello_annex.docx'
