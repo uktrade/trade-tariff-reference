@@ -19,7 +19,7 @@
                 <span id="extended-information-hint" class="govuk-hint">{% trans 'Which information would you like to add?' %}</span>
                 <div class="govuk-checkboxes" data-module="checkboxes">
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="extended-information-1" name="info" type="checkbox" value="origin-quotas" data-aria-controls="conditional-extended-information-1">
+                        <input class="govuk-checkboxes__input" id="extended-information-1" name="info" type="checkbox" value="origin_quotas" data-aria-controls="conditional-extended-information-1">
                         <label class="govuk-label govuk-checkboxes__label" for="extended-information-1">{% trans 'Origin quotas' %}</label>
                     </div>
                     <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-1">
@@ -27,11 +27,11 @@
                             <span class="govuk-hint">
                                 {% trans 'Please enter a list of the origin quotas which are a part of this Trade Agreement (separate each quota with a new line character)' %}
                             </span>
-                            <textarea class="govuk-textarea" id="origin-quotas" name="origin-quotas" rows="8"></textarea>
+                            {{ form.origin_quotas }}
                         </div>
                     </div>
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="extended-information-2" name="info" type="checkbox" value="licensed-quota-volumes" data-aria-controls="conditional-extended-information-2">
+                        <input class="govuk-checkboxes__input" id="extended-information-2" name="info" type="checkbox" value="licensed_quotas" data-aria-controls="conditional-extended-information-2">
                         <label class="govuk-label govuk-checkboxes__label" for="extended-information-2">{% trans 'Licensed quota volumes' %}</label>
                     </div>
                     <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-2">
@@ -40,12 +40,12 @@
                                 {% trans 'The Tariff Application is not able to capture volumes for Licensed quotas, as this information is not required by HMRC’s border systems nor included in the Taric data structures. Please enter the opening balances for the licensed quotas here. Enter the quota order number, the opening balance and the opening balance unit, separated by commas'%}
                             </span>
                             <span class="govuk-hint">{% trans 'e.g. 091234,123,KGM' %}</span>
-                            <textarea class="govuk-textarea" id="licensed-quota-volumes" name="licensed-quota-volumes" rows="8"></textarea>
+                            {{ form.licensed_quotas }}
                         </div>
 
                     </div>
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="extended-information-3" name="info" type="checkbox" value="quota-scope" data-aria-controls="conditional-extended-information-3">
+                        <input class="govuk-checkboxes__input" id="extended-information-3" name="info" type="checkbox" value="scope_quotas" data-aria-controls="conditional-extended-information-3">
                         <label class="govuk-label govuk-checkboxes__label" for="extended-information-3">{% trans 'Quota scope' %}</label>
                     </div>
                     <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-3">
@@ -54,13 +54,12 @@
                                 {% trans 'If any of the quotas in this Trade Agreement are limited by scope, e.g. to a single country in a multi-country group, please enter the details below (separate each quota with a new line character)' %}
                             </span>
                             <span class="govuk-hint">{% trans 'e.g. 0912345,"Namibia only"' %}</span>
-                            <textarea class="govuk-textarea" id="quota-scope" name="quota-scope" rows="8"></textarea>
-
+                            {{ form.scope_quotas }}
                         </div>
                     </div>
 
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="extended-information-4" name="info" type="checkbox" value="quota-staging-info" data-aria-controls="conditional-extended-information-4">
+                        <input class="govuk-checkboxes__input" id="extended-information-4" name="info" type="checkbox" value="staging_quotas" data-aria-controls="conditional-extended-information-4">
                         <label class="govuk-label govuk-checkboxes__label" for="extended-information-4">{% trans 'Quota staging and additional information' %}</label>
                     </div>
                     <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-4">
@@ -69,7 +68,7 @@
                                 {% trans 'Please enter a list of the origin quotas which are a part of this Trade Agreement (separate each quota with a new line character)' %}
                             </span>
                             <span class="govuk-hint">{% trans '091234, "an annual addition of 58,000 kg per year"' %}</span>
-                            <textarea class="govuk-textarea" id="quota-staging-info" name="quota-staging-info" rows="8"></textarea>
+                            {{ form.staging_quotas }}
                         </div>
                     </div>
                 </div>

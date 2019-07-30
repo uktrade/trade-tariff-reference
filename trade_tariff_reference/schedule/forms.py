@@ -2,7 +2,7 @@ from datetime import date
 
 from django import forms
 
-from .models import Agreement
+from .models import Agreement, ExtendedQuota
 
 
 class AgreementModelForm(forms.ModelForm):
@@ -10,7 +10,8 @@ class AgreementModelForm(forms.ModelForm):
         required=False,
     )
     agreement_date_day = forms.CharField(
-        required=True, max_length=2,
+        required=True,
+        max_length=2,
         widget=forms.NumberInput(
             attrs={
                 'class': 'govuk-input govuk-date-input__input govuk-input--width-2',
@@ -19,7 +20,8 @@ class AgreementModelForm(forms.ModelForm):
         ),
     )
     agreement_date_month = forms.CharField(
-        required=True, max_length=2,
+        required=True,
+        max_length=2,
         widget=forms.NumberInput(
             attrs={
                 'class': 'govuk-input govuk-date-input__input govuk-input--width-2',
@@ -28,7 +30,8 @@ class AgreementModelForm(forms.ModelForm):
         ),
     )
     agreement_date_year = forms.CharField(
-        required=True, max_length=4,
+        required=True,
+        max_length=4,
         widget=forms.NumberInput(
             attrs={
                 'class': 'govuk-input govuk-date-input__input govuk-input--width-4',
@@ -36,7 +39,13 @@ class AgreementModelForm(forms.ModelForm):
             }
         ),
     )
-    agreement_date = forms.CharField(required=False, max_length=20, widget=forms.HiddenInput(attrs={'required': False}))
+    agreement_date = forms.CharField(
+        required=False,
+        max_length=20,
+        widget=forms.HiddenInput(
+            attrs={'required': False}
+        ),
+    )
 
     class Meta:
         model = Agreement
@@ -65,6 +74,7 @@ class AgreementModelForm(forms.ModelForm):
             'agreement_name': forms.TextInput(attrs={'class': 'govuk-input'}),
             'version': forms.TextInput(attrs={'class': 'govuk-input'}),
             'geographical_area': forms.TextInput(attrs={'class': 'govuk-input'}),
+            'country_codes': forms.TextInput(attrs={'class': 'govuk-input'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -97,4 +107,67 @@ class AgreementModelForm(forms.ModelForm):
 
 
 class ManageExtendedInformationForm(forms.Form):
-    pass
+    origin_quotas = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={'class': 'govuk-textarea', 'rows': 8, 'required': False}
+        ),
+    )
+    licensed_quotas = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={'class': 'govuk-textarea', 'rows': 8, 'required': False}
+        ),
+    )
+    scope_quotas = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={'class': 'govuk-textarea', 'rows': 8, 'required': False}
+        )
+    )
+    staging_quotas = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={'class': 'govuk-textarea', 'rows': 8, 'required': False}
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.agreement = kwargs.pop('agreement')
+        super().__init__(*args, **kwargs)
+        self.initial['origin_quotas'] = self.get_initial_origin_quotas()
+        self.initial['licensed_quotas'] = self.get_initial_licensed_quotas()
+        self.initial['scope_quotas'] = self.get_initial_scope_quotas()
+        self.initial['staging_quotas'] = self.get_initial_staging_quotas()
+
+    def get_initial_origin_quotas(self):
+        quotas = [quota.origin_quota_string for quota in self.agreement.origin_quotas]
+        return '\r\n'.join(quotas)
+
+    def get_initial_licensed_quotas(self):
+        quotas = [quota.licensed_quota_string for quota in self.agreement.licensed_quotas]
+        return '\r\n'.join(quotas)
+
+    def get_initial_scope_quotas(self):
+        quotas = [quota.scope_quota_string for quota in self.agreement.scope_quotas]
+        return '\r\n'.join(quotas)
+
+    def get_initial_staging_quotas(self):
+        quotas = [quota.staging_quota_string for quota in self.agreement.staging_quotas]
+        return '\r\n'.join(quotas)
+
+
+class ExtendedQuotaForm(forms.ModelForm):
+
+    class Meta:
+        model = ExtendedQuota
+        fields = [
+            'agreement',
+            'quota_order_number_id',
+            'is_origin_quota',
+            'opening_balance',
+            'measurement_unit_code',
+            'quota_type',
+            'scope',
+            'addendum',
+        ]

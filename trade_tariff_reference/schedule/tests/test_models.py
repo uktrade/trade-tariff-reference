@@ -4,7 +4,12 @@ from freezegun import freeze_time
 
 import pytest
 
-from schedule.tests.factories import AgreementFactory, DocumentHistoryFactory, ExtendedQuotaFactory
+from schedule.tests.factories import (
+    AgreementFactory,
+    DocumentHistoryFactory,
+    ExtendedQuotaFactory,
+    setup_quota_data,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -55,37 +60,8 @@ def test_extended_quota_model():
 
 
 def test_agreemeent_quotas():
-    agreement = AgreementFactory()
-    origin_quota = ExtendedQuotaFactory(
-        agreement=agreement,
-        is_origin_quota=True,
-        quota_order_number_id=10,
-        scope='',
-        addendum='',
-    )
-    licensed_quota = ExtendedQuotaFactory(
-        agreement=agreement,
-        is_origin_quota=False,
-        quota_order_number_id=11,
-        quota_type='L',
-        opening_balance=1000,
-        scope='',
-        addendum='',
-    )
-    scope_quota = ExtendedQuotaFactory(
-        agreement=agreement,
-        is_origin_quota=False,
-        quota_order_number_id=12,
-        scope='scope',
-        addendum='',
-    )
-    staging_quota = ExtendedQuotaFactory(
-        agreement=agreement,
-        is_origin_quota=False,
-        scope='',
-        addendum='addendum',
-        quota_order_number_id=13
-    )
+    origin_quota, licensed_quota, scope_quota, staging_quota = setup_quota_data()
+    agreement = origin_quota.agreement
     assert list(agreement.origin_quotas.values_list('pk', flat=True)) == [origin_quota.pk]
     assert list(agreement.licensed_quotas.values_list('pk', flat=True)) == [licensed_quota.pk]
     assert list(agreement.scope_quotas.values_list('pk', flat=True)) == [scope_quota.pk]
