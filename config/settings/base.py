@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import environ
 
+from django.urls import reverse_lazy
+
 env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,7 +30,7 @@ SECRET_KEY = 'l_tl&(!%sb&077o#g70^h_61w6gr$b9%dpr+va=b%w=5q^0$r#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'trade_tariff_reference.tariff',
     'trade_tariff_reference.documents',
     'sass_processor',
+    'authbroker_client',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'authbroker_client.middleware.ProtectAllViewsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'authbroker_client.backends.AuthbrokerBackend',
+]
+
+LOGIN_URL = reverse_lazy('authbroker:login')
+
+LOGIN_REDIRECT_URL = reverse_lazy('core:homepage')
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -160,3 +174,8 @@ CELERY_BROKER_URL = 'redis://trade_application_redis:6379'
 #         'args': ('israel',),
 #     },
 # }
+
+# authbroker config
+AUTHBROKER_URL = os.environ.get('AUTHBROKER_URL', '')
+AUTHBROKER_CLIENT_ID = os.environ.get('AUTHBROKER_CLIENT_ID', '')
+AUTHBROKER_CLIENT_SECRET = os.environ.get('AUTHBROKER_CLIENT_SECRET', '')
