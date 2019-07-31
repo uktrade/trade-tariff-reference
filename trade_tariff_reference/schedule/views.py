@@ -85,3 +85,6 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
             )
             if quota_form.is_valid():
                 quota_form.save()
+            else:
+                pass
+                # MPP: TODO return an error when a quota has invalid data

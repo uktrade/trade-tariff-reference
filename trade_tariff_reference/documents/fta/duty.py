@@ -73,7 +73,7 @@ class Duty:
 
         duty_string = f"{prefix}{self.duty_amount:1.3f} {self.monetary_unit_code}"
         if self.measurement_unit_code:
-            duty_string += f" / {self.get_measurement_unit(self.measurement_unit_code)}"
+            duty_string += f" / {functions.get_measurement_unit(self.measurement_unit_code)}"
             if self.measurement_unit_qualifier_code:
                 duty_string += f" / {self.get_qualifier()}"
         return duty_string
@@ -112,46 +112,9 @@ class Duty:
             if obj.goods_nomenclature_item_id != self.commodity_code:
                 continue
             elif self.validity_start_date == obj.validity_start_date:
-                units = self.get_measurement_unit(obj.condition_measurement_unit_code)  # "tonne"
+                units = functions.get_measurement_unit(obj.condition_measurement_unit_code)  # "tonne"
                 return f" Rebased Price {obj.condition_duty_amount} € / {units}"
         return out
-
-    def get_measurement_unit(self, abbreviation):
-        units_dict = {
-            'ASV': '% vol',
-            'NAR': 'item',
-            'CCT': 'ct/l',
-            'CEN': '100 p/st',
-            'CTM': 'c/k',
-            'DTN': '100 kg',
-            'GFI': 'gi F/S',
-            'GRM': 'g',
-            'HLT': 'hl',
-            'HMT': '100 m',
-            'KGM': 'kg',
-            'KLT': '1,000 l',
-            'KMA': 'kg met.am.',
-            'KNI': 'kg N',
-            'KNS': 'kg H202',
-            'KPH': 'kg KOH',
-            'KPO': 'kg K20',
-            'KPP': 'kg P205',
-            'KSD': 'kg 90 % sdt',
-            'KSH': 'kg NaOH',
-            'KUR': 'kg U',
-            'LPA': 'l alc. 100%',
-            'LTR': 'l',
-            'MIL': '1,000 items',
-            'MTK': 'm2',
-            'MTQ': 'm3',
-            'MTR': 'm',
-            'MWH': '1,000 kWh',
-            'NCL': 'ce/el',
-            'NPR': 'pa',
-            'TJO': 'TJ',
-            'TNE': 'tonne',
-        }
-        return units_dict.get(abbreviation, abbreviation)
 
     def get_qualifier(self):
         qualifier_dict = {
