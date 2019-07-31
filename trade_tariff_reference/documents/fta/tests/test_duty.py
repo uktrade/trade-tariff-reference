@@ -60,46 +60,6 @@ def get_duty_object(
 
 
 @pytest.mark.parametrize(
-    'abbreviation,expected_result',
-    (
-        (
-            'TNE', 'tonne'
-        ),
-        (
-            'HELLO', 'HELLO'
-        ),
-        (
-            None, None
-        ),
-        (
-            'ASV', '% vol'
-        ),
-        (
-            'DTN', '100 kg'
-        ),
-        (
-            'HMT', '100 m'
-        ),
-        (
-            'KGM', 'kg'
-        ),
-        (
-            'MWH', '1,000 kWh'
-        ),
-        (
-            'NCL', 'ce/el'
-        ),
-        (
-            'LPA', 'l alc. 100%'
-        ),
-    ),
-)
-def test_get_measurement_unit(abbreviation, expected_result):
-    duty = get_duty_object()
-    assert duty.get_measurement_unit(abbreviation) == expected_result
-
-
-@pytest.mark.parametrize(
     'qualifier_code,expected_result',
     (
         (

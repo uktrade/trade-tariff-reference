@@ -34,4 +34,4 @@ services:
       - .:/app
     entrypoint: dockerize -wait tcp://trade_application_db:5432 -wait tcp://trade_application_redis:6379 -timeout 120s
     env_file: .env
-    command: watchmedo auto-restart -d . -R -p '*.py' -- celery worker -A config -l info -Q celery -B
+    command: watchmedo auto-restart -d . -R -p '*.py' -- celery worker -A config -l info -Q celery

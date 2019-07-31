@@ -31,7 +31,7 @@ class QuotaDefinition:
     def format_volume(self, volume):
         try:
             formatted_string = (
-                f"{volume:,.0f} {f.getMeasurementUnit(self.measurement_unit_code)}"
+                f"{volume:,.0f} {f.get_measurement_unit(self.measurement_unit_code)}"
                 f" {self.measurement_unit_qualifier_code}"
             )
         except:

@@ -191,6 +191,19 @@ def test_manage_extended_information_when_data_is_missing(client):
     assert third_quota.measurement_unit_code == 'C'
 
 
+def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(client):
+    agreement = AgreementFactory()
+    agreement.save()
+    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    data = {
+        'licensed_quotas': '890,hello,C\r\n\r\n',
+    }
+    response = client.post(uri, data=data, follow=True)
+    assert response.status_code == 200
+    quotas = ExtendedQuota.objects.filter(agreement=agreement)
+    assert quotas.count() == 0
+
+
 def test_download_document(client):
     uri = reverse('schedule:download', kwargs={'slug': 'hello'})
     response = client.get(uri)

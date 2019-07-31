@@ -17,13 +17,10 @@ def zipdir(model_dir, docx_file_name):
 
 
 def mstr(x):
-    try:
-        if x is None:
-            return ""
-        else:
-            return str(x)
-    except:
+    if x is None:
         return ""
+    else:
+        return str(x)
 
 
 def mnum(x):
@@ -46,75 +43,42 @@ def list_to_sql(my_list):
     return s
 
 
-def getMeasurementUnit(s):
-    if s == "ASV":
-        return "% vol/hl"  # 3302101000
-    if s == "NAR":
-        return "p/st"
-    elif s == "CCT":
-        return "ct/l"
-    elif s == "CEN":
-        return "100 p/st"
-    elif s == "CTM":
-        return "c/k"
-    elif s == "DTN":
-        return "100 kg"
-    elif s == "GFI":
-        return "gi F/S"
-    elif s == "GRM":
-        return "g"
-    elif s == "HLT":
-        return "hl"  # 2209009100
-    elif s == "HMT":
-        return "100 m"  # 3706909900
-    elif s == "KGM":
-        return "kg"
-    elif s == "KLT":
-        return "1,000 l"
-    elif s == "KMA":
-        return "kg met.am."
-    elif s == "KNI":
-        return "kg N"
-    elif s == "KNS":
-        return "kg H2O2"
-    elif s == "KPH":
-        return "kg KOH"
-    elif s == "KPO":
-        return "kg K2O"
-    elif s == "KPP":
-        return "kg P2O5"
-    elif s == "KSD":
-        return "kg 90 % sdt"
-    elif s == "KSH":
-        return "kg NaOH"
-    elif s == "KUR":
-        return "kg U"
-    elif s == "LPA":
-        # return "l alc. 100%"
-        return "l (expressed in equivalent of pure alcohol)"
-    elif s == "LTR":
-        return "l"
-    elif s == "MIL":
-        return "1,000 p/st"
-    elif s == "MTK":
-        return "m2"
-    elif s == "MTQ":
-        return "m3"
-    elif s == "MTR":
-        return "m"
-    elif s == "MWH":
-        return "1,000 kWh"
-    elif s == "NCL":
-        return "ce/el"
-    elif s == "NPR":
-        return "pa"
-    elif s == "TJO":
-        return "TJ"
-    elif s == "TNE":
-        return "t"  # 1005900020
-        # return "1000 kg" # 1005900020
-    else:
-        return s
+def get_measurement_unit(abbreviation):
+    units_dict = {
+        'ASV': '% vol',
+        'NAR': 'item',
+        'CCT': 'ct/l',
+        'CEN': '100 p/st',
+        'CTM': 'c/k',
+        'DTN': '100 kg',
+        'GFI': 'gi F/S',
+        'GRM': 'g',
+        'HLT': 'hl',
+        'HMT': '100 m',
+        'KGM': 'kg',
+        'KLT': '1,000 l',
+        'KMA': 'kg met.am.',
+        'KNI': 'kg N',
+        'KNS': 'kg H202',
+        'KPH': 'kg KOH',
+        'KPO': 'kg K20',
+        'KPP': 'kg P205',
+        'KSD': 'kg 90 % sdt',
+        'KSH': 'kg NaOH',
+        'KUR': 'kg U',
+        'LPA': 'l alc. 100%',  # "l (expressed in equivalent of pure alcohol)"
+        'LTR': 'l',
+        'MIL': '1,000 items',
+        'MTK': 'm2',
+        'MTQ': 'm3',
+        'MTR': 'm',
+        'MWH': '1,000 kWh',
+        'NCL': 'ce/el',
+        'NPR': 'pa',
+        'TJO': 'TJ',
+        'TNE': 'tonne',
+    }
+    return units_dict.get(abbreviation, abbreviation)
 
 
 def log(msg):
