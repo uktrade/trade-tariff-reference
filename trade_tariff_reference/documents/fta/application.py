@@ -29,6 +29,8 @@ class Application(DatabaseConnect):
 
         # For the output folders
         self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
+        if not os.path.exists(self.OUTPUT_DIR):
+            os.mkdir(self.OUTPUT_DIR)
         self.connect()
 
         # MPP TODO: Move these

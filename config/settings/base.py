@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -134,7 +135,9 @@ SASS_PROCESSOR_INCLUDE_DIRS = [
     '/app/static',
 ]
 
-GENERATED_DOCUMENT_LOCATION = '/app/static/documents'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+GENERATED_DOCUMENT_LOCATION = '/app/assets/tariff/documents'
 
 
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'

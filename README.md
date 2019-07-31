@@ -20,7 +20,7 @@
 4.  Import the databases (optional):
 
     ```shell
-    docker-compose run tariffs ./import_db.sh
+    docker-compose run trade_application  bash ./import_db.sh
     ```
 5.  Run the services:
 
@@ -28,30 +28,32 @@
     docker-compose up
     ```
     
-6.  Enter container
+6.  Run setup from within the container
 
     ```shell
-    docker exec -ti trade-tariff-reference_tariffs_1 /bin/bash
-    ```
-    
-7.  Run setup from within the container
-
-    ```shell
-    ./setup.sh
+    docker exec -ti tariff_trade_application_1  bash ./setup.sh
     ```
 
-8.  Run application from within the container
-
-    ```shell
-    ./run.sh
-    ```
-    
-9.  Visit website
+7.  Visit website
 
     ```shell
     http://localhost:8000/
     ```
 
+If `DEVELOPMENT_SERVER` is set to true then webserver will not be running automatically.
+To run the webserver follow these extra steps before visiting the web site.
+
+8.  Enter container
+
+    ```shell
+    docker exec -ti trade-tariff-reference_tariffs_1 /bin/bash
+    ```
+
+9.  Run application from within the container
+
+    ```shell
+    ./run.sh
+    ```
 
 To run tests
 
