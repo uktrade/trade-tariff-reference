@@ -20,6 +20,7 @@ parts/
 sdist/
 var/
 assets/
+test_assets/
 */static/
 dit_helpdesk/static/
 wheels/
