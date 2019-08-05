@@ -1,9 +1,9 @@
 ---
 applications:
-  - buildpack: https://github.com/cloudfoundry/python-buildpack.git#v1.6.36
-    stack: cflinuxfs3
-  - name: tariff-reference-dev
-    services:
-      - tariff-reference-db
-      - tariff-dev-2-pg
-      - tariff-dev-redis
+- buildpack: https://github.com/cloudfoundry/python-buildpack.git#v1.6.32
+  stack: cflinuxfs3
+  name: tariff-reference-dev
+  services:
+    - tariff-reference-db
+    - tariffs-dev-2-pg
+    - tariff-dev-redis
