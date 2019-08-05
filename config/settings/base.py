@@ -30,7 +30,7 @@ SECRET_KEY = 'l_tl&(!%sb&077o#g70^h_61w6gr$b9%dpr+va=b%w=5q^0$r#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost').split(',')
 
 
 # Application definition
