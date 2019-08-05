@@ -1,5 +1,6 @@
 import random
 from datetime import date
+from unittest import mock
 
 import factory
 
@@ -16,9 +17,21 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     )
     geographical_area = factory.Faker('country')
     slug = factory.Sequence(lambda n: f'country-{n}')
+    document = None
 
     class Meta:
         model = 'schedule.Agreement'
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """ Workaround for FileField being a post generation attribute """
+        with mock.patch('storages.backends.s3boto3.S3Boto3Storage.save') as mock_file_save:
+            mock_file_save.return_value = 'annex.docx'
+            return super().create(*args, **kwargs)
+
+
+class AgreementWithDocumentFactory(AgreementFactory):
+    document = factory.django.FileField(filename='annex.docx')
 
 
 class DocumentHistoryFactory(factory.django.DjangoModelFactory):

@@ -4,7 +4,14 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.shortcuts import reverse
 
+from storages.backends.s3boto3 import S3Boto3Storage
+
 from trade_tariff_reference.documents.fta.functions import list_to_sql
+
+
+class DocumentStorage(S3Boto3Storage):
+    location = 'documents'
+    default_acl = 'private'
 
 
 class Agreement(models.Model):
@@ -19,6 +26,8 @@ class Agreement(models.Model):
     version = models.CharField(max_length=20)
 
     country_name = models.CharField(max_length=200)
+    document = models.FileField(null=True, blank=True, storage=DocumentStorage())
+    document_created_at = models.DateTimeField(null=True, blank=True)
 
     @property
     def country_profile(self):
@@ -74,6 +83,7 @@ class DocumentHistory(models.Model):
     change = JSONField(null=True, blank=True)
     created_at = models.DateTimeField(db_index=True, null=True, blank=True, auto_now_add=True)
     forced = models.BooleanField()
+    remote_file_name = models.CharField(max_length=300, null=True, blank=True)
 
     class Meta:
         ordering = ('-created_at',)

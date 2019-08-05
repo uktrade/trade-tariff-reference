@@ -6,8 +6,8 @@ from contextlib import closing
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
-def zipdir(model_dir, docx_file_name):
-    with closing(ZipFile(docx_file_name, "w", ZIP_DEFLATED)) as z:
+def zipdir(model_dir, temp_file):
+    with closing(ZipFile(temp_file, "w", ZIP_DEFLATED)) as z:
         for root, dirs, files in os.walk(model_dir):
             # NOTE: ignore empty directories
             for fn in files:
@@ -79,7 +79,3 @@ def get_measurement_unit(abbreviation):
         'TNE': 'tonne',
     }
     return units_dict.get(abbreviation, abbreviation)
-
-
-def log(msg):
-    print(msg)

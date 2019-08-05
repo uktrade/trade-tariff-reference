@@ -1,10 +1,10 @@
+import logging
 import os
 import os.path
 from functools import lru_cache
 
 from django.conf import settings
 
-import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.constants import (
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
     GET_MEUSRING_PERCENTAGE_SQL,
@@ -15,6 +15,9 @@ from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.schedule.models import Agreement
+
+
+logger = logging.getLogger(__name__)
 
 
 class Application(DatabaseConnect):
@@ -75,10 +78,10 @@ class Application(DatabaseConnect):
         my_document.create_document(context_data)
 
     def get_mfns_for_siv_products(self):
-        f.log(" - Getting MFNs for SIV products")
+        logger.debug(" - Getting MFNs for SIV products")
         rows = self.execute_sql(GET_MFNS_FOR_SIV_PRODUCTS_SQL)
         for r in rows:
-            f.log(r)
+            logger.debug(r)
             goods_nomenclature_item_id = r[0]
             duty_amount = r[1]
             validity_start_date = r[2]

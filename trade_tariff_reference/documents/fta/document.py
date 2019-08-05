@@ -1,9 +1,12 @@
 import codecs
+import logging
 import os
 import tempfile
 from datetime import datetime
 from distutils.dir_util import copy_tree
 from functools import lru_cache
+
+from botocore.exceptions import EndpointConnectionError
 
 from deepdiff import DeepDiff
 from deepdiff.model import PrettyOrderedSet
@@ -28,7 +31,11 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
+from trade_tariff_reference.documents.utils import upload_document_to_s3
 from trade_tariff_reference.schedule.models import DocumentHistory, ExtendedQuota
+
+
+logger = logging.getLogger(__name__)
 
 
 class Document:
@@ -42,7 +49,7 @@ class Document:
         self.seasonal_records = 0
         self.wide_duty = False
 
-        f.log("Creating FTA document for " + application.agreement.country_name + "\n")
+        logger.debug("Creating FTA document for " + application.agreement.country_name + "\n")
         self.application.get_mfns_for_siv_products()
 
     def check_for_quotas(self):
@@ -50,10 +57,10 @@ class Document:
             GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.agreement.geo_ids)
         )
         if len(rows) == 0:
-            f.log(" - This FTA has no quotas")
+            logger.debug(" - This FTA has no quotas")
             result = False
         else:
-            f.log(" - This FTA has quotas")
+            logger.debug(" - This FTA has quotas")
             result = True
         self.has_quotas = result
         return result
@@ -112,7 +119,7 @@ class Document:
         )
 
     def get_duties(self, instrument_type):
-        f.log(" - Getting duties for " + instrument_type)
+        logger.debug(" - Getting duties for " + instrument_type)
 
         ###############################################################
         # Work out which measures to capture
@@ -122,7 +129,7 @@ class Document:
         # Before getting the duties, get the measure component conditions
         # These are used in adding in SIV components whenever the duty is no present
         # due to the fact that there are SIVs applied via measure components
-        f.log(" - Getting measure conditions")
+        logger.debug(" - Getting measure conditions")
         measure_condition_list = self.get_measure_conditions(measure_type_list)
 
         # Get the duties (i.e the measure components)
@@ -232,7 +239,7 @@ class Document:
             c.resolve_measures()
 
     def get_quota_order_numbers(self):
-        f.log(" - Getting unique quota order numbers")
+        logger.debug(" - Getting unique quota order numbers")
         # Get unique order numbers
 
         rows = self.application.execute_sql(
@@ -322,7 +329,7 @@ class Document:
                     break
 
     def get_quota_balances(self):
-        f.log(" - Getting quota balances")
+        logger.debug(" - Getting quota balances")
         if self.has_quotas is False:
             return
 
@@ -389,7 +396,7 @@ class Document:
                 qd.scope = qb.scope
                 qd.format_volumes()
             else:
-                f.log(f"Matching balance not found {qd.quota_order_number_id}")
+                logger.debug(f"Matching balance not found {qd.quota_order_number_id}")
             qd.format_volumes()
             self.quota_definition_list.append(qd)
 
@@ -430,7 +437,7 @@ class Document:
                     break
 
     def print_quotas(self):
-        f.log(" - Getting quotas")
+        logger.debug(" - Getting quotas")
         quota_list = []
         for qon in self.quota_order_number_list:
 
@@ -439,7 +446,7 @@ class Document:
 
             if qb:
                 if len(qon.quota_definition_list) > 1:
-                    f.log("More than one definition - we must be in Morocco")
+                    logger.debug("More than one definition - we must be in Morocco")
 
                 if len(qon.quota_definition_list) == 0:
                     # if there are no definitions, then, either this is a screwed quota and the database is
@@ -447,7 +454,7 @@ class Document:
                     # Check get_quota_definitions which should avoid this eventuality.
                     qon.validity_start_date = datetime.strptime("2019-03-29", "%Y-%m-%d")
                     qon.validity_end_date = datetime.strptime("2019-12-31", "%Y-%m-%d")
-                    f.log(f"No quota definitions found for quota {qon.quota_order_number_id}")
+                    logger.debug(f"No quota definitions found for quota {qon.quota_order_number_id}")
                     qon.initial_volume = ""
                     qon.volume_yx = ""
                     qon.addendum = ""
@@ -584,29 +591,36 @@ class Document:
             change = DeepDiff(history.data, context)
         return change
 
-    def log_document_history(self, context, change):
+    def log_document_history(self, context, change, remote_file_name):
         if change:
-            f.log(f'Changes found\n{change}')
+            logger.debug(f'Changes found\n{change}')
 
         DocumentHistory.objects.create(
             agreement=self.application.agreement,
             data=context,
             change=self.prepare_change(change),
             forced=self.application.force_document_generation,
+            remote_file_name=remote_file_name,
         )
 
     def create_document(self, context):
         change = self.check_document_for_update(context)
         if change == dict() and not self.application.force_document_generation:
-            f.log("\nPROCESS COMPLETE - Document unchanged no file generated")
+            logger.info("\nPROCESS COMPLETE - Document unchanged no file generated")
             return
 
         document_template = "xml/document_noquotas.xml"
         if context.get('HAS_QUOTAS'):
             document_template = "xml/document_hasquotas.xml"
         document_xml = render_to_string(document_template, context)
-        self.write(document_xml)
-        self.log_document_history(context, change)
+        try:
+            remote_file_name = self.write(document_xml)
+        except EndpointConnectionError:
+            logger.error(
+                f'Error - Cannot connect to S3 unable to update document for {self.application.agreement.slug}'
+            )
+        else:
+            self.log_document_history(context, change, remote_file_name)
 
     def prepare_change(self, change):
         if not change:
@@ -636,11 +650,14 @@ class Document:
             ###########################################################################
             # Finally, ZIP everything up
             ###########################################################################
-            f.zipdir(tmp_model_dir, os.path.join(self.application.OUTPUT_DIR, docx_file_name))
-            f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
+            temp_doc_file = tempfile.NamedTemporaryFile()
+            f.zipdir(tmp_model_dir, temp_doc_file.name)
+            remote_file_name = upload_document_to_s3(self.application.agreement, temp_doc_file.name)
+            logger.info(f"PROCESS COMPLETE - {docx_file_name} created - remote name {remote_file_name}")
+            return remote_file_name
 
     def print_tariffs(self):
-        f.log(" - Getting preferential duties")
+        logger.debug(" - Getting preferential duties")
         table_rows = []
         for c in self.commodity_list:
             if c.suppress is False:

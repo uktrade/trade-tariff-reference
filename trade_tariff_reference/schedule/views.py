@@ -1,7 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
-from django.templatetags import static
 from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
+from .constants import DOCX_CONTENT_TYPE
 from .forms import AgreementModelForm, ExtendedQuotaForm, ManageExtendedInformationForm
 from .models import Agreement
 from .quotas import process_quotas
@@ -18,14 +19,16 @@ class ManageAgreementScheduleView(TemplateView):
 
 class DownloadAgreementScheduleView(RedirectView):
 
-    permanent = False
-    query_string = False
+    def get_agreement(self):
+        return get_object_or_404(Agreement, slug=self.kwargs['slug'])
 
-    def get_redirect_url(self, *args, **kwargs):
-        return self.get_file_name(kwargs['slug'])
-
-    def get_file_name(self, slug):
-        return static.static(f'/tariff/documents/{slug}_annex.docx')
+    def get(self, request, *args, **kwargs):
+        agreement = self.get_agreement()
+        if not agreement.document:
+            return redirect(reverse('schedule:manage'))
+        response = HttpResponse(agreement.document.read(), content_type=DOCX_CONTENT_TYPE)
+        response['Content-Disposition'] = f'inline; filename={agreement.slug}_annex.docx'
+        return response
 
 
 class BaseAgreementScheduleView:
