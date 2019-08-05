@@ -1,7 +1,11 @@
+import logging
 from datetime import datetime
 
 import trade_tariff_reference.documents.fta.functions as functions
 from trade_tariff_reference.documents.fta.measure import Period
+
+
+logger = logging.getLogger(__name__)
 
 
 class Commodity:
@@ -116,7 +120,7 @@ class Commodity:
 
             if measure_count == 1:
                 if m.validity_end_date < date_brexit:
-                    print("Found a single measure that ends before Brexit", self.commodity_code)
+                    logger.debug(f"Found a single measure that ends before Brexit {self.commodity_code}")
                     self.suppress = True
                 m = self.measure_list[0]
 

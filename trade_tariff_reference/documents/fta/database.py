@@ -1,6 +1,9 @@
+import logging
+
 from django.db import connections
 
-import trade_tariff_reference.documents.fta.functions as f
+
+logger = logging.getLogger(__name__)
 
 
 class DatabaseConnect:
@@ -10,7 +13,7 @@ class DatabaseConnect:
 
     def execute_sql(self, sql, only_one_row=False, dict_cursor=False):
         cur = self.conn.cursor()
-        f.log(sql)
+        logger.debug(sql)
         cur.execute(sql)
         if dict_cursor:
             result = self.dict_cursor(cur)
@@ -18,7 +21,7 @@ class DatabaseConnect:
             result = cur.fetchone()
         else:
             result = cur.fetchall()
-        f.log(result)
+        logger.debug(result)
         return result
 
     def shutDown(self):

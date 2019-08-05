@@ -79,7 +79,3 @@ def get_measurement_unit(abbreviation):
         'TNE': 'tonne',
     }
     return units_dict.get(abbreviation, abbreviation)
-
-
-def log(msg):
-    print(msg)
