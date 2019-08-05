@@ -18,7 +18,7 @@ from django.urls import reverse_lazy
 env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -139,19 +139,23 @@ STATICFILES_FINDERS = [
     'sass_processor.finders.CssFinder',
 ]
 
-STATIC_ROOT = '/app/assets'
+ASSETS_FOLDER = os.path.join(BASE_DIR, 'assets')
+
+STATIC_ROOT = ASSETS_FOLDER
+
+STATIC_FOLDER = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-    ('tariff', '/app/static'),
+    ('tariff', STATIC_FOLDER),
 ]
 
 SASS_PROCESSOR_INCLUDE_DIRS = [
-    '/app/static',
+    STATIC_FOLDER,
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-GENERATED_DOCUMENT_LOCATION = '/app/assets/tariff/documents'
+GENERATED_DOCUMENT_LOCATION = os.path.join(ASSETS_FOLDER, 'tariff/documents')
 
 
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'

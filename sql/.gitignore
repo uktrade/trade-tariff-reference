@@ -1,2 +1,3 @@
-*.sql
+tariff_eu.sql
+tariff_uk.sql
 *.dump
