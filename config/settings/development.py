@@ -5,6 +5,7 @@ DEBUG = env.bool('DEBUG')
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -21,13 +22,5 @@ DATABASES = {
         'HOST': env('UK_TARIFF_HOST'),
     }
 }
-
-
-DATABASE_ROUTERS = [
-    'trade_tariff_reference.core.router.Router',
-]
-
-SASS_PROCESSOR_ENABLED = True
-SASS_PROCESSOR_AUTO_INCLUDE = True
 
 SASS_OUTPUT_STYLE = 'nested'

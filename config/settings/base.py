@@ -164,7 +164,10 @@ SASS_OUTPUT_STYLE = 'compressed'
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
 
 CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
-CELERY_BROKER_URL = 'redis://trade_application_redis:6379'
+
+CELERY_REDIS_INDEX = '1'
+
+CELERY_BROKER_URL = f'redis://trade_application_redis:6379/{CELERY_REDIS_INDEX}'
 
 # from celery.schedules import crontab
 # CELERY_BEAT_SCHEDULE = {
@@ -217,3 +220,10 @@ LOGGING = {
         },
     },
 }
+
+DATABASE_ROUTERS = [
+    'trade_tariff_reference.core.router.Router',
+]
+
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_AUTO_INCLUDE = True
