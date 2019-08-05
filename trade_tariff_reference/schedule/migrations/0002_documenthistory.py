@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
                 ('forced', models.BooleanField()),
                 ('agreement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='schedule.Agreement')),
+                ('remote_file_name', models.CharField(blank=True, max_length=300, null=True)),
             ],
             options={
                 'ordering': ('-created_at',),

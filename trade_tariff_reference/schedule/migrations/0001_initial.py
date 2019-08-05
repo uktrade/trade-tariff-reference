@@ -4,6 +4,8 @@ import django.contrib.postgres.fields
 from django.db import migrations, models
 import django.db.models.deletion
 
+import trade_tariff_reference.schedule.models
+
 
 class Migration(migrations.Migration):
 
@@ -24,6 +26,9 @@ class Migration(migrations.Migration):
                 ('agreement_date', models.DateField()),
                 ('version', models.CharField(max_length=20)),
                 ('country_name', models.CharField(max_length=200)),
+                ('document', models.FileField(blank=True, null=True, upload_to='', storage=trade_tariff_reference.schedule.models.DocumentStorage())),
+                ('document_created_at', models.DateTimeField(blank=True, null=True)),
+
             ],
         ),
     ]

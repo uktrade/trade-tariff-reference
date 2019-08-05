@@ -31,6 +31,7 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
+from trade_tariff_reference.documents.utils import upload_document_to_s3
 from trade_tariff_reference.schedule.models import DocumentHistory, ExtendedQuota
 
 
@@ -649,11 +650,14 @@ class Document:
             ###########################################################################
             # Finally, ZIP everything up
             ###########################################################################
-            f.zipdir(tmp_model_dir, os.path.join(self.application.OUTPUT_DIR, docx_file_name))
-            f.log("\nPROCESS COMPLETE - file written to " + docx_file_name + "\n")
+            temp_doc_file = tempfile.NamedTemporaryFile()
+            f.zipdir(tmp_model_dir, temp_doc_file.name)
+            remote_file_name = upload_document_to_s3(self.application.agreement, temp_doc_file.name)
+            logger.info(f"PROCESS COMPLETE - {docx_file_name} created - remote name {remote_file_name}")
+            return remote_file_name
 
     def print_tariffs(self):
-        f.log(" - Getting preferential duties")
+        logger.debug(" - Getting preferential duties")
         table_rows = []
         for c in self.commodity_list:
             if c.suppress is False:

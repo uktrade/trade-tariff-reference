@@ -1,11 +1,20 @@
 from datetime import date
+from unittest import mock
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import reverse
 
 import pytest
 
-from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory, setup_quota_data
+from trade_tariff_reference.schedule.models import (
+    Agreement,
+    ExtendedQuota,
+)
+from trade_tariff_reference.schedule.tests.factories import (
+    AgreementFactory,
+    AgreementWithDocumentFactory,
+    setup_quota_data,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -174,7 +183,6 @@ def test_manage_extended_information(authenticated_client):
 
 def test_manage_extended_information_when_data_is_missing(authenticated_client):
     agreement = AgreementFactory()
-    agreement.save()
     uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
         'licensed_quotas': '890,,C\r\n\r\n',
@@ -204,8 +212,27 @@ def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(au
     assert quotas.count() == 0
 
 
-def test_download_document(authenticated_client):
+def test_download_document_when_slug_unknown(authenticated_client):
     uri = reverse('schedule:download', kwargs={'slug': 'hello'})
     response = authenticated_client.get(uri)
+    assert response.status_code == 404
+
+
+def test_download_document_when_no_document_exists_for_agreement(authenticated_client):
+    agreement = AgreementFactory(slug='hello', document=None)
+    uri = reverse('schedule:download', kwargs={'slug': agreement.slug})
+    response = authenticated_client.get(uri)
     assert response.status_code == 302
-    assert response.get('Location') == f'/static/tariff/documents/hello_annex.docx'
+    assert response.get('Location') == reverse('schedule:manage')
+
+
+@mock.patch('storages.backends.s3boto3.S3Boto3Storage.open')
+def test_download_document(mock_open, authenticated_client):
+    mock_open.return_value = SimpleUploadedFile('doc', b'hello')
+    agreement = AgreementWithDocumentFactory(slug='test_agreement')
+    uri = reverse('schedule:download', kwargs={'slug': agreement.slug})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 200
+    assert response.content == b'hello'
+    assert response.get('Content-type') == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    assert response.get('Content-Disposition') == 'inline; filename=test_agreement_annex.docx'

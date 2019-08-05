@@ -19,3 +19,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 AUTHBROKER_URL = 'http://localhost'
 AUTHBROKER_CLIENT_ID = ''
 AUTHBROKER_CLIENT_SECRET = ''
+
+AWS_STORAGE_BUCKET_NAME = 'fake-bucket'
+AWS_SECRET_ACCESS_KEY = 'fake-secret'
+AWS_ACCESS_KEY_ID = 'fake-key'
