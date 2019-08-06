@@ -32,6 +32,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost').split(',')
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -153,7 +154,8 @@ SASS_PROCESSOR_INCLUDE_DIRS = [
     STATIC_FOLDER,
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 
 GENERATED_DOCUMENT_LOCATION = os.path.join(ASSETS_FOLDER, 'tariff/documents')
 
@@ -229,5 +231,5 @@ DATABASE_ROUTERS = [
     'trade_tariff_reference.core.router.Router',
 ]
 
-SASS_PROCESSOR_ENABLED = True
-SASS_PROCESSOR_AUTO_INCLUDE = True
+SASS_PROCESSOR_ENABLED = False
+SASS_PROCESSOR_AUTO_INCLUDE = False

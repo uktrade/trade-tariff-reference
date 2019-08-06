@@ -16,7 +16,7 @@
         <meta name="format-detection" content="telephone=no">
         <link href="{% sass_src 'tariff/css/global.sass' %}" rel="stylesheet" media="all" />
         <!--[if lte IE 9]>
-            <link href="{% sass_src 'global.sass' %" rel="stylesheet" media="all" />
+            <link href="{% sass_src 'tariff/css/global.sass' %}" rel="stylesheet" media="all" />
         <![endif]-->
         <!--[if lt IE 9]>
             <script>
@@ -78,7 +78,7 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="{% tariff_management_url %}" class="govuk-header__link govuk-header__link--service-name">{% trans 'Tariff Application' %}</a>
+                    <a href="{% tariff_management_url %}" class="govuk-header__link govuk-header__link--service-name" target="_blank">{% trans 'Tariff Application' %}</a>
                 </div>
             </div>
         </header>
