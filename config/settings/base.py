@@ -231,5 +231,5 @@ DATABASE_ROUTERS = [
     'trade_tariff_reference.core.router.Router',
 ]
 
-SASS_PROCESSOR_ENABLED = True
-SASS_PROCESSOR_AUTO_INCLUDE = True
+SASS_PROCESSOR_ENABLED = False
+SASS_PROCESSOR_AUTO_INCLUDE = False
