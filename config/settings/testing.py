@@ -1,4 +1,4 @@
-from .development import *
+from .local import *
 
 MANAGE_TARIFF_DATABASE = True
 
