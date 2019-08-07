@@ -34,7 +34,7 @@ def get_mfn_siv_product(
     condition_code='V',
     duty_expression_id='01',
     geographical_area_id='1011',
-    start_date='2019-01-01 01:00:00',
+    start_date='2019-05-01 01:00:00',
     measure_type_id=103
 ):
     start_date_object = datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
@@ -43,7 +43,7 @@ def get_mfn_siv_product(
     measure = MeasureFactory(
         goods_nomenclature_item_id=goods_nomenclature_item_id,
         validity_start_date=start_date_object,
-        validity_end_date=datetime.datetime(2019, 1, 2, 1, 0, 0, tzinfo=timezone.utc),
+        validity_end_date=datetime.datetime(2019, 4, 2, 1, 0, 0, tzinfo=timezone.utc),
         measure_type_id=measure_type_id,
         geographical_area_id=geographical_area_id
     )
@@ -152,8 +152,8 @@ def test_get_mfns_for_siv_products_with_products():
     actual_mfn_duty = application.mfn_list[0]
     assert actual_mfn_duty.commodity_code == str(expected_measure.goods_nomenclature_item_id)
     assert actual_mfn_duty.duty_amount == 200
-    assert actual_mfn_duty.validity_start_date == datetime.datetime(2019, 1, 1, 1, 0, 0, tzinfo=timezone.utc)
-    assert actual_mfn_duty.validity_end_date == datetime.datetime(2019, 1, 2, 1, 0, 0, tzinfo=timezone.utc)
+    assert actual_mfn_duty.validity_start_date == datetime.datetime(2019, 5, 1, 1, 0, 0, tzinfo=timezone.utc)
+    assert actual_mfn_duty.validity_end_date == datetime.datetime(2019, 4, 2, 1, 0, 0, tzinfo=timezone.utc)
 
 
 def test_unknown_country_profile_raises_exception():

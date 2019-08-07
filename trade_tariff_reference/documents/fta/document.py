@@ -11,7 +11,9 @@ from botocore.exceptions import EndpointConnectionError
 from deepdiff import DeepDiff
 from deepdiff.model import PrettyOrderedSet
 
+from django.conf import settings
 from django.template.loader import render_to_string
+
 
 import trade_tariff_reference.documents.fta.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
@@ -452,8 +454,11 @@ class Document:
                     # if there are no definitions, then, either this is a screwed quota and the database is
                     # missing definition entries, or this is a licensed quota, that we have somehow missed beforehand?
                     # Check get_quota_definitions which should avoid this eventuality.
-                    qon.validity_start_date = datetime.strptime("2019-03-29", "%Y-%m-%d")
-                    qon.validity_end_date = datetime.strptime("2019-12-31", "%Y-%m-%d")
+                    qon.validity_start_date = settings.BREXIT_VALIDITY_START_DATE
+                    qon.validity_end_date = settings.BREXIT_VALIDITY_END_DATE
+                    qon.validity_start_date_2019 = settings.BREXIT_VALIDITY_START_DATE
+                    qon.validity_end_date_2019 = settings.BREXIT_VALIDITY_END_DATE
+
                     logger.debug(f"No quota definitions found for quota {qon.quota_order_number_id}")
                     qon.initial_volume = ""
                     qon.volume_yx = ""
@@ -534,7 +539,7 @@ class Document:
                                 'INSERT_DIVIDER': True
                             }
 
-                            if qon.initial_volume[0] != "0":
+                            if not qon.initial_volume.startswith("0"):
                                 table_row['2019_QUOTA_VOLUME'] = f'{str(qon.initial_volume).strip()} (2019)'
                                 table_row['QUOTA_OPEN_DATE_2019'] = datetime.strftime(
                                     qon.validity_start_date_2019, '%d/%m/%Y'

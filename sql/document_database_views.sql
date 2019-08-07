@@ -47,7 +47,17 @@ CREATE OR REPLACE VIEW "ml"."v5_2019" AS SELECT measures.measure_sid,
     base_regulations.regulation_group_id
    FROM measures,
     base_regulations
-  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND (base_regulations.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone) AND ((base_regulations.effective_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (((base_regulations.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (base_regulations.validity_end_date IS NULL)) AND (base_regulations.effective_end_date IS NULL))) AND (base_regulations.explicit_abrogation_regulation_id IS NULL) AND (base_regulations.complete_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone))
+  WHERE (((measures.measure_generating_regulation_id)::text = (base_regulations.base_regulation_id)::text) AND
+  (base_regulations.validity_start_date <= '{validity_end_date}'::timestamp without time zone) AND
+  ((base_regulations.effective_end_date >= '{validity_start_date}'::timestamp without time zone) OR
+  (((base_regulations.validity_end_date >= '{validity_start_date}'::timestamp without time zone) OR
+  (base_regulations.validity_end_date IS NULL)) AND
+  (base_regulations.effective_end_date IS NULL))) AND
+  (base_regulations.explicit_abrogation_regulation_id IS NULL) AND
+  (base_regulations.complete_abrogation_regulation_id IS NULL) AND
+  ((measures.validity_end_date IS NULL) OR
+  (measures.validity_end_date >= '{validity_start_date}'::timestamp without time zone)) AND
+  (measures.validity_start_date <= '{validity_end_date}'::timestamp without time zone))
 UNION
  SELECT measures.measure_sid,
     ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
@@ -77,7 +87,17 @@ UNION
    FROM measures,
     (modification_regulations
      LEFT JOIN base_regulations ON (((modification_regulations.base_regulation_id)::text = (base_regulations.base_regulation_id)::text)))
-  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND (modification_regulations.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone) AND ((modification_regulations.effective_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (((modification_regulations.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone) OR (modification_regulations.validity_end_date IS NULL)) AND (modification_regulations.effective_end_date IS NULL))) AND (modification_regulations.complete_abrogation_regulation_id IS NULL) AND (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND ((measures.validity_end_date IS NULL) OR (measures.validity_end_date >= '2018-01-01 00:00:00'::timestamp without time zone)) AND (measures.validity_start_date <= '2019-12-31 00:00:00'::timestamp without time zone))
+  WHERE (((measures.measure_generating_regulation_id)::text = (modification_regulations.modification_regulation_id)::text) AND
+  (modification_regulations.validity_start_date <= '{validity_end_date}'::timestamp without time zone) AND
+  ((modification_regulations.effective_end_date >= '{validity_start_date}'::timestamp without time zone) OR
+  (((modification_regulations.validity_end_date >= '{validity_start_date}'::timestamp without time zone) OR
+  (modification_regulations.validity_end_date IS NULL)) AND
+  (modification_regulations.effective_end_date IS NULL))) AND
+  (modification_regulations.complete_abrogation_regulation_id IS NULL) AND
+  (modification_regulations.explicit_abrogation_regulation_id IS NULL) AND
+  ((measures.validity_end_date IS NULL) OR
+  (measures.validity_end_date >= '{validity_start_date}'::timestamp without time zone)) AND
+  (measures.validity_start_date <= '{validity_end_date}'::timestamp without time zone))
   ORDER BY 1, 2, 3, 4;
 
 
@@ -92,7 +112,11 @@ CREATE OR REPLACE VIEW "ml"."meursing_components" AS SELECT m.measure_sid,
    FROM measures m,
     measure_components mc,
     base_regulations r
-  WHERE ((m.measure_sid = mc.measure_sid) AND ((m.measure_generating_regulation_id)::text = (r.base_regulation_id)::text) AND (m.additional_code_type_id = '7'::text) AND (m.validity_end_date IS NULL) AND (r.validity_end_date IS NULL))
+  WHERE ((m.measure_sid = mc.measure_sid) AND
+  ((m.measure_generating_regulation_id)::text = (r.base_regulation_id)::text) AND
+  (m.additional_code_type_id = '7'::text) AND
+  (m.validity_end_date IS NULL) AND
+  (r.validity_end_date IS NULL))
 UNION
  SELECT m.measure_sid,
     m.measure_type_id,
@@ -105,5 +129,9 @@ UNION
    FROM measures m,
     measure_components mc,
     modification_regulations r
-  WHERE ((m.measure_sid = mc.measure_sid) AND ((m.measure_generating_regulation_id)::text = (r.modification_regulation_id)::text) AND (m.additional_code_type_id = '7'::text) AND (m.validity_end_date IS NULL) AND (r.validity_end_date IS NULL))
+  WHERE ((m.measure_sid = mc.measure_sid) AND
+  ((m.measure_generating_regulation_id)::text = (r.modification_regulation_id)::text) AND
+  (m.additional_code_type_id = '7'::text) AND
+  (m.validity_end_date IS NULL) AND
+  (r.validity_end_date IS NULL))
   ORDER BY 2, 3, 5 DESC;

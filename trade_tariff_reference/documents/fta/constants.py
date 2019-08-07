@@ -1,3 +1,5 @@
+from django.conf import settings
+
 
 GET_COMMODITIES_SQL = """
 SELECT DISTINCT m.goods_nomenclature_item_id, m.validity_start_date,
@@ -19,14 +21,14 @@ WHERE cs.goods_nomenclature_sid = gn.goods_nomenclature_sid AND gn.producline_su
 ORDER BY 1
 """
 
-GET_MFNS_FOR_SIV_PRODUCTS_SQL = """
+GET_MFNS_FOR_SIV_PRODUCTS_SQL = f"""
 SELECT DISTINCT m.goods_nomenclature_item_id,
  mcc.duty_amount, m.validity_start_date, m.validity_end_date
 FROM measures m, measure_conditions mc, measure_condition_components mcc
 WHERE mcc.measure_condition_sid = mc.measure_condition_sid
 AND m.measure_sid = mc.measure_sid
 AND mcc.duty_expression_id = '01'
-AND (m.validity_start_date > '2018-01-01')
+AND (m.validity_start_date > '{settings.BREXIT_VALIDITY_START_DATE_STRING}')
 AND mc.condition_code = 'V'
 AND m.measure_type_id IN ('103', '105')
 AND m.geographical_area_id = '1011'
@@ -47,14 +49,15 @@ SELECT AVG(duty_amount) FROM ml.meursing_components
 """
 
 
-GET_MEASURE_COMPONENTS_SQL = """
+GET_MEASURE_COMPONENTS_SQL = f"""
 SELECT DISTINCT mc.measure_sid, mcc.duty_amount FROM measure_conditions mc,
 measure_condition_components mcc, measures m
 WHERE mc.measure_condition_sid = mcc.measure_condition_sid
 AND m.measure_sid = mc.measure_sid AND condition_code = 'V' AND mcc.duty_expression_id = '01'
-AND m.measure_type_id IN ({measure_type_list})
-AND m.geographical_area_id IN ({geo_ids})
-AND m.validity_start_date < '2019-12-31' AND m.validity_end_date >= '2018-01-01'
+AND m.measure_type_id IN ({{measure_type_list}})
+AND m.geographical_area_id IN ({{geo_ids}})
+AND m.validity_start_date < '{settings.BREXIT_VALIDITY_END_DATE_STRING}'
+AND m.validity_end_date >= '{settings.BREXIT_VALIDITY_START_DATE_STRING}'
 ORDER BY measure_sid;
 """
 
@@ -85,7 +88,8 @@ WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN ({geo_ids})
 ORDER BY goods_nomenclature_item_id, measure_sid
 """
 
-GET_QUOTA_DEFINITIONS_SQL = """
-SELECT * FROM quota_definitions WHERE quota_order_number_id IN ({order_numbers})
-AND validity_start_date >= '2018-01-01' ORDER BY quota_order_number_id, validity_start_date DESC
+GET_QUOTA_DEFINITIONS_SQL = f"""
+SELECT * FROM quota_definitions WHERE quota_order_number_id IN ({{order_numbers}})
+AND validity_start_date >= '{settings.BREXIT_VALIDITY_START_DATE_STRING}'
+ORDER BY quota_order_number_id, validity_start_date DESC
 """

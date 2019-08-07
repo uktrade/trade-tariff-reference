@@ -2,7 +2,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from trade_tariff_reference.schedule.constants import BREXIT_VALIDITY_END_DATE, BREXIT_VALIDITY_START_DATE
+from django.conf import settings
 
 
 class QuotaBalance:
@@ -26,8 +26,8 @@ class QuotaBalance:
             origin_quota = "Yes"
         self.origin_quota = origin_quota
 
-        self.validity_start_date_2019 = BREXIT_VALIDITY_START_DATE
-        self.validity_end_date_2019 = BREXIT_VALIDITY_END_DATE
+        self.validity_start_date_2019 = settings.BREXIT_VALIDITY_START_DATE
+        self.validity_end_date_2019 = settings.BREXIT_VALIDITY_END_DATE
         self.get_year_one_dates()
 
     def add_year(self, date):
