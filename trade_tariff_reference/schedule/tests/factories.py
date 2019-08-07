@@ -5,6 +5,7 @@ from unittest import mock
 import factory
 
 from trade_tariff_reference.schedule.models import ExtendedQuota
+from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
 
 class AgreementFactory(factory.django.DjangoModelFactory):
@@ -13,9 +14,11 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     agreement_date = date(2019, 1, 1)
     version = '1.0'
     country_codes = factory.List(
-        ["IR", "IN"]
+        [
+            factory.LazyAttribute(lambda o: GeographicalAreaFactory(geographical_area_id='IR').geographical_area_id),
+            factory.LazyAttribute(lambda o: GeographicalAreaFactory(geographical_area_id='IN').geographical_area_id),
+        ]
     )
-    geographical_area = factory.Faker('country')
     slug = factory.Sequence(lambda n: f'country-{n}')
     document = None
 

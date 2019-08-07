@@ -2,10 +2,13 @@ from datetime import date
 
 from django import forms
 
+from trade_tariff_reference.tariff.models import GeographicalAreas
+
 from .models import Agreement, ExtendedQuota
 
 
 class AgreementModelForm(forms.ModelForm):
+
     extended_information = forms.BooleanField(
         required=False,
     )
@@ -54,7 +57,6 @@ class AgreementModelForm(forms.ModelForm):
             'country_codes',
             'agreement_name',
             'version',
-            'geographical_area',
             'extended_information',
             'agreement_date_day',
             'agreement_date_month',
@@ -66,14 +68,12 @@ class AgreementModelForm(forms.ModelForm):
             'country_codes': 'Country code',
             'agreement_name': 'Agreement title',
             'version': 'Agreement version',
-            'geographical_area': 'Geographical area name',
 
         }
         widgets = {
             'slug': forms.TextInput(attrs={'class': 'govuk-input', 'required': False}),
             'agreement_name': forms.TextInput(attrs={'class': 'govuk-input'}),
             'version': forms.TextInput(attrs={'class': 'govuk-input'}),
-            'geographical_area': forms.TextInput(attrs={'class': 'govuk-input'}),
             'country_codes': forms.TextInput(attrs={'class': 'govuk-input'}),
         }
 
@@ -99,11 +99,32 @@ class AgreementModelForm(forms.ModelForm):
         return cleaned_data
 
     def clean_country_codes(self):
+        geographical_areas = list(
+            GeographicalAreas.objects.filter(
+                validity_start_date__lte=date.today()
+            ).exclude(
+                validity_end_date__lte=date.today()
+            ).values_list(
+                'geographical_area_id', flat=True
+            )
+        )
+        invalid_country_codes_list = []
         country_codes = self.data.getlist('country_codes')
         for country_code in country_codes:
-            if len(country_code) > 6:
-                raise forms.ValidationError(f'Invalid country code [{country_code}] value too long max 6.')
+            if country_code not in geographical_areas:
+                invalid_country_codes_list.append(country_code)
+        if invalid_country_codes_list:
+            invalid_country_codes = ', '.join(invalid_country_codes_list)
+            raise forms.ValidationError(f'Invalid country code [{invalid_country_codes}]')
         return country_codes
+
+    def is_valid(self):
+        is_valid = super().is_valid()
+        for field_name, error in self.errors.items():
+            field_class = self.fields[field_name].widget.attrs.get('class')
+            if field_class:
+                self.fields[field_name].widget.attrs['class'] = f'{field_class} {field_class}--error'
+        return is_valid
 
 
 class ManageExtendedInformationForm(forms.Form):

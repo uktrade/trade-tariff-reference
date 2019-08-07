@@ -12,6 +12,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% csrf_token %}
+            {% include 'schedule/error_summary.html' %}
             <fieldset class="govuk-fieldset" aria-describedby="extended-information-hint">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                     <h1 class="govuk-fieldset__heading">{% trans 'Manage extended information' %}</h1>
