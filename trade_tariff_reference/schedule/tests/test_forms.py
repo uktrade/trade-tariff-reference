@@ -49,10 +49,10 @@ def test_empty_create_agreement_form():
         ),
         (
             {
-                'country_codes': ['HELLO12', 'HG'],
+                'country_codes': ['HELLO1'],
             },
             {
-                'country_codes': ['Invalid country code [HELLO12] value too long max 6.'],
+                'country_codes': ['Invalid country code [HELLO1]'],
             },
         ),
     ),

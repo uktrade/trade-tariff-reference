@@ -20,7 +20,6 @@ class Agreement(models.Model):
     country_codes = ArrayField(
         models.CharField(max_length=6),
     )
-    geographical_area = models.CharField(null=True, blank=True, max_length=200)
     agreement_name = models.CharField(max_length=1024, verbose_name='Agreement title')
     agreement_date = models.DateField()
     version = models.CharField(max_length=20)

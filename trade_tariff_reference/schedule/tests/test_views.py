@@ -15,6 +15,8 @@ from trade_tariff_reference.schedule.tests.factories import (
     AgreementWithDocumentFactory,
     setup_quota_data,
 )
+from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
+
 
 pytestmark = pytest.mark.django_db
 
@@ -82,6 +84,8 @@ def test_create_agreement_with_no_data(authenticated_client):
 
 def test_create_agreement(authenticated_client):
     assert Agreement.objects.count() == 0
+    GeographicalAreaFactory(geographical_area_id='RTD')
+    GeographicalAreaFactory(geographical_area_id='JO')
 
     agreement_name = 'An agreement with a very unique name'
     data = {
@@ -112,6 +116,8 @@ def test_create_agreement(authenticated_client):
 
 def test_create_agreement_and_redirect_to_add_extended_information(authenticated_client):
     assert Agreement.objects.count() == 0
+    GeographicalAreaFactory(geographical_area_id='RTD')
+    GeographicalAreaFactory(geographical_area_id='JO')
 
     agreement_name = 'An agreement with a very unique name'
     data = {

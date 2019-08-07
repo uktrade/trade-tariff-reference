@@ -1,3 +1,5 @@
+from django.utils.timezone import utc
+
 import factory
 
 
@@ -41,3 +43,11 @@ class CurrentMeasureFactory(factory.django.DjangoModelFactory):
 class MeasureExcludedGeographicalAreaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'tariff.MeasureExcludedGeographicalAreas'
+
+
+class GeographicalAreaFactory(factory.django.DjangoModelFactory):
+    geographical_area_id = 'IR'
+    validity_start_date = factory.Faker('past_datetime', tzinfo=utc)
+
+    class Meta:
+        model = 'tariff.GeographicalAreas'

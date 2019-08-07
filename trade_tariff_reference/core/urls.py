@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomepageView, HealthCheckView
+from .views import HealthCheckView, HomepageView
 
 app_name = 'core'
 

@@ -2,8 +2,9 @@ from datetime import date
 
 from django import forms
 
-from .models import Agreement, ExtendedQuota
 from trade_tariff_reference.tariff.models import GeographicalAreas
+
+from .models import Agreement, ExtendedQuota
 
 
 class AgreementModelForm(forms.ModelForm):
@@ -113,7 +114,7 @@ class AgreementModelForm(forms.ModelForm):
             if country_code not in geographical_areas:
                 invalid_country_codes_list.append(country_code)
         if invalid_country_codes_list:
-            invalid_country_codes = ','.join(invalid_country_codes_list)
+            invalid_country_codes = ', '.join(invalid_country_codes_list)
             raise forms.ValidationError(f'Invalid country code [{invalid_country_codes}]')
         return country_codes
 
