@@ -19,35 +19,23 @@
                     <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
                 </legend>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_slug">{{ form.slug.label }}</label>
-                    {{ form.slug }}
-                </div>
+                {% include 'schedule/input_field.html' with field=form.slug %}
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_geographical_area">{{ form.geographical_area.label }}</label>
-                    {{ form.geographical_area }}
-                </div>
                 {% if form.instance.country_codes %}
                     {% for country_code in form.instance.country_codes %}
-                        <div class="govuk-form-group">
-                            <label class="govuk-label" for="id_country_codes">{{ form.country_codes.label }}</label>
-                            <input type="text" name="country_codes" value="{{ country_code }}" class="govuk-input" required="" id="id_country_codes">
-                        </div>
+                        {% include 'schedule/input_field.html' with field=form.country_codes hint='Enter a geographical area id' %}
                     {% endfor %}
                 {% else %}
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" for="id_country_codes">{{ form.country_codes.label }}</label>
-                        {{ form.country_codes }}
-                    </div>
+                    {% include 'schedule/input_field.html' with field=form.country_codes hint='Enter a geographical area id' %}
                 {% endif %}
-                <div class="govuk-form-group">
+
+                <div class="govuk-form-group govuk-!-padding-top-2">
                     <a href="#" class="govuk-link govuk-!-font-size-19">{% trans 'Add another country' %}</a>
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_agreement_name">{{ form.agreement_name.label }}</label>
-                    {{ form.agreement_name }}
-                </div>
+
+                {% include 'schedule/input_field.html' with field=form.agreement_name %}
+
+
                 <div class="govuk-form-group {% if form.agreement_date.errors %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="agreement-date-hint" role="group">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -83,10 +71,7 @@
                     </fieldset>
                 </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="id_version">{{ form.version.label }}</label>
-                    {{ form.version }}
-                </div>
+               {% include 'schedule/input_field.html' with field=form.version %}
 
                 <div class="govuk-form-group govuk-!-padding-top-6">
                     <fieldset class="govuk-fieldset" aria-describedby="extended-information-hint">
