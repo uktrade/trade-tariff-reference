@@ -85,6 +85,7 @@ class DocumentHistory(models.Model):
     remote_file_name = models.CharField(max_length=300, null=True, blank=True)
 
     class Meta:
+        verbose_name_plural = 'Document Histories'
         ordering = ('-created_at',)
 
     def __str__(self):
