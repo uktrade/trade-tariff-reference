@@ -10,5 +10,6 @@ def upload_document_to_s3(agreement, local_file_name):
         contents = ContentFile(local_file.read())
         agreement.document.save(remote_file_name, contents, save=True)
         agreement.document_created_at = timezone.now()
+        agreement.document_status = agreement.AVAILABLE
         agreement.save()
     return remote_file_name

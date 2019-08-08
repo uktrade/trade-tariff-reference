@@ -15,6 +15,16 @@ class DocumentStorage(S3Boto3Storage):
 
 
 class Agreement(models.Model):
+    AVAILABLE = 'available'
+    UNAVAILABLE = 'unavailable'
+    GENERATING = 'generating'
+
+    DOCUMENT_STATUS_CHOICES = (
+        (AVAILABLE, 'Available'),
+        (UNAVAILABLE, 'Unavailable'),
+        (GENERATING, 'Generating'),
+    )
+
     slug = models.SlugField(verbose_name='Unique ID', unique=True)
 
     country_codes = ArrayField(
@@ -27,6 +37,9 @@ class Agreement(models.Model):
     country_name = models.CharField(max_length=200)
     document = models.FileField(null=True, blank=True, storage=DocumentStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
+    document_status = models.CharField(
+        choices=DOCUMENT_STATUS_CHOICES, default=UNAVAILABLE, max_length=20
+    )
 
     @property
     def country_profile(self):
