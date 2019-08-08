@@ -14,7 +14,8 @@ RUN mkdir -p /app/
 WORKDIR /app
 
 ADD requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+ADD development.txt development.txt
+RUN pip install --no-cache-dir -r development.txt
 
 ADD . /app/
 
