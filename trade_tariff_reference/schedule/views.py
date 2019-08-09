@@ -24,7 +24,7 @@ class DownloadAgreementScheduleView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         agreement = self.get_agreement()
-        if not agreement.document:
+        if not agreement.document and agreement.is_document_available:
             return redirect(reverse('schedule:manage'))
         response = HttpResponse(agreement.document.read(), content_type=DOCX_CONTENT_TYPE)
         response['Content-Disposition'] = f'inline; filename={agreement.slug}_annex.docx'
