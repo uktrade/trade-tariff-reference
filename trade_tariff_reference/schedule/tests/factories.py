@@ -4,7 +4,7 @@ from unittest import mock
 
 import factory
 
-from trade_tariff_reference.schedule.models import ExtendedQuota
+from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
 
@@ -21,6 +21,7 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     )
     slug = factory.Sequence(lambda n: f'country-{n}')
     document = None
+    document_status = Agreement.AVAILABLE
 
     class Meta:
         model = 'schedule.Agreement'

@@ -11,11 +11,15 @@ def pytest_sessionstart(session):
 
 
 @pytest.fixture
-def authenticated_client(client):
-    user = get_user_model().objects.create(
+def authenticated_client(client, user):
+    client.force_login(user)
+    yield client
+
+
+@pytest.fixture
+def user():
+    yield get_user_model().objects.create(
         email='test@test.com',
         is_staff=False,
         is_superuser=False
     )
-    client.force_login(user)
-    yield client

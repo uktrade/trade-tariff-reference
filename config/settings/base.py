@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'rest_framework',
     'trade_tariff_reference.core',
     'trade_tariff_reference.schedule',
     'trade_tariff_reference.tariff',
     'trade_tariff_reference.documents',
+    'trade_tariff_reference.api',
     'sass_processor',
     'authbroker_client',
 ]

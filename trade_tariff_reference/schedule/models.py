@@ -85,6 +85,18 @@ class Agreement(models.Model):
     def staging_quotas(self):
         return self.quotas.filter(addendum__isnull=False).exclude(addendum='')
 
+    @property
+    def is_document_available(self):
+        return self.document_status == self.AVAILABLE
+
+    @property
+    def is_document_generating(self):
+        return self.document_status == self.GENERATING
+
+    @property
+    def is_document_unavailable(self):
+        return self.document_status == self.UNAVAILABLE
+
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
 
