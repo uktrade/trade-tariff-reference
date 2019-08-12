@@ -130,11 +130,11 @@ class ExtendedQuota(models.Model):
     start_date = models.DateField(null=True, blank=True)
     year_start_balance = models.IntegerField(null=True, blank=True)
     opening_balance = models.IntegerField(null=True, blank=True)
-    scope = models.CharField(max_length=1000, null=True, blank=True)
-    addendum = models.CharField(max_length=1000, null=True, blank=True)
+    scope = models.CharField(max_length=1000, null=True, blank=True, default='')
+    addendum = models.CharField(max_length=1000, null=True, blank=True, default='')
     quota_type = models.CharField(choices=QUOTA_CHOICES, max_length=20)
     is_origin_quota = models.BooleanField(default=False)
-    measurement_unit_code = models.CharField(null=True, blank=True, max_length=20)
+    measurement_unit_code = models.CharField(null=True, blank=True, max_length=20, default='')
 
     @property
     def origin_quota_string(self):
@@ -160,3 +160,6 @@ class ExtendedQuota(models.Model):
 
     def __str__(self):
         return f'{self.quota_order_number_id} - {self.quota_type} - {self.agreement}'
+
+    class Meta:
+        unique_together = (('agreement', 'quota_order_number_id'),)
