@@ -15,6 +15,16 @@ class DocumentStorage(S3Boto3Storage):
 
 
 class Agreement(models.Model):
+    AVAILABLE = 'available'
+    UNAVAILABLE = 'unavailable'
+    GENERATING = 'generating'
+
+    DOCUMENT_STATUS_CHOICES = (
+        (AVAILABLE, 'Available'),
+        (UNAVAILABLE, 'Unavailable'),
+        (GENERATING, 'Generating'),
+    )
+
     slug = models.SlugField(verbose_name='Unique ID', unique=True)
 
     country_codes = ArrayField(
@@ -27,6 +37,9 @@ class Agreement(models.Model):
     country_name = models.CharField(max_length=200)
     document = models.FileField(null=True, blank=True, storage=DocumentStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
+    document_status = models.CharField(
+        choices=DOCUMENT_STATUS_CHOICES, default=UNAVAILABLE, max_length=20
+    )
 
     @property
     def country_profile(self):
@@ -72,6 +85,18 @@ class Agreement(models.Model):
     def staging_quotas(self):
         return self.quotas.filter(addendum__isnull=False).exclude(addendum='')
 
+    @property
+    def is_document_available(self):
+        return self.document_status == self.AVAILABLE
+
+    @property
+    def is_document_generating(self):
+        return self.document_status == self.GENERATING
+
+    @property
+    def is_document_unavailable(self):
+        return self.document_status == self.UNAVAILABLE
+
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
 
@@ -105,11 +130,11 @@ class ExtendedQuota(models.Model):
     start_date = models.DateField(null=True, blank=True)
     year_start_balance = models.IntegerField(null=True, blank=True)
     opening_balance = models.IntegerField(null=True, blank=True)
-    scope = models.CharField(max_length=1000, null=True, blank=True)
-    addendum = models.CharField(max_length=1000, null=True, blank=True)
+    scope = models.CharField(max_length=1000, null=True, blank=True, default='')
+    addendum = models.CharField(max_length=1000, null=True, blank=True, default='')
     quota_type = models.CharField(choices=QUOTA_CHOICES, max_length=20)
     is_origin_quota = models.BooleanField(default=False)
-    measurement_unit_code = models.CharField(null=True, blank=True, max_length=20)
+    measurement_unit_code = models.CharField(null=True, blank=True, max_length=20, default='')
 
     @property
     def origin_quota_string(self):
@@ -135,3 +160,6 @@ class ExtendedQuota(models.Model):
 
     def __str__(self):
         return f'{self.quota_order_number_id} - {self.quota_type} - {self.agreement}'
+
+    class Meta:
+        unique_together = (('agreement', 'quota_order_number_id'),)

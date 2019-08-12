@@ -82,7 +82,9 @@ def test_create_agreement_with_no_data(authenticated_client):
     assert response.context['form'].errors == expected_errors
 
 
-def test_create_agreement(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+def test_create_agreement(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
     assert Agreement.objects.count() == 0
     GeographicalAreaFactory(geographical_area_id='RTD')
     GeographicalAreaFactory(geographical_area_id='JO')
@@ -112,9 +114,12 @@ def test_create_agreement(authenticated_client):
     )
     assert actual_agreement.agreement_name == data['agreement_name']
     assert actual_agreement.version == data['version']
+    assert mock_generate_document.called
 
 
-def test_create_agreement_and_redirect_to_add_extended_information(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+def test_create_agreement_and_redirect_to_add_extended_information(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
     assert Agreement.objects.count() == 0
     GeographicalAreaFactory(geographical_area_id='RTD')
     GeographicalAreaFactory(geographical_area_id='JO')
@@ -145,9 +150,12 @@ def test_create_agreement_and_redirect_to_add_extended_information(authenticated
     )
     assert actual_agreement.agreement_name == data['agreement_name']
     assert actual_agreement.version == data['version']
+    assert not mock_generate_document.called
 
 
-def test_manage_extended_information(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+def test_manage_extended_information(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
     agreement = AgreementFactory()
     uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
@@ -185,9 +193,12 @@ def test_manage_extended_information(authenticated_client):
     assert third_quota.is_origin_quota is True
     assert third_quota.opening_balance == 1
     assert third_quota.measurement_unit_code == 'C'
+    assert mock_generate_document.called
 
 
-def test_manage_extended_information_when_data_is_missing(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+def test_manage_extended_information_when_data_is_missing(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
     agreement = AgreementFactory()
     uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
@@ -203,9 +214,11 @@ def test_manage_extended_information_when_data_is_missing(authenticated_client):
     assert third_quota.is_origin_quota is False
     assert not third_quota.opening_balance
     assert third_quota.measurement_unit_code == 'C'
+    assert mock_generate_document.called
 
 
-def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(mock_generate_document, authenticated_client):
     agreement = AgreementFactory()
     agreement.save()
     uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
@@ -216,6 +229,7 @@ def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(au
     assert response.status_code == 200
     quotas = ExtendedQuota.objects.filter(agreement=agreement)
     assert quotas.count() == 0
+    assert not mock_generate_document.called
 
 
 def test_download_document_when_slug_unknown(authenticated_client):
