@@ -42,10 +42,10 @@
                                 <li class="govuk-!-padding-top-1">
                                     {% if agreement.is_document_available %}
                                         <a href="{{ agreement.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download schedule' %}</a>
-                                    {% elif agreement.is_document_unavailable %}
-                                        <div class="govuk-text">{% trans 'Generating document' %}</div>
+                                    {% elif agreement.is_document_generating %}
+                                        <div class="govuk-text">{% trans 'Updating document' %}</div>
                                     {% else %}
-                                        <div class="govuk-text">{% trans 'Error generating document' %}</div>
+                                        <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
                                     {% endif %}
                                 </li>
                                 <li class="govuk-!-padding-top-2">

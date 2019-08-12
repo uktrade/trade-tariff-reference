@@ -1,11 +1,13 @@
 from django.http import HttpResponse
+from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
 from .constants import DOCX_CONTENT_TYPE
 from .forms import AgreementModelForm, ExtendedQuotaForm, ManageExtendedInformationForm
-from .models import Agreement
+from .models import Agreement, ExtendedQuota
 from .quotas import process_quotas
+from .utils import generate_document
 
 
 class ManageAgreementScheduleView(TemplateView):
@@ -38,6 +40,7 @@ class BaseAgreementScheduleView:
     def get_success_url(self):
         if 'extended_information' in self.request.POST.dict():
             return reverse('schedule:manage-extended-info', kwargs={'slug': self.object.slug})
+        generate_document(self.object)
         return reverse('schedule:manage')
 
 
