@@ -82,6 +82,3 @@ class TestAgreementAPIViews:
         assert actual_result['document_status'] == agreement.document_status
         assert actual_result['document_created_at'] == agreement.document_created_at
         assert actual_result['download_url'].endswith(reverse('schedule:download', kwargs={'slug': agreement.slug}))
-
-
-

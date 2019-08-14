@@ -218,7 +218,10 @@ def test_manage_extended_information_when_data_is_missing(mock_generate_document
 
 
 @mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
-def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(mock_generate_document, authenticated_client):
+def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(
+    mock_generate_document,
+    authenticated_client,
+):
     agreement = AgreementFactory()
     agreement.save()
     uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})

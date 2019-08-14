@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from trade_tariff_reference.schedule.models import Agreement
 from rest_framework.reverse import reverse
+
+from trade_tariff_reference.schedule.models import Agreement
 
 
 class AgreementSerializer(serializers.ModelSerializer):
@@ -16,4 +17,3 @@ class AgreementSerializer(serializers.ModelSerializer):
                 'schedule:download', kwargs={'slug': instance.slug}, request=self.context.get('request'),
             )
         return ''
-
