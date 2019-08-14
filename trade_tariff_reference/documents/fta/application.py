@@ -14,8 +14,8 @@ from trade_tariff_reference.documents.fta.database import DatabaseConnect
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
-from trade_tariff_reference.schedule.models import Agreement
 from trade_tariff_reference.documents.utils import update_agreement_document_status
+from trade_tariff_reference.schedule.models import Agreement
 
 logger = logging.getLogger(__name__)
 

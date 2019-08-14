@@ -1,5 +1,5 @@
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse
-from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
