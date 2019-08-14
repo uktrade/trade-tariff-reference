@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 import pytest
 
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+from trade_tariff_reference.schedule.models import Agreement
 
 
 pytestmark = pytest.mark.django_db
@@ -32,8 +33,16 @@ class TestAgreementAPIViews:
         self.assert_agreement(agreement_1, actual_response[agreement_1.slug])
         self.assert_agreement(agreement_2, actual_response[agreement_2.slug])
 
-    def test_agreement_detail_view(self, authenticated_client):
-        agreement = AgreementFactory()
+    @pytest.mark.parametrize(
+        'document_status',
+        (
+            Agreement.AVAILABLE,
+            Agreement.GENERATING,
+            Agreement.UNAVAILABLE,
+        ),
+    )
+    def test_agreement_detail_view(self, authenticated_client, document_status):
+        agreement = AgreementFactory(document_status=document_status)
         response = authenticated_client.get(reverse('api:agreement-detail', kwargs={'slug': agreement.slug}))
         assert response.status_code == 200
         actual_result = response.json()
@@ -59,4 +68,7 @@ class TestAgreementAPIViews:
         assert actual_result['country_codes'] == agreement.country_codes
         assert actual_result['document_status'] == agreement.document_status
         assert actual_result['document_created_at'] == agreement.document_created_at
-        assert actual_result['download_url'].endswith(reverse('schedule:download', kwargs={'slug': agreement.slug}))
+        if agreement.document_status == Agreement.AVAILABLE:
+            assert actual_result['download_url'].endswith(reverse('schedule:download', kwargs={'slug': agreement.slug}))
+        else:
+            assert actual_result['download_url'] == ''

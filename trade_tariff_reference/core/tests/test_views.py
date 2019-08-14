@@ -25,3 +25,11 @@ def test_homepage_view_with_unauthorised_user(client):
         os.path.join(settings.AUTHBROKER_URL, 'o/authorize/?response_type=code')
     )
     assert response.redirect_chain[1][1] == 302
+
+
+@pytest.mark.django_db
+def test_healthcheck_view(authenticated_client):
+    response = authenticated_client.get(reverse('core:health-check'))
+    assert response.status_code == 200
+    assert 'core/healthcheck.html' in [template.name for template in response.templates]
+    assert '<status>OK</status>' in str(response.content)
