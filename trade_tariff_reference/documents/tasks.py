@@ -63,7 +63,7 @@ def generate_mfn_document(force=False):
         app.get_seasonal()
         app.get_special_notes()
     for i in range(app.first_chapter, app.last_chapter + 1):
-        oChapter = Chapter(i)
+        oChapter = Chapter(app, i)
         # Need to fix and reinstate
         # oChapter.format_chapter()
     app.shutDown()

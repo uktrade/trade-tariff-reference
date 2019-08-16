@@ -4,8 +4,8 @@ import re
 app = f.app
 
 
-class commodity:
-	def __init__(self, commodity_code = "", description = "", product_line_suffix = "", indents = 0, leaf = 0):
+class Commodity:
+	def __init__(self, commodity_code="", description="", product_line_suffix="", indents=0, leaf=0):
 		# Get parameters from instantiator
 		self.commodity_code               = commodity_code
 		self.description                  = description
