@@ -61,7 +61,9 @@ class Chapter:
             number_indents = f.mnum(rw[3])
             leaf = f.mnum(rw[4])
 
-            my_commodity = Commodity(commodity_code, description, productline_suffix, number_indents, leaf)
+            my_commodity = Commodity(
+                self.application, commodity_code, description, productline_suffix, number_indents, leaf
+            )
             commodity_list.append(my_commodity)
 
         # Assign duties to those commodities as appropriate

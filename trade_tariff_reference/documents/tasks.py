@@ -1,9 +1,8 @@
 from celery import shared_task
 
 from trade_tariff_reference.documents.fta.application import Application as FTAApplication
-from trade_tariff_reference.documents.mfn.chapter import Chapter
 from trade_tariff_reference.documents.mfn.application import Application as MFNApplication
-
+from trade_tariff_reference.documents.mfn.chapter import Chapter
 from trade_tariff_reference.documents.utils import update_agreement_document_status
 from trade_tariff_reference.schedule.models import Agreement
 

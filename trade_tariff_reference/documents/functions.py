@@ -11,9 +11,10 @@ def zipdir(model_dir, temp_file):
         for root, dirs, files in os.walk(model_dir):
             # NOTE: ignore empty directories
             for fn in files:
-                absfn = os.path.join(root, fn)
-                zfn = absfn[len(model_dir) + len(os.sep):]  # XXX: relative path
-                z.write(absfn, zfn)
+                if fn != ".DS_Store":
+                    absfn = os.path.join(root, fn)
+                    zfn = absfn[len(model_dir) + len(os.sep):]  # XXX: relative path
+                    z.write(absfn, zfn)
 
 
 def mstr(x):
@@ -79,3 +80,35 @@ def get_measurement_unit(abbreviation):
         'TNE': 'tonne',
     }
     return units_dict.get(abbreviation, abbreviation)
+
+
+def get_measurement_unit_qualifier_code(qualifier_code):
+    unit_dict = {
+        'A': 'tot alc',
+        'C': '1 000',
+        'E': 'net drained wt',
+        'G': 'gross',
+        'M': 'net dry',
+        'P': 'lactic matter',
+        'R': 'std qual',
+        'S': 'raw sugar',
+        'T': 'dry lactic matter',
+        'X': 'hl',
+        'Z': '% sacchar'
+    }
+    return unit_dict.get(qualifier_code, '')
+
+
+def surround(x):
+    if "<w:t>" in x:
+        return x
+    else:
+        return "<w:r><w:t>" + x + "</w:t></w:r>"
+
+
+def format_seasonal_expression(s):
+    s = mstr(s)
+    s = s.replace("EUR", "€")
+    s = s.replace("DTN G", "/ 100 kg gross")
+    s = s.replace("DTN", "/ 100 kg")
+    return s

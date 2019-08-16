@@ -5,14 +5,14 @@ from functools import lru_cache
 
 from django.conf import settings
 
+from trade_tariff_reference.documents.database import DatabaseConnect
+from trade_tariff_reference.documents.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.constants import (
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
     GET_MEUSRING_PERCENTAGE_SQL,
     GET_MFNS_FOR_SIV_PRODUCTS_SQL,
 )
-from trade_tariff_reference.documents.database import DatabaseConnect
 from trade_tariff_reference.documents.fta.document import Document
-from trade_tariff_reference.documents.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.documents.utils import update_agreement_document_status
 from trade_tariff_reference.schedule.models import Agreement

@@ -3,8 +3,8 @@ from datetime import timezone
 
 import pytest
 
-from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.exceptions import CountryProfileError
+from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.tariff.models import MeursingComponents

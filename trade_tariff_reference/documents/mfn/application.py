@@ -1,41 +1,38 @@
-import sys
-import os
-from os import system, name 
 import csv
+import os
+import sys
 
+from trade_tariff_reference.documents.database import DatabaseConnect
 
 from .seasonal import Seasonal
 from .special import Special
-
-from trade_tariff_reference.documents.database import DatabaseConnect
 
 
 class Application(DatabaseConnect):
 
     def __init__(self):
-        self.authoriseduse_list		= []
-        self.seasonal_list			= []
-        self.special_list			= []
-        self.latin_phrases			= []
-        self.section_chapter_list	= []
-        self.debug					= False
-        self.suppress_duties		= False
+        self.authoriseduse_list = []
+        self.seasonal_list = []
+        self.special_list = []
+        self.latin_phrases = []
+        self.section_chapter_list = []
+        self.debug = False
+        self.suppress_duties = False
 
-        self.BASE_DIR			= os.path.dirname(os.path.abspath(__file__))
-        self.SOURCE_DIR			= os.path.join(self.BASE_DIR, 	"source")
-        self.TEMP_DIR			= os.path.join(self.BASE_DIR, 	"temp")
-        self.CHAPTER_NOTES_DIR	= os.path.join(self.SOURCE_DIR, "chapter_notes")
-        self.COMPONENT_DIR		= os.path.join(self.BASE_DIR, 	"xmlcomponents")
-        self.MODEL_DIR			= os.path.join(self.BASE_DIR, 	"model")
-        self.CONFIG_DIR			= os.path.join(self.BASE_DIR, 	"..")
-        self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "fta")
-        self.CONFIG_DIR			= os.path.join(self.CONFIG_DIR, "config")
-        self.CONFIG_FILE		= os.path.join(self.CONFIG_DIR, "config_common.json")
-        self.CONFIG_FILE_LOCAL	= os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
+        self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
+        self.TEMP_DIR = os.path.join(self.BASE_DIR, "temp")
+        self.CHAPTER_NOTES_DIR = os.path.join(self.SOURCE_DIR, "chapter_notes")
+        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "xmlcomponents")
+        self.MODEL_DIR = os.path.join(self.BASE_DIR, "model")
+        self.CONFIG_DIR = os.path.join(self.BASE_DIR, "..")
+        self.CONFIG_DIR = os.path.join(self.CONFIG_DIR, "fta")
+        self.CONFIG_DIR = os.path.join(self.CONFIG_DIR, "config")
+        self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config_common.json")
+        self.CONFIG_FILE_LOCAL = os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
 
         self.connect()
         self.get_latin_terms()
-
 
         # Define the parameters - document type
         try:
@@ -47,8 +44,8 @@ class Application(DatabaseConnect):
         except:
             self.document_type = "schedule"
 
-        self.OUTPUT_DIR			= os.path.join(self.BASE_DIR,	"output")
-        self.OUTPUT_DIR			= os.path.join(self.OUTPUT_DIR, self.document_type)
+        self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
+        self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, self.document_type)
 
         # Define the parameters - first chapter
         try:
@@ -59,35 +56,25 @@ class Application(DatabaseConnect):
 
         # Define the parameters - last chapter
         try:
-            self.last_chapter   = int(sys.argv[3])
+            self.last_chapter = int(sys.argv[3])
         except:
-            self.last_chapter   = self.first_chapter
+            self.last_chapter = self.first_chapter
         if self.last_chapter > 99:
             self.last_chapter = 99
 
-        if (self.document_type != "classification" and self.document_type != "schedule"):
+        if self.document_type != "classification" and self.document_type != "schedule":
             self.document_type = "schedule"
 
-        self.clear()
-
     def get_latin_terms(self):
-        latin_folder	= os.path.join(self.SOURCE_DIR,	"latin")
-        latin_file		= os.path.join(latin_folder, 	"latin_phrases.txt")
+        latin_folder = os.path.join(self.SOURCE_DIR, "latin")
+        latin_file = os.path.join(latin_folder, "latin_phrases.txt")
         with open(latin_file, "r") as f:
             reader = csv.reader(f)
             temp = list(reader)
 
         for row in temp:
-            latin_phrase	= row[0]
+            latin_phrase = row[0]
             self.latin_phrases.append(latin_phrase)
-
-    def clear(self):
-        # for windows
-        if name == 'nt':
-            _ = system('cls')
-        # for mac and linux(here, os.name is 'posix')
-        else:
-            _ = system('clear')
 
     def get_sections_chapters(self):
         # Function determines which chapters belong to which sections
@@ -114,7 +101,6 @@ class Application(DatabaseConnect):
             if iSection != iLastSection:
                 r[2] = True
             iLastSection = iSection
-
 
     def read_templates(self):
         self.COMPONENT_DIR = os.path.join(self.COMPONENT_DIR, "")
@@ -148,15 +134,14 @@ class Application(DatabaseConnect):
         self.sPageBreakXML = fPageBreak.read()
 
         if (self.document_type == "classification"):
-            fTable    = open(os.path.join(self.COMPONENT_DIR, "table_classification.xml"), "r")
+            fTable = open(os.path.join(self.COMPONENT_DIR, "table_classification.xml"), "r")
             fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_classification.xml"), "r")
         else:
-            fTable    = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
+            fTable = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
             fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
 
         self.table_xml_string = fTable.read()
         self.sTableRowXML = fTableRow.read()
-
 
     def get_authorised_use_commodities(self):
         # This function is required - this is used to identify any commodity codes
@@ -167,7 +152,9 @@ class Application(DatabaseConnect):
         # If a commodity code has a 105 instead of a 103 assigned to it, this means that there is
         # a need to insert an authorised use message in the notes column for the given commodity
 
-        sql = """SELECT DISTINCT goods_nomenclature_item_id FROM ml.v5_2019 m WHERE measure_type_id = '105' ORDER BY 1;"""
+        sql = """
+        SELECT DISTINCT goods_nomenclature_item_id FROM ml.v5_2019 m WHERE measure_type_id = '105' ORDER BY 1;
+        """
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
