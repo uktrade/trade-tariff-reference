@@ -51,3 +51,10 @@ class GeographicalAreaFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'tariff.GeographicalAreas'
+
+
+class GoodsNomenclatureFactory(factory.django.DjangoModelFactory):
+    producline_suffix = '80'
+
+    class Meta:
+        model = 'tariff.GoodsNomenclatures'

@@ -9,5 +9,6 @@ def load_data_from_sql(filename, context_dict, database_name):
     with open(file_path) as sql_file:
         sql_statement = sql_file.read()
         sql_statement = sql_statement.format(**context_dict)
-        with connections[database_name].cursor() as connection:
-            connection.execute(sql_statement)
+        with connections[database_name].cursor() as cursor:
+            cursor.execute(sql_statement)
+            return cursor.fetchall()

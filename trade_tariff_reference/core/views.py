@@ -15,5 +15,5 @@ class HealthCheckView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['status'] = 'OK'
         # nearest approximation of a response time
-        context['response_time'] = time.time()
+        context['response_time'] = time.time() - self.request.start_time
         return context

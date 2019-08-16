@@ -1,6 +1,10 @@
 from django.conf import settings
 
 
+NUMBER_OF_DAYS_PER_YEAR = 365
+INFINITE_MEASURE_EXTENT = -1
+
+
 GET_COMMODITIES_SQL = """
 SELECT DISTINCT m.goods_nomenclature_item_id, m.validity_start_date,
  mc.condition_duty_amount, mc.condition_monetary_unit_code,

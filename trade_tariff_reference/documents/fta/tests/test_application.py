@@ -35,7 +35,9 @@ def get_mfn_siv_product(
     duty_expression_id='01',
     geographical_area_id='1011',
     start_date='2019-05-01 01:00:00',
-    measure_type_id=103
+    measure_type_id=103,
+    measure_quota_number=10,
+    reduction_indicator=5,
 ):
     start_date_object = datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     start_date_object = start_date_object.replace(tzinfo=timezone.utc)
@@ -45,7 +47,9 @@ def get_mfn_siv_product(
         validity_start_date=start_date_object,
         validity_end_date=datetime.datetime(2019, 4, 2, 1, 0, 0, tzinfo=timezone.utc),
         measure_type_id=measure_type_id,
-        geographical_area_id=geographical_area_id
+        geographical_area_id=geographical_area_id,
+        quota_order_number_id=measure_quota_number,
+        reduction_indicator=reduction_indicator,
     )
     measure_condition = MeasureConditionFactory(
         measure_sid=measure.measure_sid,
