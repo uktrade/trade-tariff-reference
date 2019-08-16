@@ -1,6 +1,6 @@
-import pytest
-
 from django.test import override_settings
+
+import pytest
 
 from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory
 

@@ -1,13 +1,11 @@
 import os
 
-
-from unittest import mock
-import pytest
-
 from django.test import override_settings
 
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory
+import pytest
+
 from trade_tariff_reference.core.utils import load_data_from_sql
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 
 
 @pytest.mark.django_db
@@ -18,4 +16,3 @@ def test_load_sql_file():
         result = load_data_from_sql('test_utils.sql', {'slug': agreement.slug}, 'default')
         assert len(result) == 1
         assert result[0][0] == agreement.agreement_name
-

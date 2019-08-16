@@ -9,4 +9,3 @@ class HealthCheckMiddleware(object):
     def __call__(self, request):
         request.start_time = time.time()
         return self.get_response(request)
-

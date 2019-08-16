@@ -2,8 +2,8 @@ from django.shortcuts import reverse
 
 import pytest
 
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.schedule.models import Agreement
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 
 
 pytestmark = pytest.mark.django_db
