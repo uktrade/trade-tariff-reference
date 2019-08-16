@@ -1,0 +1,87 @@
+<w:p>
+	<w:r>
+		<w:t></w:t>
+	</w:r>
+</w:p> 
+
+    <w:tbl>
+      <w:tblPr>
+        <w:tblStyle w:val="ListTable3"/>
+        <w:tblW w:w="0" w:type="auto"/>
+		<w:tblCellMar>
+			<w:left w:w="57" w:type="dxa"/>
+			<w:right w:w="57" w:type="dxa"/>
+		</w:tblCellMar>
+        <w:tblLook w:val="0620" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/>
+      </w:tblPr>
+      <w:tr>
+        <w:trPr>
+          <w:cnfStyle w:val="100000000000" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:oddVBand="0" w:evenVBand="0" w:oddHBand="0" w:evenHBand="0" w:firstRowFirstColumn="0" w:firstRowLastColumn="0" w:lastRowFirstColumn="0" w:lastRowLastColumn="0"/>
+          <w:cantSplit/>
+          <w:tblHeader/>
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_CLASSIFICATION}" w:type="pct"/>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Commodity code</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_DUTY}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:jc w:val="left"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Duty expression</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_NOTES}" w:type="pct"/>
+            <w:tcBorders>
+              <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Notes</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="{WIDTH_DESCRIPTION}" w:type="pct"/>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:cnfStyle w:val="100000000000" w:firstRow="1" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:oddVBand="0" w:evenVBand="0" w:oddHBand="0" w:evenHBand="0" w:firstRowFirstColumn="0" w:firstRowLastColumn="0" w:lastRowFirstColumn="0" w:lastRowLastColumn="0"/>
+            </w:pPr>
+            <w:r>
+              <w:t>Description</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+	  {TABLEBODY}
+    </w:tbl>

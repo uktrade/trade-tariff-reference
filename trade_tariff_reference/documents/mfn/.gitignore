@@ -1,0 +1,6 @@
+*.log
+.orig
+__pycache__/
+.vscode/
+output/*
+!output/README.md
