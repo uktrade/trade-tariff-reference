@@ -65,7 +65,8 @@ def test_get_measure_conditions():
     actual_result = document.get_measure_conditions("'103'")
     assert len(actual_result) == 1
 
-    actual_measure_condition = actual_result[0]
+    assert measure.measure_sid in actual_result
+    actual_measure_condition = actual_result[measure.measure_sid]
     assert actual_measure_condition.condition_duty_amount == duty_amount
     assert actual_measure_condition.measure_sid == measure.measure_sid
     assert actual_measure_condition.measure_condition_sid == 0
