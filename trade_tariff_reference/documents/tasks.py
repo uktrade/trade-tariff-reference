@@ -60,10 +60,10 @@ def generate_mfn_document(force=False):
     app.read_templates()
     if app.document_type == "schedule":
         app.get_authorised_use_commodities()
-        app.getSeasonal()
+        app.get_seasonal()
         app.get_special_notes()
     for i in range(app.first_chapter, app.last_chapter + 1):
         oChapter = Chapter(i)
-        oChapter.format_chapter()
-
+        # Need to fix and reinstate
+        # oChapter.format_chapter()
     app.shutDown()

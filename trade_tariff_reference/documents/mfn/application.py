@@ -4,8 +4,8 @@ from os import system, name
 import csv
 
 
-from .seasonal import seasonal
-from .special import special
+from .seasonal import Seasonal
+from .special import Special
 
 from trade_tariff_reference.documents.database import DatabaseConnect
 
@@ -193,28 +193,39 @@ class Application(DatabaseConnect):
 			reader = csv.reader(f)
 			temp = list(reader)
 		for row in temp:
-			commodity_code	= row[0]
-			note			= row[1]
-			oSpecial = special(commodity_code, note)
+			commodity_code = row[0]
+			note = row[1]
+			oSpecial = Special(commodity_code, note)
 
 			self.special_list.append(oSpecial)
 
-	def getSeasonal(self):
+	def get_seasonal(self):
 		filename = os.path.join(self.SOURCE_DIR, "seasonal_commodities.csv")
 		with open(filename, "r") as f:
 			reader = csv.reader(f)
 			temp = list(reader)
 		for row in temp:
-			commodity_code		= row[0]
-			season1_start		= row[1]
-			season1_end			= row[2]
-			season1_expression	= row[3]
-			season2_start		= row[4]
-			season2_end			= row[5]
-			season2_expression	= row[6]
-			season3_start		= row[7]
-			season3_end			= row[8]
-			season3_expression	= row[9]
-			oSeasonal = seasonal(commodity_code, season1_start, season1_end, season1_expression, season2_start, season2_end, season2_expression, season3_start, season3_end, season3_expression)
+			commodity_code = row[0]
+			season1_start = row[1]
+			season1_end = row[2]
+			season1_expression = row[3]
+			season2_start = row[4]
+			season2_end = row[5]
+			season2_expression = row[6]
+			season3_start = row[7]
+			season3_end = row[8]
+			season3_expression = row[9]
+			oSeasonal = Seasonal(
+				commodity_code,
+				season1_start,
+				season1_end,
+				season1_expression,
+				season2_start,
+				season2_end,
+				season2_expression,
+				season3_start,
+				season3_end,
+				season3_expression
+			)
 
 			self.seasonal_list.append(oSeasonal)
