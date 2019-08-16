@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from trade_tariff_reference.documents.tasks import generate_document
+from trade_tariff_reference.documents.tasks import generate_fta_document
 
 
 class Command(BaseCommand):
@@ -24,6 +24,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['background']:
-            generate_document.delay(options['country_profile'], options['force'])
+            generate_fta_document.delay(options['country_profile'], options['force'])
         else:
-            generate_document(options['country_profile'], options['force'])
+            generate_fta_document(options['country_profile'], options['force'])

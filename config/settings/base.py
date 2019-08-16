@@ -185,8 +185,8 @@ CELERY_BEAT_SCHEDULE = {}
 
 if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
     CELERY_BEAT_SCHEDULE['refresh-documents'] = {
-        'task': 'trade_tariff_reference.documents.tasks.generate_all_documents',
-        'schedule': crontab(minute='20', hour='13'),
+        'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
+        'schedule': crontab(minute='3', hour='1'),
         'args': (False, False),
      }
 

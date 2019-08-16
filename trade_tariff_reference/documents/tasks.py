@@ -26,7 +26,7 @@ def handle_document_generation_fail(self, exc, task_id, args, kwargs, einfo):
     retry_backoff=30,
     on_failure=handle_document_generation_fail,
 )
-def generate_document(country_profile, force=False):
+def generate_fta_document(country_profile, force=False):
     app = Application(
         country_profile=country_profile,
         force_document_generation=force,
@@ -36,10 +36,10 @@ def generate_document(country_profile, force=False):
 
 
 @shared_task
-def generate_all_documents(force, background):
+def generate_all_fta_documents(force, background):
     agreements = Agreement.objects.all().order_by('slug')
     for agreement in agreements:
         if background:
-            generate_document.delay(agreement.country_profile, force=force)
+            generate_fta_document.delay(agreement.country_profile, force=force)
         else:
-            generate_document(agreement.country_profile, force=force)
+            generate_fta_document(agreement.country_profile, force=force)

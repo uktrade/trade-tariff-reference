@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from trade_tariff_reference.documents.tasks import generate_all_documents
+from trade_tariff_reference.documents.tasks import generate_all_fta_documents
 
 
 class Command(BaseCommand):
@@ -22,4 +22,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        generate_all_documents(options['force'], options['background'])
+        generate_all_fta_documents(options['force'], options['background'])
