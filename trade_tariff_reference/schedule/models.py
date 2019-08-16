@@ -6,7 +6,7 @@ from django.shortcuts import reverse
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from trade_tariff_reference.documents.fta.functions import list_to_sql
+from trade_tariff_reference.documents.functions import list_to_sql
 
 
 class DocumentStorage(S3Boto3Storage):

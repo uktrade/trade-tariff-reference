@@ -15,7 +15,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 
-import trade_tariff_reference.documents.fta.functions as f
+import trade_tariff_reference.documents.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
     GET_COMMODITIES_SQL,

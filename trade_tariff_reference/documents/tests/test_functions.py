@@ -1,6 +1,6 @@
 import pytest
 
-from trade_tariff_reference.documents.fta import functions
+from trade_tariff_reference.documents import functions
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,4 @@
-import trade_tariff_reference.documents.fta.functions as f
+import trade_tariff_reference.documents.functions as f
 
 
 class QuotaDefinition:
