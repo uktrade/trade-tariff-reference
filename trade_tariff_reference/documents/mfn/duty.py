@@ -19,57 +19,55 @@ class Duty:
         self.measurement_unit_code = functions.mstr(measurement_unit_code)
         self.measurement_unit_qualifier_code = functions.mstr(measurement_unit_qualifier_code)
         self.measure_sid = measure_sid
-        self.get_duty_string()
+        self.duty_string = self.get_duty_string()
+
+    def get_duty_string_additional_abbreviation(self):
+        additional_abbreviation_dict = {
+            '12': 'AC',
+            '21': 'SD',
+            '27': 'FD',
+        }
+        abbreviation = additional_abbreviation_dict.get(
+            self.duty_expression_id
+        )
+        if abbreviation:
+            return f' + {abbreviation}'
+        return
+
+    def get_duty_string_prefix(self):
+        prefix_dict = {
+            '04': '+ ',
+            '19': '+ ',
+            '20': '+ ',
+            '15': 'MIN ',
+            '17': 'MAX ',
+        }
+        return prefix_dict.get(self.duty_expression_id, '')
+
+    def get_duty_string_suffix(self):
+        if not self.measurement_unit_code:
+            return ''
+        qualifier_description = ''
+        if self.measurement_unit_qualifier_code:
+            qualifier_description = functions.get_measurement_unit_qualifier_code(
+                self.measurement_unit_qualifier_code
+            )
+            qualifier_description = f' / {qualifier_description}'
+        return f' / {functions.get_measurement_unit(self.measurement_unit_code)}{qualifier_description}'
 
     def get_duty_string(self):
-        self.duty_string = ""
-        qualifier_description = functions.get_measurement_unit_qualifier_code(self.measurement_unit_qualifier_code)
+        additional_abbreviation = self.get_duty_string_additional_abbreviation()
+        if additional_abbreviation:
+            return additional_abbreviation
 
-        if self.duty_expression_id == "01":  # Ad valorem of specific
-            if self.monetary_unit_code == "":
-                self.duty_string += "{0:1.1f}".format(self.duty_amount) + "%"
-            else:
-                self.duty_string += "{0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    self.duty_string += " / " + functions.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        self.duty_string += " / " + qualifier_description
+        if self.duty_expression_id not in ['01', '04', '19', '20', '15', '17']:
+            return ''
 
-        elif self.duty_expression_id in ("04", "19", "20"):  # Plus % or amount
-            if self.monetary_unit_code == "":
-                self.duty_string += "+ {0:1.1f}".format(self.duty_amount) + "%"
-            else:
-                self.duty_string += "+ {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    self.duty_string += " / " + functions.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        self.duty_string += " / " + qualifier_description
+        prefix = self.get_duty_string_prefix()
 
-        elif self.duty_expression_id == "12":  # Agri component
-            self.duty_string += " + AC"
+        if self.monetary_unit_code == "":
+            return f'{prefix}{self.duty_amount:1.1f}%'
 
-        elif self.duty_expression_id == "15":  # Minimum
-            if self.monetary_unit_code == "":
-                self.duty_string += "MIN {0:1.1f}".format(self.duty_amount) + "%"
-            else:
-                self.duty_string += "MIN {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    self.duty_string += " / " + functions.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        self.duty_string += " / " + qualifier_description
+        suffix = self.get_duty_string_suffix()
 
-        elif self.duty_expression_id == "17":  # Maximum
-            if self.monetary_unit_code == "":
-                self.duty_string += "MAX {0:1.1f}".format(self.duty_amount) + "%"
-            else:
-                self.duty_string += "MAX {0:1.3f}".format(self.duty_amount) + " " + self.monetary_unit_code
-                if self.measurement_unit_code != "":
-                    self.duty_string += " / " + functions.get_measurement_unit(self.measurement_unit_code)
-                    if self.measurement_unit_qualifier_code != "":
-                        self.duty_string += " / " + qualifier_description
-
-        elif self.duty_expression_id == "21":  # Sugar duty
-            self.duty_string += " + SD"
-
-        elif self.duty_expression_id == "27":  # Flour duty
-            self.duty_string += " + FD"
+        return f'{prefix}{self.duty_amount:1.3f} {self.monetary_unit_code}{suffix}'
