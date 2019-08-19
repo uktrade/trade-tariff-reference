@@ -59,12 +59,17 @@ def test_mstr(value, expected_result):
 @pytest.mark.parametrize(
     'value,expected_result',
     (
-        (1, 1),
-        (None, 0),
-        (True, 1),
-        ('hello', 0),
-        (f'{0:1}', 0)
+        (1, '1'),
+        (None, ''),
+        (True, 'True'),
+        ('hello', 'hello'),
+        (f'{0:1}', '0'),
+        ('1 EUR', '1 €'),
+        ('1 EUR DTN G', '1 € / 100 kg gross'),
+        ('1 EUR DTN', '1 € / 100 kg'),
+        ('DTN G DTN', '/ 100 kg gross / 100 kg'),
+
     ),
 )
-def test_mnum(value, expected_result):
-    assert functions.mnum(value) == expected_result
+def test_seasonal_expression(value, expected_result):
+    assert functions.format_seasonal_expression(value) == expected_result
