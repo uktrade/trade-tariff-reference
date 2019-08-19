@@ -82,7 +82,7 @@ def test_create_agreement_with_no_data(authenticated_client):
     assert response.context['form'].errors == expected_errors
 
 
-@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
 def test_create_agreement(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     assert Agreement.objects.count() == 0
@@ -117,7 +117,7 @@ def test_create_agreement(mock_generate_document, authenticated_client):
     assert mock_generate_document.called
 
 
-@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
 def test_create_agreement_and_redirect_to_add_extended_information(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     assert Agreement.objects.count() == 0
@@ -153,7 +153,7 @@ def test_create_agreement_and_redirect_to_add_extended_information(mock_generate
     assert not mock_generate_document.called
 
 
-@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
 def test_manage_extended_information(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     agreement = AgreementFactory()
@@ -196,7 +196,7 @@ def test_manage_extended_information(mock_generate_document, authenticated_clien
     assert mock_generate_document.called
 
 
-@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
 def test_manage_extended_information_when_data_is_missing(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     agreement = AgreementFactory()
@@ -217,7 +217,7 @@ def test_manage_extended_information_when_data_is_missing(mock_generate_document
     assert mock_generate_document.called
 
 
-@mock.patch('trade_tariff_reference.documents.tasks.generate_document.delay')
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
 def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(
     mock_generate_document,
     authenticated_client,
