@@ -53,16 +53,16 @@ def generate_all_fta_documents(force, background):
     retry_backoff=30,
     on_failure=handle_document_generation_fail,
 )
-def generate_mfn_document(force=False):
-    app = MFNApplication()
+def generate_mfn_document(document_type, first_chapter, last_chapter, force=False):
+    app = MFNApplication(document_type, first_chapter=first_chapter, last_chapter=last_chapter)
     app.get_sections_chapters()
     app.read_templates()
-    if app.document_type == "schedule":
+    if document_type == "schedule":
         app.get_authorised_use_commodities()
         app.get_seasonal()
         app.get_special_notes()
     for i in range(app.first_chapter, app.last_chapter + 1):
         oChapter = Chapter(app, i)
         # Need to fix and reinstate
-        # oChapter.format_chapter()
+        oChapter.format_chapter()
     app.shutDown()

@@ -10,7 +10,10 @@ from .constants import GET_SECTION_CHAPTERS, GET_AUTHORISED_USE_COMMODITIES
 
 class Application(DatabaseConnect):
 
-    def __init__(self):
+    def __init__(self, document_type, first_chapter=1, last_chapter=99):
+        self.document_type = document_type
+        self.first_chapter = first_chapter
+        self.last_chapter = last_chapter
         self.authoriseduse_list = []
         self.seasonal_list = []
         self.special_list = []
@@ -34,36 +37,8 @@ class Application(DatabaseConnect):
         self.connect()
         self.get_latin_terms()
 
-        # Define the parameters - document type
-        try:
-            self.document_type = sys.argv[1]
-            if self.document_type == "s":
-                self.document_type = "schedule"
-            if self.document_type == "c":
-                self.document_type = "classification"
-        except:
-            self.document_type = "schedule"
-
         self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
         self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, self.document_type)
-
-        # Define the parameters - first chapter
-        try:
-            self.first_chapter = int(sys.argv[2])
-        except:
-            self.first_chapter = 1
-            self.last_chapter = 99
-
-        # Define the parameters - last chapter
-        try:
-            self.last_chapter = int(sys.argv[3])
-        except:
-            self.last_chapter = self.first_chapter
-        if self.last_chapter > 99:
-            self.last_chapter = 99
-
-        if self.document_type != "classification" and self.document_type != "schedule":
-            self.document_type = "schedule"
 
     def get_latin_terms(self):
         latin_folder = os.path.join(self.SOURCE_DIR, "latin")

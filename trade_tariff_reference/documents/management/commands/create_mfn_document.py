@@ -8,6 +8,9 @@ class Command(BaseCommand):
     help = ''
 
     def add_arguments(self, parser):
+        parser.add_argument('document_type', type=str, choices=['schedule', 'classification'])
+        parser.add_argument('--first_chapter', type=int, default=1, choices=range(1, 100))
+        parser.add_argument('--last_chapter', type=int, default=99, choices=range(1, 100))
         parser.add_argument(
             '--force',
             action='store_true',
@@ -23,6 +26,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['background']:
-            generate_mfn_document.delay(options['force'])
+            generate_mfn_document.delay(
+                options['document_type'], options['first_chapter'], options['last_chapter'], options['force']
+            )
         else:
-            generate_mfn_document(options['force'])
+            generate_mfn_document(
+                options['document_type'],  options['first_chapter'], options['last_chapter'], options['force']
+            )
