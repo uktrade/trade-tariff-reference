@@ -12,7 +12,7 @@ from trade_tariff_reference.documents import functions as f
 
 from .commodity import Commodity
 from .duty import Duty
-
+from .constants import GET_CLASSIFICATIONS, GET_CHAPTER_DESCRIPTION, GET_SECTION_DETAILS, GET_DUTIES
 
 logger = logging.getLogger(__name__)
 
@@ -45,21 +45,17 @@ class Chapter:
         ###############################################################
         # Get the table of classifications
         # Relevant to just the schedule - reallyt? Are you sure about this???
-        sql = """SELECT DISTINCT goods_nomenclature_item_id, producline_suffix,
-        description, number_indents, leaf FROM ml.goods_nomenclature_export_brexit('""" + self.chapter_string + """%')
-        ORDER BY 1, 2"""
-
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.application.execute_sql(
+            GET_CLASSIFICATIONS.format(chapter_string=self.chapter_string)
+        )
         commodity_list = []
         # Make a list of commodities
-        for rw in rows:
-            commodity_code = rw[0]
-            productline_suffix = f.mstr(rw[1])
-            description = rw[2]
-            number_indents = f.mnum(rw[3])
-            leaf = f.mnum(rw[4])
+        for row in rows:
+            commodity_code = row[0]
+            productline_suffix = f.mstr(row[1])
+            description = row[2]
+            number_indents = f.mnum(row[3])
+            leaf = f.mnum(row[4])
 
             my_commodity = Commodity(
                 self.application, commodity_code, description, productline_suffix, number_indents, leaf
@@ -327,10 +323,10 @@ class Chapter:
         ###############################################################
         # Get the chapter description
         # Relevant to both the classification and the schedule
-        sql = "SELECT description FROM ml.chapters WHERE chapter = '" + self.chapter_string + "'"
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        row = cur.fetchone()
+        row = self.application.execute_sql(
+            GET_CHAPTER_DESCRIPTION.format(chapter_string=self.chapter_string),
+            only_one_row=True
+        )
         try:
             self.chapter_description = row[0]
             self.chapter_description = self.chapter_description.replace(" Of ", " of ")
@@ -342,14 +338,10 @@ class Chapter:
         ###############################################################
         # Get the section header
         # Relevant to both the classification and the schedule
-        sql = """SELECT s.numeral, s.title, cs.section_id
-        FROM goods_nomenclatures gn, chapters_sections cs, sections s
-        WHERE gn.goods_nomenclature_sid = cs.goods_nomenclature_sid
-        AND s.id = cs.section_id
-        AND gn.goods_nomenclature_item_id = '""" + self.chapter_string + """00000000'"""
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        row = cur.fetchone()
+        row = self.application.execute_sql(
+            GET_SECTION_DETAILS.format(chapter_string=self.chapter_string),
+            only_one_row=True
+        )
         try:
             self.section_numeral = row[0]
         except:
@@ -394,23 +386,13 @@ class Chapter:
         ###############################################################
         # Get the duties
         # And this is what is new
-        sql = """SELECT m.goods_nomenclature_item_id, m.additional_code_type_id, m.additional_code_id,
-        m.measure_type_id, mc.duty_expression_id, mc.duty_amount, mc.monetary_unit_code,
-        mc.measurement_unit_code, mc.measurement_unit_qualifier_code, m.measure_sid /*,
-        m.validity_start_date, m.validity_end_date, m.geographical_area_id*/
-        FROM measure_components mc, ml.v5 m
-        WHERE mc.measure_sid = m.measure_sid
-        AND LEFT(m.goods_nomenclature_item_id, 2) = '""" + self.chapter_string + """'
-        AND m.measure_type_id IN ('103', '105')
-        ORDER BY m.goods_nomenclature_item_id, m.measure_type_id, m.measure_sid, mc.duty_expression_id"""
-
-        cur = self.application.conn.cursor()
-        cur.execute(sql)
-        rows_duties = cur.fetchall()
+        rows = self.application.execute_sql(
+            GET_DUTIES.format(chapter_string=self.chapter_string)
+        )
 
         # Do a pass through the duties table and create a full duty expression
         self.duty_list = []
-        for row in rows_duties:
+        for row in rows:
             commodity_code = f.mstr(row[0])
             additional_code_type_id = f.mstr(row[1])
             additional_code_id = f.mstr(row[2])

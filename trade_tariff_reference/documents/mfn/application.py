@@ -1,11 +1,11 @@
 import csv
 import os
-import sys
 
 from trade_tariff_reference.documents.database import DatabaseConnect
 
 from .seasonal import Seasonal
 from .special import Special
+from .constants import GET_SECTION_CHAPTERS, GET_AUTHORISED_USE_COMMODITIES
 
 
 class Application(DatabaseConnect):
@@ -78,18 +78,9 @@ class Application(DatabaseConnect):
 
     def get_sections_chapters(self):
         # Function determines which chapters belong to which sections
-        sql = """
-        SELECT LEFT(gn.goods_nomenclature_item_id, 2) as chapter, cs.section_id
-        FROM chapters_sections cs, goods_nomenclatures gn
-        WHERE cs.goods_nomenclature_sid = gn.goods_nomenclature_sid
-        AND gn.producline_suffix = '80'
-        ORDER BY 1
-        """
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows_sections_chapters = cur.fetchall()
+        rows = self.execute_sql(GET_SECTION_CHAPTERS)
         self.section_chapter_list = []
-        for rd in rows_sections_chapters:
+        for rd in rows:
             sChapter = rd[0]
             iSection = rd[1]
             self.section_chapter_list.append([sChapter, iSection, False])
@@ -151,13 +142,7 @@ class Application(DatabaseConnect):
 
         # If a commodity code has a 105 instead of a 103 assigned to it, this means that there is
         # a need to insert an authorised use message in the notes column for the given commodity
-
-        sql = """
-        SELECT DISTINCT goods_nomenclature_item_id FROM ml.v5_2019 m WHERE measure_type_id = '105' ORDER BY 1;
-        """
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
+        rows = self.execute_sql(GET_AUTHORISED_USE_COMMODITIES)
         for r in rows:
             self.authoriseduse_list.append(r[0])
 
