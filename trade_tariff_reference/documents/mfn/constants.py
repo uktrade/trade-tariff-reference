@@ -1,4 +1,8 @@
 
+CLASSIFICATION = 'classification'
+SCHEDULE = 'schedule'
+
+
 GET_SECTION_CHAPTERS = """
 SELECT LEFT(gn.goods_nomenclature_item_id, 2) as chapter, cs.section_id
 FROM chapters_sections cs, goods_nomenclatures gn
@@ -13,7 +17,7 @@ SELECT DISTINCT goods_nomenclature_item_id FROM ml.v5_2019 m WHERE measure_type_
 
 GET_CLASSIFICATIONS = """
 SELECT DISTINCT goods_nomenclature_item_id, producline_suffix,
-description, number_indents, leaf FROM ml.goods_nomenclature_export_brexit('"" {chapter_string} ""%')
+description, number_indents FROM ml.goods_nomenclature_export_brexit('{chapter_string}%')
 ORDER BY 1, 2"""
 
 GET_CHAPTER_DESCRIPTION = """
