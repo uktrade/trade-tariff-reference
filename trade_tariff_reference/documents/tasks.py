@@ -2,7 +2,6 @@ from celery import shared_task
 
 from trade_tariff_reference.documents.fta.application import Application as FTAApplication
 from trade_tariff_reference.documents.mfn.application import Application as MFNApplication
-from trade_tariff_reference.documents.mfn.chapter import Chapter
 from trade_tariff_reference.documents.utils import update_agreement_document_status
 from trade_tariff_reference.schedule.models import Agreement
 
@@ -54,14 +53,4 @@ def generate_all_fta_documents(force, background):
 )
 def generate_mfn_document(document_type, first_chapter, last_chapter, force=False):
     app = MFNApplication(document_type, first_chapter=first_chapter, last_chapter=last_chapter)
-    app.get_sections_chapters()
-    app.read_templates()
-    if document_type == "schedule":
-        app.get_authorised_use_commodities()
-        app.get_seasonal()
-        app.get_special_notes()
-    for i in range(app.first_chapter, app.last_chapter + 1):
-        oChapter = Chapter(app, i)
-        # Need to fix and reinstate
-        oChapter.format_chapter()
-    app.shutDown()
+    app.main()
