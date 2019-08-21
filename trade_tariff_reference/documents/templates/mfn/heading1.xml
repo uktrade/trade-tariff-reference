@@ -3,10 +3,10 @@
         <w:pStyle w:val="Heading1"/>
       </w:pPr>
       <w:r>
-        <w:t>{HEADINGa}</w:t>
+        <w:t>{{ HEADINGa }}</w:t>
       </w:r>
 	  <w:r>
 		<w:br/>
-		<w:t>{HEADINGb}</w:t>
+		<w:t>{{ HEADINGb }}</w:t>
 	</w:r>
     </w:p>

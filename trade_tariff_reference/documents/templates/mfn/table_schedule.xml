@@ -22,7 +22,7 @@
         </w:trPr>
         <w:tc>
           <w:tcPr>
-            <w:tcW w:w="{WIDTH_CLASSIFICATION}" w:type="pct"/>
+            <w:tcW w:w="{{ WIDTH_CLASSIFICATION }}" w:type="pct"/>
           </w:tcPr>
           <w:p>
             <w:pPr>
@@ -35,7 +35,7 @@
         </w:tc>
         <w:tc>
           <w:tcPr>
-            <w:tcW w:w="{WIDTH_DUTY}" w:type="pct"/>
+            <w:tcW w:w="{{ WIDTH_DUTY }}" w:type="pct"/>
             <w:tcBorders>
               <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
               <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
@@ -53,7 +53,7 @@
         </w:tc>
         <w:tc>
           <w:tcPr>
-            <w:tcW w:w="{WIDTH_NOTES}" w:type="pct"/>
+            <w:tcW w:w="{{ WIDTH_NOTES }}" w:type="pct"/>
             <w:tcBorders>
               <w:left w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
               <w:right w:val="single" w:sz="12" w:space="0" w:color="000000" w:themeColor="text1"/>
@@ -70,7 +70,7 @@
         </w:tc>
         <w:tc>
           <w:tcPr>
-            <w:tcW w:w="{WIDTH_DESCRIPTION}" w:type="pct"/>
+            <w:tcW w:w="{{ WIDTH_DESCRIPTION }}" w:type="pct"/>
           </w:tcPr>
           <w:p>
             <w:pPr>
@@ -83,5 +83,7 @@
           </w:p>
         </w:tc>
       </w:tr>
-	  {TABLEBODY}
+      {% for commodity in commodity_list %}
+          {% include 'mfn/tablerow_schedule.xml' %}
+      {% endfor %}
     </w:tbl>

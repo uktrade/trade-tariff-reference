@@ -9,7 +9,7 @@
             </w:pPr>
             <w:r>
 				<w:rPr><w:b/></w:rPr>
-              <w:t>{COMMODITY}</w:t>
+              <w:t>{{ commodity.COMMODITY }}</w:t>
             </w:r>
           </w:p>
         </w:tc>
@@ -31,10 +31,10 @@
                 <w:tab w:pos="1247" w:val="left"/>
                 <w:tab w:pos="1361" w:val="left"/>
               </w:tabs>
-			  {INDENT}
+			  {{ commodity.INDENT  | safe }}
             </w:pPr>
             <w:r>
-              {DESCRIPTION}
+              {{ commodity.DESCRIPTION  | safe }}
             </w:r>
           </w:p>
         </w:tc>

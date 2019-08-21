@@ -62,5 +62,7 @@
           </w:p>
         </w:tc>//-->
       </w:tr>
-	  {TABLEBODY}
+	  {% for commodity in commodity_list %}
+          {% include 'mfn/tablerow_classification.xml' %}
+      {% endfor %}
     </w:tbl>

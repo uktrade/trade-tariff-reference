@@ -16,7 +16,7 @@
             </w:pPr>
             <w:r>
 				<w:rPr><w:b/></w:rPr>
-              <w:t>{COMMODITY}</w:t>
+              <w:t>{{ commodity.COMMODITY }}</w:t>
             </w:r>
           </w:p>
         </w:tc>
@@ -35,7 +35,7 @@
                 <w:tab w:val="left" w:pos="1250"/>
               </w:tabs>
             </w:pPr>
-            {DUTY}
+            {{ commodity.DUTY | safe }}
           </w:p>
         </w:tc>
         <w:tc>
@@ -50,7 +50,7 @@
             <w:pPr>
               <w:pStyle w:val="NormalinTable"/>
             </w:pPr>
-            {NOTES}
+            {{ commodity.NOTES | safe }}
           </w:p>
         </w:tc>
         <w:tc>
@@ -77,10 +77,10 @@
                 <w:tab w:pos="1247" w:val="left"/>
                 <w:tab w:pos="1361" w:val="left"/>
               </w:tabs>
-			  {INDENT}
+			  {{ commodity.INDENT | safe }}
             </w:pPr>
             <w:r>
-              {DESCRIPTION}
+              {{ commodity.DESCRIPTION | safe }}
             </w:r>
           </w:p>
         </w:tc>
