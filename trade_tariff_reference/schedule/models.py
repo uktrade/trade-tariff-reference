@@ -6,7 +6,7 @@ from django.shortcuts import reverse
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from trade_tariff_reference.documents.functions import list_to_sql
+from trade_tariff_reference.documents.functions import format_seasonal_expression, list_to_sql
 
 
 class DocumentStorage(S3Boto3Storage):
@@ -163,3 +163,43 @@ class ExtendedQuota(models.Model):
 
     class Meta:
         unique_together = (('agreement', 'quota_order_number_id'),)
+
+
+class LatinTerm(models.Model):
+    text = models.CharField(max_length=2000)
+
+    def __str__(self):
+        return self.text
+
+
+class SpecialNote(models.Model):
+    quota_order_number_id = models.CharField(max_length=120)
+    note = models.TextField()
+
+    @property
+    def commodity_code(self):
+        return self.quota_order_number_id
+
+
+class SeasonalQuota(models.Model):
+    quota_order_number_id = models.CharField(max_length=120)
+
+    def __str__(self):
+        return f'{self.quota_order_number_id}'
+
+
+class SeasonalQuotaSeason(models.Model):
+    seasonal_quota = models.ForeignKey(SeasonalQuota, on_delete=models.CASCADE, related_name='seasons')
+    start_date = models.DateField()
+    end_date = models.DateField()
+    duty = models.CharField(max_length=1000)
+
+    class Meta:
+        ordering = ('start_date',)
+
+    @property
+    def formatted_duty(self):
+        return format_seasonal_expression(self.duty)
+
+    def __str__(self):
+        return f'{self.seasonal_quota.quota_order_number_id} - {self.start_date}/{self.end_date} - {self.duty}'

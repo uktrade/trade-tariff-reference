@@ -1,0 +1,10 @@
+[
+{
+    "model": "schedule.specialnote",
+    "pk": 1,
+    "fields": {
+        "quota_order_number_id": "5701109000",
+        "note": "Dutiable surface shall not include the heading, the selvedges and the fringes"
+    }
+}
+]
