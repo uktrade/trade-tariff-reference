@@ -50,7 +50,7 @@ class DocumentHistoryFactory(factory.django.DjangoModelFactory):
 
 class ExtendedQuotaFactory(factory.django.DjangoModelFactory):
     agreement = factory.SubFactory(AgreementFactory)
-    quota_order_number_id = random.randrange(100000, 999999)
+    quota_order_number_id = str(random.randrange(100000, 999999))
     is_origin_quota = True
     measurement_unit_code = 'KGM'
     quota_type = ExtendedQuota.FIRST_COME_FIRST_SERVED
@@ -60,6 +60,21 @@ class ExtendedQuotaFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'schedule.ExtendedQuota'
+
+
+class LatinTermFactory(factory.django.DjangoModelFactory):
+    text = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.LatinTerm'
+
+
+class SpecialNoteFactory(factory.django.DjangoModelFactory):
+    quota_order_number_id = str(random.randrange(100000, 999999))
+    note = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.SpecialNote'
 
 
 def setup_quota_data():
