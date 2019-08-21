@@ -9,7 +9,7 @@ from django.db import models
 
 
 class AdditionalCodeDescriptionPeriods(models.Model):
-    additional_code_description_period_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='additional_code_description_period_sid')
     additional_code_sid = models.IntegerField(blank=True, null=True)
     additional_code_type_id = models.CharField(max_length=1, blank=True, null=True)
     additional_code = models.CharField(max_length=3, blank=True, null=True)
@@ -789,7 +789,7 @@ class GeographicalAreas(models.Model):
 
 
 class GoodsNomenclatureDescriptionPeriods(models.Model):
-    goods_nomenclature_description_period_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='goods_nomenclature_description_period_sid')
     goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
@@ -808,7 +808,7 @@ class GoodsNomenclatureDescriptionPeriods(models.Model):
 
 
 class GoodsNomenclatureDescriptions(models.Model):
-    goods_nomenclature_description_period_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='goods_nomenclature_description_period_sid')
     language_id = models.CharField(max_length=5, blank=True, null=True)
     goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
@@ -862,7 +862,7 @@ class GoodsNomenclatureGroups(models.Model):
 
 
 class GoodsNomenclatureIndents(models.Model):
-    goods_nomenclature_indent_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='goods_nomenclature_indent_sid')
     goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     number_indents = models.IntegerField(blank=True, null=True)
