@@ -1,11 +1,15 @@
-import csv
 import os
 
 from trade_tariff_reference.documents.database import DatabaseConnect
+from trade_tariff_reference.schedule.models import LatinTerm, SpecialNote
 
-from .seasonal import Seasonal
-from .special import Special
-from .constants import GET_SECTION_CHAPTERS, GET_AUTHORISED_USE_COMMODITIES
+from .chapter import process_chapter
+from .constants import (
+    CUCUMBER_COMMODITY_CODES,
+    GET_AUTHORISED_USE_COMMODITIES,
+    GET_SECTION_CHAPTERS,
+    SCHEDULE,
+)
 
 
 class Application(DatabaseConnect):
@@ -15,99 +19,38 @@ class Application(DatabaseConnect):
         self.first_chapter = first_chapter
         self.last_chapter = last_chapter
         self.authoriseduse_list = []
-        self.seasonal_list = []
         self.special_list = []
-        self.latin_phrases = []
         self.section_chapter_list = []
-        self.debug = False
         self.suppress_duties = False
+        self.latin_phrases = []
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
-        self.TEMP_DIR = os.path.join(self.BASE_DIR, "temp")
         self.CHAPTER_NOTES_DIR = os.path.join(self.SOURCE_DIR, "chapter_notes")
-        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "xmlcomponents")
         self.MODEL_DIR = os.path.join(self.BASE_DIR, "model")
-        self.CONFIG_DIR = os.path.join(self.BASE_DIR, "..")
-        self.CONFIG_DIR = os.path.join(self.CONFIG_DIR, "fta")
-        self.CONFIG_DIR = os.path.join(self.CONFIG_DIR, "config")
-        self.CONFIG_FILE = os.path.join(self.CONFIG_DIR, "config_common.json")
-        self.CONFIG_FILE_LOCAL = os.path.join(self.CONFIG_DIR, "config_migrate_measures_and_quotas.json")
-
-        self.connect()
-        self.get_latin_terms()
 
         self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
         self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, self.document_type)
 
-    def get_latin_terms(self):
-        latin_folder = os.path.join(self.SOURCE_DIR, "latin")
-        latin_file = os.path.join(latin_folder, "latin_phrases.txt")
-        with open(latin_file, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
+    def main(self):
+        self.latin_phrases = self.get_latin_phrases()
+        self.section_chapter_list = self.get_sections_chapters()
+        if self.document_type == SCHEDULE:
+            self.authoriseduse_list = self.get_authorised_use_commodities()
+            self.special_list = self.get_special_notes()
+        for i in range(self.first_chapter, self.last_chapter + 1):
+            process_chapter(self, i)
+        self.shut_down()
 
-        for row in temp:
-            latin_phrase = row[0]
-            self.latin_phrases.append(latin_phrase)
+    def get_latin_phrases(self):
+        return list(LatinTerm.objects.values_list('text', flat=True))
 
     def get_sections_chapters(self):
-        # Function determines which chapters belong to which sections
-        rows = self.execute_sql(GET_SECTION_CHAPTERS)
-        self.section_chapter_list = []
-        for rd in rows:
-            sChapter = rd[0]
-            iSection = rd[1]
-            self.section_chapter_list.append([sChapter, iSection, False])
-
-        # The last parameter is "1" if the chapter equates to a new section
-        iLastSection = -1
-        for r in self.section_chapter_list:
-            iSection = r[1]
-            if iSection != iLastSection:
-                r[2] = True
-            iLastSection = iSection
-
-    def read_templates(self):
-        self.COMPONENT_DIR = os.path.join(self.COMPONENT_DIR, "")
-
-        # Main document templates
-        if self.document_type == "classification":
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_classification.xml"), "r")
-        else:
-            fDocument = open(os.path.join(self.COMPONENT_DIR, "document_schedule.xml"), "r")
-        self.document_xml_string = fDocument.read()
-
-        fHeading1 = open(os.path.join(self.COMPONENT_DIR, "heading1.xml"), "r")
-        self.sHeading1XML = fHeading1.read()
-
-        fHeading2 = open(os.path.join(self.COMPONENT_DIR, "heading2.xml"), "r")
-        self.sHeading2XML = fHeading2.read()
-
-        fHeading3 = open(os.path.join(self.COMPONENT_DIR, "heading3.xml"), "r")
-        self.sHeading3XML = fHeading3.read()
-
-        fPara = open(os.path.join(self.COMPONENT_DIR, "paragraph.xml"), "r")
-        self.sParaXML = fPara.read()
-
-        fBullet = open(os.path.join(self.COMPONENT_DIR, "bullet.xml"), "r")
-        self.sBulletXML = fBullet.read()
-
-        fBanner = open(os.path.join(self.COMPONENT_DIR, "banner.xml"), "r")
-        self.sBannerXML = fBanner.read()
-
-        fPageBreak = open(os.path.join(self.COMPONENT_DIR, "pagebreak.xml"), "r")
-        self.sPageBreakXML = fPageBreak.read()
-
-        if (self.document_type == "classification"):
-            fTable = open(os.path.join(self.COMPONENT_DIR, "table_classification.xml"), "r")
-            fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_classification.xml"), "r")
-        else:
-            fTable = open(os.path.join(self.COMPONENT_DIR, "table_schedule.xml"), "r")
-            fTableRow = open(os.path.join(self.COMPONENT_DIR, "tablerow_schedule.xml"), "r")
-
-        self.table_xml_string = fTable.read()
-        self.sTableRowXML = fTableRow.read()
+        rows = self.execute_sql(GET_SECTION_CHAPTERS, dict_cursor=True)
+        section_chapter_list = []
+        for row in rows:
+            section_chapter_list.append([row['chapter'], row['section_id'], False])
+        return section_chapter_list
 
     def get_authorised_use_commodities(self):
         # This function is required - this is used to identify any commodity codes
@@ -117,62 +60,20 @@ class Application(DatabaseConnect):
 
         # If a commodity code has a 105 instead of a 103 assigned to it, this means that there is
         # a need to insert an authorised use message in the notes column for the given commodity
-        rows = self.execute_sql(GET_AUTHORISED_USE_COMMODITIES)
-        for r in rows:
-            self.authoriseduse_list.append(r[0])
+        authorised_use_list = []
+        rows = self.execute_sql(GET_AUTHORISED_USE_COMMODITIES, dict_cursor=True)
+        for row in rows:
+            authorised_use_list.append(row['goods_nomenclature_item_id'])
 
         # Also add in cucumbers: the data cannot find these, therefore manually added,
         # as per instruction from David Owen
-        self.authoriseduse_list.append("0707000510")
-        self.authoriseduse_list.append("0707000520")
+        authorised_use_list.extend(CUCUMBER_COMMODITY_CODES)
+        return authorised_use_list
 
     def get_special_notes(self):
-        # This function is required - it looks in the file special_notes.csv
+        # This function is required - it looks in the file  special_notes.csv
         # and finds a list of commodities with 'special 'notes that go alongside them
         # In actual fact, there is only one record in here at the point of
         # writing this note - 5701109000,"Dutiable surface shall not include the heading,
         # the selvedges and the fringes"
-
-        # We may need to consider how we manage this CSV file
-
-        filename = os.path.join(self.SOURCE_DIR, "special_notes.csv")
-        with open(filename, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
-        for row in temp:
-            commodity_code = row[0]
-            note = row[1]
-            oSpecial = Special(commodity_code, note)
-
-            self.special_list.append(oSpecial)
-
-    def get_seasonal(self):
-        filename = os.path.join(self.SOURCE_DIR, "seasonal_commodities.csv")
-        with open(filename, "r") as f:
-            reader = csv.reader(f)
-            temp = list(reader)
-        for row in temp:
-            commodity_code = row[0]
-            season1_start = row[1]
-            season1_end = row[2]
-            season1_expression = row[3]
-            season2_start = row[4]
-            season2_end = row[5]
-            season2_expression = row[6]
-            season3_start = row[7]
-            season3_end = row[8]
-            season3_expression = row[9]
-            oSeasonal = Seasonal(
-                commodity_code,
-                season1_start,
-                season1_end,
-                season1_expression,
-                season2_start,
-                season2_end,
-                season2_expression,
-                season3_start,
-                season3_end,
-                season3_expression
-            )
-
-            self.seasonal_list.append(oSeasonal)
+        return list(SpecialNote.objects.all())

@@ -1,6 +1,9 @@
 import logging
 import re
 
+from trade_tariff_reference.schedule.models import SeasonalQuota
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -298,44 +301,23 @@ class Commodity:
     def check_for_seasonal(self):
         # print ("Checking for seasonal commodities")
         seasonal_records = 0
-        for s in self.application.seasonal_list:
-            if self.commodity_code == s.commodity_code and self.product_line_suffix == "80":
-                seasonal_records += 1
-                season1_start = s.season1_start
-                season1_end = s.season1_end
-                season1_expression = s.season1_expression
+        if self.product_line_suffix != "80":
+            return seasonal_records
 
-                season2_start = s.season2_start
-                season2_end = s.season2_end
-                season2_expression = s.season2_expression
+        self.combined_duty = ''
+        seasonal_quotas = SeasonalQuota.objects.filter(quota_order_number_id=self.commodity_code)
+        for s in seasonal_quotas:
+            duty_list = []
+            for season in s.seasons.all():
+                xml = (
+                    f"<w:r><w:t>{season.start_date} to {season.end_date}</w:t></w:r><w:r>"
+                    f"<w:tab/><w:t>{season.formatted_duty}</w:t></w:r>"
+                )
+                duty_list.append(xml)
+            self.combined_duty += '<w:r><w:br/></w:r>'.join(duty_list)
+            self.notes_list.append("Seasonally variable rate")
+            self.assigned = True
+            self.special_list.append("seasonal")
+            logging.debug("Found a seasonal")
 
-                season3_start = s.season3_start
-                season3_end = s.season3_end
-                season3_expression = s.season3_expression
-
-                self.combined_duty = ""
-                whitespace = "<w:tab/>"
-                if season1_expression != "":
-                    self.combined_duty += (
-                        "<w:r><w:t>" + season1_start + " to " + season1_end +
-                        "</w:t></w:r><w:r>" + whitespace + "<w:t>" +
-                        season1_expression + "</w:t></w:r>"
-                    )
-                if season2_expression != "":
-                    self.combined_duty += (
-                        "<w:r><w:br/></w:r><w:r><w:t>" + season2_start + " to " + season2_end +
-                        "</w:t></w:r><w:r>" + whitespace + "<w:t>" + season2_expression + "</w:t></w:r>"
-                    )
-                if season3_expression != "":
-                    self.combined_duty += (
-                        "<w:r><w:br/></w:r><w:r><w:t>" + season3_start + " to " +
-                        season3_end + "</w:t></w:r><w:r>" + whitespace + "<w:t>" +
-                        season3_expression + "</w:t></w:r>"
-                    )
-
-                self.notes_list.append("Seasonally variable rate")
-                self.assigned = True
-                self.special_list.append("seasonal")
-                logging.debug("Found a seasonal")
-                break
-        return seasonal_records
+        return seasonal_quotas.count()
