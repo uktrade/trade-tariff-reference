@@ -8,11 +8,12 @@ logger = logging.getLogger(__name__)
 
 class DatabaseConnect:
 
-    def connect(self):
-        self.conn = connections['tariff']
+    @property
+    def connection(self):
+        return connections['tariff']
 
     def execute_sql(self, sql, only_one_row=False, dict_cursor=False):
-        cur = self.conn.cursor()
+        cur = self.connection.cursor()
         logger.debug(sql)
         cur.execute(sql)
         if dict_cursor:
@@ -24,8 +25,8 @@ class DatabaseConnect:
         logger.debug(result)
         return result
 
-    def shutDown(self):
-        self.conn.close()
+    def shut_down(self):
+        self.connection.close()
 
     def dict_cursor(self, cursor):
         description = [x[0] for x in cursor.description]

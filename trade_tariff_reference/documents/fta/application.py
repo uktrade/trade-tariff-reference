@@ -36,10 +36,12 @@ class Application(DatabaseConnect):
         self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
 
         os.makedirs(self.OUTPUT_DIR, exist_ok=True)
-        self.connect()
 
         # MPP TODO: Move these
         self.mfn_list = []
+
+    def main(self):
+        self.create_document()
 
     def get_agreement(self, country_profile):
         try:

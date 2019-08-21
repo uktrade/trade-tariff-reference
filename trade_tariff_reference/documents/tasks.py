@@ -33,8 +33,7 @@ def generate_fta_document(country_profile, force=False):
         country_profile=country_profile,
         force_document_generation=force,
     )
-    app.create_document()
-    app.shutDown()
+    app.main()
 
 
 @shared_task
