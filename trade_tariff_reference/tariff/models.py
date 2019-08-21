@@ -107,7 +107,7 @@ class AdditionalCodeTypes(models.Model):
 
 
 class AdditionalCodes(models.Model):
-    additional_code_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='additional_code_sid')
     additional_code_type_id = models.CharField(max_length=1, blank=True, null=True)
     additional_code = models.CharField(max_length=3, blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
@@ -128,7 +128,7 @@ class AdditionalCodes(models.Model):
 
 
 class AllAdditionalCodes(models.Model):
-    additional_code_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='additional_code_sid')
     additional_code_type_id = models.CharField(max_length=20, blank=True, null=True)
     additional_code = models.CharField(max_length=3, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -184,6 +184,7 @@ class BaseRegulations(models.Model):
 
 
 class CertificateDescriptionPeriods(models.Model):
+
     certificate_description_period_sid = models.IntegerField(blank=True, null=True)
     certificate_type_code = models.CharField(max_length=1, blank=True, null=True)
     certificate_code = models.CharField(max_length=3, blank=True, null=True)
@@ -365,7 +366,7 @@ class ExplicitAbrogationRegulations(models.Model):
 
 
 class ExportRefundNomenclatureDescriptionPeriods(models.Model):
-    export_refund_nomenclature_description_period_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='export_refund_nomenclature_description_period_sid')
     export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
@@ -386,7 +387,7 @@ class ExportRefundNomenclatureDescriptionPeriods(models.Model):
 
 
 class ExportRefundNomenclatureDescriptions(models.Model):
-    export_refund_nomenclature_description_period_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='export_refund_nomenclature_description_period_sid')
     language_id = models.CharField(max_length=5, blank=True, null=True)
     export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
@@ -407,7 +408,7 @@ class ExportRefundNomenclatureDescriptions(models.Model):
 
 
 class ExportRefundNomenclatureIndents(models.Model):
-    export_refund_nomenclature_indents_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='export_refund_nomenclature_indents_sid')
     export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
     validity_start_date = models.DateTimeField(blank=True, null=True)
     number_export_refund_nomenclature_indents = models.IntegerField(blank=True, null=True)
@@ -429,7 +430,7 @@ class ExportRefundNomenclatureIndents(models.Model):
 
 
 class ExportRefundNomenclatures(models.Model):
-    export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True, db_column='export_refund_nomenclature_sid')
     goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
     additional_code_type = models.CharField(max_length=1, blank=True, null=True)
     export_refund_code = models.CharField(max_length=3, blank=True, null=True)
@@ -2057,6 +2058,15 @@ class TransmissionComments(models.Model):
     class Meta:
         managed = False  # Created from a view. Don't remove.
         db_table = 'transmission_comments'
+
+
+class ChaptersSections(models.Model):
+    goods_nomenclature_sid = models.IntegerField(primary_key=True)
+    section_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'chapters_sections'
 
 
 # Matt Lavis views
