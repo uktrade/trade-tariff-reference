@@ -21,10 +21,6 @@ SELECT DISTINCT goods_nomenclature_item_id, producline_suffix,
 description, number_indents FROM ml.goods_nomenclature_export_brexit('{chapter_string}%')
 ORDER BY 1, 2"""
 
-GET_CHAPTER_DESCRIPTION = """
-SELECT description FROM ml.chapters WHERE chapter = '{chapter_string}'
-"""
-
 
 GET_SECTION_DETAILS = """
 SELECT s.numeral, s.title, cs.section_id
