@@ -31,17 +31,15 @@ def mnum(x):
             return 0
         else:
             return int(x)
-    except:
+    except ValueError:
         return 0
 
 
 def list_to_sql(my_list):
-    s = ""
-    if my_list != "":
-        for o in my_list:
-            s += "'" + o + "', "
-        s = s.strip()
-        s = s.strip(",")
+    if not my_list:
+        return ''
+    items = [f"'{o}'" for o in my_list]
+    s = ', '.join(items)
     return s
 
 
@@ -100,11 +98,12 @@ def get_measurement_unit_qualifier_code(qualifier_code):
     return unit_dict.get(qualifier_code, '')
 
 
-def surround(x):
-    if "<w:t>" in x:
-        return x
-    else:
-        return "<w:r><w:t>" + x + "</w:t></w:r>"
+def surround(xml):
+    if not xml:
+        xml = ''
+    if "<w:t>" in xml:
+        return xml
+    return f"<w:r><w:t>{xml}</w:t></w:r>"
 
 
 def format_seasonal_expression(s):
@@ -140,13 +139,17 @@ def apply_value_format_to_document(document_xml_string):
     document_xml_string = re.sub("([0-9]),([0-9])%", "\\1.\\2%", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]) kg", "\\1.\\2 kg", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]) Kg", "\\1.\\2 kg", document_xml_string, flags=re.MULTILINE)
-    document_xml_string = re.sub("([0-9]),([0-9]) C", "\\1.\\2 C", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9])kg", "\\1.\\2kg", document_xml_string, flags=re.MULTILINE)
+    document_xml_string = re.sub("([0-9]),([0-9])Kg", "\\1.\\2kg", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]{1,3}) g", "\\1.\\2 g", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]{1,3})g", "\\1.\\2g", document_xml_string, flags=re.MULTILINE)
-    document_xml_string = re.sub("([0-9]),([0-9]{1,3}) dl", "\\1.\\2 dl", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]{1,3}) m", "\\1.\\2 m", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]{1,3})m", "\\1.\\2m", document_xml_string, flags=re.MULTILINE)
+
+    document_xml_string = re.sub("([0-9]),([0-9]) C", "\\1.\\2 C", document_xml_string, flags=re.MULTILINE)
+
+    document_xml_string = re.sub("([0-9]),([0-9]{1,3}) dl", "\\1.\\2 dl", document_xml_string, flags=re.MULTILINE)
+
     document_xml_string = re.sub(
         "([0-9]),([0-9]{1,3}) decitex", "\\1.\\2 decitex", document_xml_string, flags=re.MULTILINE
     )
