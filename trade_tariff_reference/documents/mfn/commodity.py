@@ -12,9 +12,9 @@ class Commodity:
     def __init__(self, application, commodity_code="", description="", product_line_suffix="", indents=0, leaf=0):
         # Get parameters from instantiator
         self.application = application
-        self.commodity_code = commodity_code
-        self.description = description
         self.product_line_suffix = product_line_suffix
+        self.commodity_code = commodity_code
+        self.commodity_code_formatted = self.format_commodity_code(self.commodity_code)
         self.indents = indents
         self.leaf = leaf
         self.assigned = False
@@ -28,11 +28,10 @@ class Commodity:
         self.significant_children = False
         self.measure_count = 0
         self.measure_type_count = 0
-
-        self.format_description()
-        self.get_significant_digits()
-        self.get_indent_string()
-        self.format_commodity_code()
+        self.description = description
+        self.description_formatted = self.format_description(description)
+        self.significant_digits = self.get_significant_digits()
+        self.indent_string = self.get_indent_string()
         self.child_duty_list = []
 
         self.special_list = []
@@ -103,14 +102,14 @@ class Commodity:
         self.combined_duty = self.combined_duty.replace("  ", " ")
         self.combined_duty = self.combined_duty.strip()
 
-    def latinise(self):
+    def latinise(self, description):
         # Italicise any Latin text based on the content of the file latin_phrases.txt
         my_phrases = []
         for latin_phrase in self.application.latin_phrases:
             latin_phrase_parts = latin_phrase.split(" ")
-            if self.description.find(latin_phrase) > -1:
+            if description.find(latin_phrase) > -1:
                 if latin_phrase not in my_phrases:
-                    self.description = self.description.replace(
+                    description = description.replace(
                         latin_phrase, (
                             "</w:t></w:r><w:r><w:rPr><w:i/><w:iCs/></w:rPr><w:t>" + latin_phrase +
                             " </w:t></w:r><w:r><w:t xml:space='preserve'>"
@@ -120,136 +119,165 @@ class Commodity:
                     my_phrases.append(part)
                     if "thynnus" in latin_phrase:
                         my_phrases.append("thynnus")
+        return description
 
-    def format_description(self):
-        self.latinise()
-        self.description = str(self.description)
-        self.description = self.description.replace("|of the CN", "")
-        self.description = self.description.replace("liters", "litres")
-        self.description = self.description.replace("|%|", "% ")
-        self.description = self.description.replace("|gram", " gram")
-        self.description = self.description.replace("|g", "g")
-        self.description = self.description.replace("|kg", "kg")
-        self.description = self.description.replace("|", " ")
-        self.description = re.sub("([0-9]) %", "\\1%", self.description)
-        self.description = self.description.replace("!x!", "x")
-        self.description = self.description.replace(" kg", "kg")
-        self.description = self.description.replace(" -goods", " - goods")
-        self.description = self.description.replace(" - ", "</w:t></w:r><w:r><w:br/><w:t xml:space='preserve'>- ")
-        self.description = self.description.replace(" • ", "</w:t></w:r><w:r><w:br/><w:t xml:space='preserve'>- ")
-        self.description = re.sub(
+    def format_description(self, description):
+        description = self.latinise(description)
+        description = str(description)
+
+        description = description.replace("<br> ", "<br>")
+        description = description.replace("|of the CN", "")
+        description = description.replace("liters", "litres")
+        description = description.replace("|%|", "% ")
+        description = description.replace("|gram", " gram")
+        description = description.replace("|g", "g")
+        description = description.replace("|kg", "kg")
+        description = description.replace("|", " ")
+        description = re.sub("([0-9]) %", "\\1%", description)
+        description = description.replace("!x!", "x")
+        description = description.replace(" kg", "kg")
+        description = description.replace(" -goods", " - goods")
+        description = description.replace(" - ", "</w:t></w:r><w:r><w:br/><w:t xml:space='preserve'>- ")
+        description = description.replace(" • ", "</w:t></w:r><w:r><w:br/><w:t xml:space='preserve'>- ")
+        description = re.sub(
             r"\$(.)",
             r'</w:t></w:r><w:r><w:rPr><w:vertAlign w:val="superscript"/>'
             r'</w:rPr><w:t>\1</w:t></w:r><w:r><w:t xml:space="preserve">',
-            self.description
+            description
         )
 
-        if self.description[-3:] == "!1!":
-            self.description = self.description[:-3]
-        self.description = self.description.replace("\r\r", "\r")
-        self.description = self.description.replace("\r\n", "\n")
-        self.description = self.description.replace("\n\r", "\n")
-        self.description = self.description.replace("\n\n", "\n")
-        self.description = self.description.replace("\r", "\n")
-        self.description = self.description.replace("\n", "</w:t></w:r><w:r><w:br/></w:r><w:r><w:t>")
-        self.description = self.description.replace("!1!", "</w:t></w:r><w:r><w:br/></w:r><w:r><w:t>")
-        self.description = self.description.replace("  ", " ")
-        self.description = self.description.replace("!o!", chr(176))
-        self.description = self.description.replace("\xA0", " ")
-        self.description = self.description.replace(" %", "%")
-        self.description = (
+        if description[-3:] == "!1!":
+            description = description[:-3]
+        description = description.replace("\r\r", "\r")
+        description = description.replace("\r\n", "\n")
+        description = description.replace("\n\r", "\n")
+        description = description.replace("\n\n", "\n")
+        description = description.replace("\r", "\n")
+        description = description.replace("<br>", "\n")
+        description = description.replace("\n", "</w:t></w:r><w:r><w:br/></w:r><w:r><w:t>")
+        description = description.replace("!1!", "</w:t></w:r><w:r><w:br/></w:r><w:r><w:t>")
+        description = description.replace("  ", " ")
+        description = description.replace("!o!", chr(176))
+        description = description.replace("\xA0", " ")
+        description = description.replace(" %", "%")
+        description = (
                                "<w:t>-</w:t><w:tab/>" * self.indents
-                           ) + "<w:t xml:space='preserve'>" + self.description + "</w:t>"
+                           ) + "<w:t xml:space='preserve'>" + description + "</w:t>"
 
         # Superscripts
-        self.description = re.sub(
+        description = re.sub(
             "<w:t>(.*)m2</w:t>",
-            "<w:t>\g<1>m</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr><w:t>2</w:t>",
-            self.description,
+            r"<w:t>\g<1>m</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"superscript\"/></w:rPr><w:t>2</w:t>",
+            description,
             flags=re.MULTILINE
         )
-        self.description = re.sub(
+        description = re.sub(
             "<w:t>(.*)m3</w:t>",
-            "<w:t xml:space='preserve'>\g<1>m</w:t></w:r><w:r><w:rPr>"
+            r"<w:t xml:space='preserve'>\g<1>m</w:t></w:r><w:r><w:rPr>"
             "<w:vertAlign w:val=\"superscript\"/></w:rPr><w:t>3</w:t>",
-            self.description,
+            description,
             flags=re.MULTILINE
         )
-        self.description = re.sub(
+        description = re.sub(
             "<w:t>(.*)K2O</w:t>",
-            "<w:t>\g<1>K</w:t></w:r><w:r><w:rPr>"
+            r"<w:t>\g<1>K</w:t></w:r><w:r><w:rPr>"
             "<w:vertAlign w:val=\"subscript\"/></w:rPr><w:t>2</w:t></w:r><w:r><w:t>O</w:t>",
-            self.description,
+            description,
             flags=re.MULTILINE
         )
-        self.description = re.sub(
+        description = re.sub(
             "<w:t>(.*)H2O2</w:t>",
-            "<w:t>\g<1>H</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/>"
+            r"<w:t>\g<1>H</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/>"
             "</w:rPr><w:t>2</w:t></w:r><w:r><w:t>O</w:t></w:r><w:r><w:rPr>"
             "<w:vertAlign w:val=\"subscript\"/></w:rPr><w:t>2</w:t>",
-            self.description,
+            description,
             flags=re.MULTILINE
         )
-        self.description = re.sub(
+        description = re.sub(
             "<w:t>(.*)P2O5</w:t>",
-            "<w:t>\g<1>P</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/></w:rPr>"
+            r"<w:t>\g<1>P</w:t></w:r><w:r><w:rPr><w:vertAlign w:val=\"subscript\"/></w:rPr>"
             "<w:t>2</w:t></w:r><w:r><w:t>O</w:t></w:r>"
             "<w:r><w:rPr><w:vertAlign w:val=\"subscript\"/></w:rPr><w:t>5</w:t>",
-            self.description,
+            description,
             flags=re.MULTILINE
         )
 
         # Subscripts
-        self.description = re.sub(
+        description = re.sub(
             "@(.)",
             '</w:t></w:r><w:r><w:rPr><w:vertAlign w:val="subscript"/>'
             '</w:rPr><w:t xml:space="preserve">\\1</w:t></w:r><w:r><w:t xml:space="preserve">',
-            self.description,
+            description,
             flags=re.MULTILINE
         )
 
         if self.indents < 2:  # Make it bold
-            self.description = "<w:rPr><w:b/></w:rPr>" + self.description
-            self.description = self.description.replace("<w:r><w:rPr><w:i/><w:iCs/></w:rPr>",
-                                                        "<w:r><w:rPr><w:i/><w:b/><w:iCs/></w:rPr>")
-            self.description = self.description.replace("<w:r>", "<w:r><w:rPr><w:b/></w:rPr>")
-        self.description = self.description.replace(" </w:t></w:r><w:r><w:t xml:space='preserve'>,",
-                                                    "</w:t></w:r><w:r><w:t xml:space='preserve'>,")
-        self.description = self.description.replace("€ ", "€")
+            description = "<w:rPr><w:b/></w:rPr>" + description
+            description = description.replace(
+                "<w:r><w:rPr><w:i/><w:iCs/></w:rPr>",
+                "<w:r><w:rPr><w:i/><w:b/><w:iCs/></w:rPr>"
+            )
+            description = description.replace("<w:r>", "<w:r><w:rPr><w:b/></w:rPr>")
+        description = description.replace(
+            " </w:t></w:r><w:r><w:t xml:space='preserve'>,",
+            "</w:t></w:r><w:r><w:t xml:space='preserve'>,"
+        )
+        description = description.replace("€ ", "€")
 
-        self.description = self.description.replace("<w:r><w:br/></w:r><w:r><w:t> </w:t></w:r><w:r><w:br/></w:r>",
-                                                    "<w:r><w:br/></w:r><w:r><w:t> </w:t></w:r>")
+        description = description.replace(
+            "<w:r><w:br/></w:r><w:r><w:t> </w:t></w:r><w:r><w:br/></w:r>",
+            "<w:r><w:br/></w:r><w:r><w:t> </w:t></w:r>"
+        )
+
+        # TODO: Not all subscripts and superscripts are handled correctly removed for now
+        description = description.replace('<sup>1</sup>', '')
+        description = description.replace('<sup>2</sup>', '')
+        description = description.replace('<sup>3</sup>', '')
+        description = description.replace('<sup>4</sup>', '')
+        description = description.replace('<sup>5</sup>', '')
+        description = description.replace('<sup>6</sup>', '')
+        description = description.replace('<sub>1</sub>', '')
+        description = description.replace('<sub>2</sub>', '')
+        description = description.replace('<sub>3</sub>', '')
+        description = description.replace('<sub>4</sub>', '')
+        description = description.replace('<sub>5</sub>', '')
+        description = description.replace('<sub>6</sub>', '')
+        description = description.replace('<br>', '')
+
+        return description
 
     def get_significant_digits(self):
         if self.commodity_code[-8:] == '00000000':
-            self.significant_digits = 2
+            return 2
         elif self.commodity_code[-6:] == '000000':
-            self.significant_digits = 4
+            return 4
         elif self.commodity_code[-4:] == '0000':
-            self.significant_digits = 6
+            return 6
         elif self.commodity_code[-2:] == '00':
-            self.significant_digits = 8
-        else:
-            self.significant_digits = 10
+            return 8
+        return 10
 
     def get_indent_string(self):
         indent_list = [0, 113, 227, 340, 454, 567, 680, 794, 907, 1020, 1134, 1247, 1361]
-        self.indent_string = "<w:ind w:left=\"" + str(indent_list[self.indents]) + "\" w:hanging=\"" + str(
-            indent_list[self.indents]) + "\"/>"
+        try:
+            indents = indent_list[self.indents]
+        except IndexError:
+            indents = 0
 
-    def format_commodity_code(self):
-        s = self.commodity_code
+        return f'<w:ind w:left="{indents}" w:hanging="{indents}"/>'
+
+    def format_commodity_code(self, commodity_code):
+        s = commodity_code
         if self.product_line_suffix != "80":
-            self.commodity_code_formatted = ""
+            return ""
+        if s[4:10] == "000000":
+            return s[0:4]
+        elif s[6:10] == "0000":
+            return s[0:4] + ' ' + s[4:6]
+        elif s[8:10] == "00":
+            return s[0:4] + ' ' + s[4:6] + ' ' + s[6:8]
         else:
-            if s[4:10] == "000000":
-                self.commodity_code_formatted = s[0:4]
-            elif s[6:10] == "0000":
-                self.commodity_code_formatted = s[0:4] + ' ' + s[4:6]
-            elif s[8:10] == "00":
-                self.commodity_code_formatted = s[0:4] + ' ' + s[4:6] + ' ' + s[6:8]
-            else:
-                self.commodity_code_formatted = s[0:4] + ' ' + s[4:6] + ' ' + s[6:8] + ' ' + s[8:10]
+            return s[0:4] + ' ' + s[4:6] + ' ' + s[6:8] + ' ' + s[8:10]
 
     # self.commodity_code_formatted = self.commodity_code + ":" + str(self.indents)
 
