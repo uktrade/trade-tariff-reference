@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from freezegun import freeze_time
 
@@ -54,21 +54,36 @@ def test_format_commodity_code(commodity_code, expected_result):
 def test_is_all_full_year_when_measure_has_no_full_years():
     commodity = Commodity(None)
     commodity.measure_list.append(get_measure())
-    commodity.measure_list.append(get_measure(validity_start_date=date.today(), validity_end_date=date(2020, 1, 1)))
+    commodity.measure_list.append(
+        get_measure(
+            validity_start_date=datetime.now(),
+            validity_end_date=datetime(2020, 1, 1, 0, 0),
+        ),
+    )
     assert not commodity.is_all_full_year()
 
 
 @freeze_time('2019-02-01 12:00:00')
 def test_is_all_full_year_when_one_measure_has_an_end_date_of_a_year():
     commodity = Commodity(None)
-    commodity.measure_list.append(get_measure(validity_start_date=date.today(), validity_end_date=date(2020, 2, 1)))
+    commodity.measure_list.append(
+        get_measure(
+            validity_start_date=datetime.now(),
+            validity_end_date=datetime(2020, 2, 1, 0, 0)
+        ),
+    )
     assert commodity.is_all_full_year()
 
 
 @freeze_time('2019-02-01 12:00:00')
 def test_is_any_infinite():
     commodity = Commodity(None)
-    commodity.measure_list.append(get_measure(validity_start_date=date.today(), validity_end_date=date(2020, 1, 1)))
+    commodity.measure_list.append(
+        get_measure(
+            validity_start_date=datetime.now(),
+            validity_end_date=datetime(2020, 1, 1, 0, 0),
+        ),
+    )
     commodity.measure_list.append(get_measure())
     assert commodity.is_any_infinite()
 
@@ -76,7 +91,12 @@ def test_is_any_infinite():
 @freeze_time('2019-02-01 12:00:00')
 def test_is_any_infinite_returns_false_when_all_validate_end_dates_set():
     commodity = Commodity(None)
-    commodity.measure_list.append(get_measure(validity_start_date=date.today(), validity_end_date=date(2020, 1, 1)))
+    commodity.measure_list.append(
+        get_measure(
+            validity_start_date=datetime.now(),
+            validity_end_date=datetime(2020, 1, 1, 0, 0)
+        ),
+    )
     assert not commodity.is_any_infinite()
 
 
@@ -101,7 +121,10 @@ def test_process_single_measure():
 @freeze_time('2019-01-01 12:00:00')
 def test_process_single_measure_with_end_date_before_brexit():
     commodity = Commodity(None)
-    first_measure = get_measure(validity_start_date=date.today(), validity_end_date=date(2019, 1, 2))
+    first_measure = get_measure(
+        validity_start_date=datetime.now(),
+        validity_end_date=datetime(2019, 1, 2, 0, 0),
+    )
     second_measure = get_measure()
     commodity.measure_list.extend([first_measure, second_measure])
     assert commodity.process_single_measure(True) is None
@@ -113,7 +136,10 @@ def test_process_single_measure_with_end_date_before_brexit():
 @freeze_time('2019-01-05 12:00:00')
 def test_get_partial_period_list():
     commodity = Commodity(None)
-    first_measure = get_measure(validity_start_date=date.today(), validity_end_date=date(2019, 1, 10))
+    first_measure = get_measure(
+        validity_start_date=datetime.now(),
+        validity_end_date=datetime(2019, 1, 10, 0, 0),
+    )
     second_measure = get_measure()
     commodity.measure_list.extend([first_measure, second_measure])
     actual_partial_list = commodity.get_partial_period_list()
@@ -151,13 +177,13 @@ def test_compare_measures_with_measures():
     commodity = Commodity(None)
     measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 10),
-        validity_end_date=date(2019, 1, 20)
+        validity_start_date=datetime(2019, 1, 10, 0, 0),
+        validity_end_date=datetime(2019, 1, 20, 0, 0)
     )
     second_measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 21),
-        validity_end_date=date(2019, 1, 31)
+        validity_start_date=datetime(2019, 1, 21, 0, 0),
+        validity_end_date=datetime(2019, 1, 31, 0, 0)
     )
     commodity.measure_list.append(measure)
     commodity.measure_list.append(second_measure)
@@ -173,8 +199,8 @@ def test_resolve_measure():
     commodity = Commodity(None)
     first_measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 10),
-        validity_end_date=date(2019, 1, 20)
+        validity_start_date=datetime(2019, 1, 10, 0, 0),
+        validity_end_date=datetime(2019, 1, 20, 0, 0)
     )
 
     first_measure.suppress = False
@@ -183,8 +209,8 @@ def test_resolve_measure():
 
     second_measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 21),
-        validity_end_date=date(2019, 1, 31)
+        validity_start_date=datetime(2019, 1, 21, 0, 0),
+        validity_end_date=datetime(2019, 1, 31, 0, 0)
     )
 
     second_measure.suppress = False
@@ -201,8 +227,8 @@ def test_resolve_measure_with_one_measure():
     commodity = Commodity(None)
     first_measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2018, 1, 10),
-        validity_end_date=date(2019, 1, 9)
+        validity_start_date=datetime(2018, 1, 10, 0, 0),
+        validity_end_date=datetime(2019, 1, 9, 0, 0)
     )
 
     first_measure.suppress = False
@@ -219,14 +245,14 @@ def test_resolve_measure_when_measures_are_combined():
     commodity = Commodity(None)
     measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 10),
-        validity_end_date=date(2019, 1, 20)
+        validity_start_date=datetime(2019, 1, 10, 0, 0),
+        validity_end_date=datetime(2019, 1, 20, 0, 0)
     )
     measure.combined_duty = 'Duty'
     second_measure = get_measure(
         commodity_code='12345',
-        validity_start_date=date(2019, 1, 21),
-        validity_end_date=date(2019, 1, 31),
+        validity_start_date=datetime(2019, 1, 21, 0, 0),
+        validity_end_date=datetime(2019, 1, 31, 0, 0),
     )
 
     second_measure.combined_duty = 'Duty'

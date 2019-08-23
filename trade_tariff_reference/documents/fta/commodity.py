@@ -89,7 +89,7 @@ class Commodity(BaseCommodity):
         if not is_all_full_year or not measure.validity_end_date:
             return
 
-        if measure.validity_end_date < self.date_brexit.date():
+        if measure.validity_end_date < self.date_brexit:
             self.suppress = True
 
     def get_partial_period_list(self):
@@ -127,7 +127,7 @@ class Commodity(BaseCommodity):
 
         if len(self.measure_list) == 1:
             m = self.measure_list[0]
-            if m.validity_end_date < self.date_brexit.date():
+            if m.validity_end_date < self.date_brexit:
                 logger.debug(f"Found a single measure that ends before Brexit {self.commodity_code}")
                 self.suppress = True
 
