@@ -22,5 +22,3 @@ urlpatterns = [
         name='agreement-detail',
     ),
 ]
-
-

@@ -1,0 +1,1 @@
+select agreement_name from schedule_agreement where slug = '{slug}'

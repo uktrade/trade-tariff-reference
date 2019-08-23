@@ -1,5 +1,5 @@
 django-extensions==2.1.9
-Django==2.2.2
+Django==2.2.4
 psycopg2-binary
 ipython==7.5.0
 werkzeug==0.15.2

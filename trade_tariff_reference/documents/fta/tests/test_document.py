@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from unittest import mock
 
 import pytest
@@ -6,7 +7,7 @@ from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.tests.test_application import get_mfn_siv_product
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
-from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory
+from trade_tariff_reference.tariff.tests.factories import CurrentMeasureFactory, GoodsNomenclatureFactory
 
 
 pytestmark = pytest.mark.django_db
@@ -64,9 +65,106 @@ def test_get_measure_conditions():
     actual_result = document.get_measure_conditions("'103'")
     assert len(actual_result) == 1
 
-    actual_measure_condition = actual_result[0]
+    assert measure.measure_sid in actual_result
+    actual_measure_condition = actual_result[measure.measure_sid]
     assert actual_measure_condition.condition_duty_amount == duty_amount
     assert actual_measure_condition.measure_sid == measure.measure_sid
     assert actual_measure_condition.measure_condition_sid == 0
     assert actual_measure_condition.component_sequence_number == 1
     assert actual_measure_condition.condition_code == 'V'
+
+
+def test_get_measure_list():
+    measure = get_mfn_siv_product(1, geographical_area_id='1011', measure_type_id='143')
+    current_measure = CurrentMeasureFactory(
+        measure_sid=measure.measure_sid,
+        geographical_area_id=measure.geographical_area_id,
+        measure_type_id=measure.measure_type_id,
+        validity_start_date=measure.validity_start_date,
+        validity_end_date=measure.validity_end_date,
+        ordernumber=measure.quota_order_number_id,
+        goods_nomenclature_item_id=measure.goods_nomenclature_item_id,
+        reduction_indicator=measure.reduction_indicator,
+    )
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
+    document = Document(application)
+    actual_measure_list = document.get_measure_list()
+    assert len(actual_measure_list) == 1
+    actual_measure = actual_measure_list[0]
+    assert actual_measure.commodity_code == str(current_measure.goods_nomenclature_item_id)
+    assert actual_measure.measure_sid == current_measure.measure_sid
+    assert actual_measure.quota_order_number_id == str(current_measure.ordernumber)
+    assert actual_measure.validity_start_date == current_measure.validity_start_date
+    assert actual_measure.validity_end_date == current_measure.validity_end_date
+    assert actual_measure.geographical_area_id == current_measure.geographical_area_id
+    assert actual_measure.reduction_indicator == current_measure.reduction_indicator
+
+
+def test_get_quota_measures():
+    measure = get_mfn_siv_product(1, geographical_area_id='1011', measure_type_id='143')
+    current_measure = CurrentMeasureFactory(
+        measure_sid=measure.measure_sid,
+        geographical_area_id=measure.geographical_area_id,
+        measure_type_id=measure.measure_type_id,
+        validity_start_date=measure.validity_start_date,
+        validity_end_date=measure.validity_end_date,
+        ordernumber=measure.quota_order_number_id,
+        goods_nomenclature_item_id=measure.goods_nomenclature_item_id,
+        reduction_indicator=measure.reduction_indicator,
+    )
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
+    document = Document(application)
+    document.get_quota_measures()
+    actual_measure_list = document.measure_list
+    assert len(actual_measure_list) == 1, 'Not the correct things to assert'
+    actual_measure = actual_measure_list[0]
+    assert actual_measure.commodity_code == str(current_measure.goods_nomenclature_item_id)
+    assert actual_measure.measure_sid == current_measure.measure_sid
+    assert actual_measure.quota_order_number_id == str(current_measure.ordernumber)
+    assert actual_measure.validity_start_date == current_measure.validity_start_date
+    assert actual_measure.validity_end_date == current_measure.validity_end_date
+    assert actual_measure.geographical_area_id == current_measure.geographical_area_id
+    assert actual_measure.reduction_indicator == current_measure.reduction_indicator
+
+
+def test_get_duties():
+    measure = get_mfn_siv_product(1, geographical_area_id='1011', measure_type_id='143')
+    current_measure = CurrentMeasureFactory(
+        measure_sid=measure.measure_sid,
+        geographical_area_id=measure.geographical_area_id,
+        measure_type_id=measure.measure_type_id,
+        validity_start_date=measure.validity_start_date,
+        validity_end_date=measure.validity_end_date,
+        ordernumber=measure.quota_order_number_id,
+        goods_nomenclature_item_id=measure.goods_nomenclature_item_id,
+        reduction_indicator=measure.reduction_indicator,
+    )
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
+
+    GoodsNomenclatureFactory(goods_nomenclature_item_id=current_measure.goods_nomenclature_item_id)
+    document = Document(application)
+    actual_duties = list(document._get_duties("'143', '146'"))
+    assert len(actual_duties) == 1
+    actual_duty = actual_duties[0]
+
+    expected_duty = {
+        'additional_code_id': None,
+        'additional_code_type_id': None,
+        'duty_amount': None,
+        'duty_expression_id': None,
+        'geographical_area_id': '1011',
+        'goods_nomenclature_item_id': '1',
+        'measure_sid': current_measure.measure_sid,
+        'measure_type_id': '143',
+        'measurement_unit_code': None,
+        'measurement_unit_qualifier_code': None,
+        'monetary_unit_code': None,
+        'ordernumber': '10',
+        'reduction_indicator': 5,
+        'validity_end_date': datetime(2019, 4, 2, 1, 0, tzinfo=timezone.utc),
+        'validity_start_date': datetime(2019, 5, 1, 1, 0, tzinfo=timezone.utc)
+    }
+    assert actual_duty == expected_duty

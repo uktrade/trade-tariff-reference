@@ -1,3 +1,5 @@
+import ssl
+
 from .base import *
 
 import dj_database_url
@@ -27,3 +29,8 @@ DATABASES = {
 
 
 CELERY_BROKER_URL = f'{REDIS_URL}/{CELERY_REDIS_INDEX}'
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_BROKER_USE_SSL = {
+    'ssl_cert_reqs': ssl.CERT_REQUIRED
+}
+CELERY_REDIS_BACKEND_USE_SSL = CELERY_BROKER_USE_SSL

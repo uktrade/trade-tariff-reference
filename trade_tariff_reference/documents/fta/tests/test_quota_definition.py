@@ -55,3 +55,16 @@ def test_format_volume(volume, measurement_unit_code, measurement_unit_qualifier
         measurement_unit_qualifier_code=measurement_unit_qualifier_code,
     )
     assert quota_definition.format_volume(volume) == expected_result
+
+
+def test_format_volumes():
+    quota_definition = get_quota_definition(
+        measurement_unit_code=1234,
+        measurement_unit_qualifier_code='GRM',
+        initial_volume=100,
+
+    )
+    quota_definition.volume_yx = 200
+    quota_definition.format_volumes()
+    assert quota_definition.formatted_initial_volume == '100 1234 GRM'
+    assert quota_definition.formatted_volume_yx == '200 1234 GRM'

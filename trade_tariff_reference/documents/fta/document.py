@@ -73,7 +73,7 @@ class Document:
         return "'143', '146'"
 
     def get_measure_conditions(self, measure_type_list):
-        measure_condition_list = []
+        measure_condition_dict = {}
 
         rows = self.application.execute_sql(
             GET_MEASURE_COMPONENTS_SQL.format(
@@ -84,8 +84,8 @@ class Document:
         )
         for row in rows:
             mc = MeasureCondition(0, row['measure_sid'], "V", 1, row['duty_amount'], "", "", "", "", "", "")
-            measure_condition_list.append(mc)
-        return measure_condition_list
+            measure_condition_dict[row['measure_sid']] = mc
+        return measure_condition_dict
 
     @lru_cache(maxsize=5)
     def get_commodities_for_local_sivs(self):
@@ -117,7 +117,8 @@ class Document:
 
     def _get_duties(self, measure_type_list):
         return self.application.execute_sql(
-            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids)
+            GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids),
+            dict_cursor=True
         )
 
     def get_duties(self, instrument_type):
@@ -132,7 +133,7 @@ class Document:
         # These are used in adding in SIV components whenever the duty is no present
         # due to the fact that there are SIVs applied via measure components
         logger.debug(" - Getting measure conditions")
-        measure_condition_list = self.get_measure_conditions(measure_type_list)
+        measure_condition_dict = self.get_measure_conditions(measure_type_list)
 
         # Get the duties (i.e the measure components)
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
@@ -152,34 +153,32 @@ class Document:
         self.quota_order_number_list = []
 
         for row in duties:
-            measure_sid = row[9]
-            commodity_code = f.mstr(row[0])
-            additional_code_type_id = f.mstr(row[1])
-            additional_code_id = f.mstr(row[2])
-            measure_type_id = f.mstr(row[3])
-            duty_expression_id = row[4]
-            duty_amount = row[5]
-            monetary_unit_code = f.mstr(row[6])
+            measure_sid = row['measure_sid']
+            commodity_code = f.mstr(row['goods_nomenclature_item_id'])
+            additional_code_type_id = f.mstr(row['additional_code_type_id'])
+            additional_code_id = f.mstr(row['additional_code_id'])
+            measure_type_id = f.mstr(row['measure_type_id'])
+            duty_expression_id = row['duty_expression_id']
+            duty_amount = row['duty_amount']
+            monetary_unit_code = f.mstr(row['monetary_unit_code'])
             monetary_unit_code = monetary_unit_code.replace("EUR", "€")
-            measurement_unit_code = f.mstr(row[7])
-            measurement_unit_qualifier_code = f.mstr(row[8])
-            quota_order_number_id = f.mstr(row[10])
-            validity_start_date = row[11]
-            validity_end_date = row[12]
-            geographical_area_id = f.mstr(row[13])
-            reduction_indicator = row[14]
+            measurement_unit_code = f.mstr(row['measurement_unit_code'])
+            measurement_unit_qualifier_code = f.mstr(row['measurement_unit_qualifier_code'])
+            quota_order_number_id = f.mstr(row['ordernumber'])
+            validity_start_date = row['validity_start_date']
+            validity_end_date = row['validity_end_date']
+            geographical_area_id = f.mstr(row['geographical_area_id'])
+            reduction_indicator = row['reduction_indicator']
 
             # Hypothesis would be that the only reason why the Duty amount is None is when
             # there is a "V" code attached to the Measure
             # if ((duty_amount is None) and (duty_expression_id == "01")):
             if duty_amount is None and duty_expression_id is None:
                 is_siv = True
-                for mc in measure_condition_list:
-                    # print(mc.measure_sid, measure_sid)
-                    if mc.measure_sid == measure_sid:
-                        duty_expression_id = "01"
-                        duty_amount = mc.condition_duty_amount
-                        # break
+                measure_condition = measure_condition_dict.get(measure_sid)
+                if measure_condition:
+                    duty_expression_id = "01"
+                    duty_amount = measure_condition.condition_duty_amount
             else:
                 is_siv = False
 
@@ -261,32 +260,34 @@ class Document:
             self.quota_order_number_list.append(qon)
             self.q.append(quota_order_number_id)
 
+    def get_measure_list(self):
+        measure_list = []
+        rows = self.application.execute_sql(
+            GET_QUOTA_MEASURES_SQL.format(geo_ids=self.application.agreement.geo_ids),
+            dict_cursor=True
+        )
+
+        for row in rows:
+            measure = Measure(
+                row['measure_sid'],
+                row['goods_nomenclature_item_id'],
+                row['ordernumber'],
+                row['validity_start_date'],
+                row['validity_end_date'],
+                row['geographical_area_id'],
+                row['reduction_indicator']
+            )
+            measure_list.append(measure)
+        return measure_list
+
     def get_quota_measures(self):
         # print(len(self.commodity_list))
         # Get the measures - in order to get the commodity codes and the duties
         # Just get the commodities and add to an array
-        rows = self.application.execute_sql(
-            GET_QUOTA_MEASURES_SQL.format(geo_ids=self.application.agreement.geo_ids),
-        )
-        if len(rows) == 0:
+        self.measure_list = self.get_measure_list()
+        if not self.measure_list:
             self.has_quotas = False
             return
-
-        self.measure_list = []
-        for row in rows:
-            measure_sid = row[0]
-            goods_nomenclature_item_id = row[1]
-            quota_order_number_id = row[2]
-            validity_start_date = row[3]
-            validity_end_date = row[4]
-            geographical_area_id = row[5]
-            reduction_indicator = row[6]
-
-            my_measure = Measure(
-                measure_sid, goods_nomenclature_item_id, quota_order_number_id, validity_start_date, validity_end_date,
-                geographical_area_id, reduction_indicator
-            )
-            self.measure_list.append(my_measure)
 
         # Step 2 - Having loaded all of the measures from the database, cycle through the list of duties (components)
         # previously loaded and assign to the measures where appropriate

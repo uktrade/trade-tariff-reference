@@ -16,6 +16,8 @@ import environ
 from django.urls import reverse_lazy
 from datetime import datetime
 
+from celery.schedules import crontab
+
 env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'core.middleware.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -178,14 +181,14 @@ CELERY_REDIS_INDEX = '1'
 
 CELERY_BROKER_URL = f'redis://trade_application_redis:6379/{CELERY_REDIS_INDEX}'
 
-# from celery.schedules import crontab
-# CELERY_BEAT_SCHEDULE = {
-#     'generate-document': {
-#         'task': 'trade_tariff_reference.documents.tasks.generate_document',
-#         'schedule': crontab(minute='*/5'),
-#         'args': ('israel',),
-#     },
-# }
+CELERY_BEAT_SCHEDULE = {}
+
+if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
+    CELERY_BEAT_SCHEDULE['refresh-documents'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_all_documents',
+        'schedule': crontab(minute='20', hour='13'),
+        'args': (False, False),
+     }
 
 # authbroker config
 AUTHBROKER_URL = env('AUTHBROKER_URL', default='http://localhost')
