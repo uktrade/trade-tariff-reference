@@ -9,12 +9,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from trade_tariff_reference.documents.functions import format_seasonal_expression, list_to_sql
 
 
-class DocumentStorage(S3Boto3Storage):
-    location = 'documents'
-    default_acl = 'private'
-
-
-class Agreement(models.Model):
+class DocumentStatus:
     AVAILABLE = 'available'
     UNAVAILABLE = 'unavailable'
     GENERATING = 'generating'
@@ -24,6 +19,33 @@ class Agreement(models.Model):
         (UNAVAILABLE, 'Unavailable'),
         (GENERATING, 'Generating'),
     )
+
+
+class PrivateStorage(S3Boto3Storage):
+    default_acl = 'private'
+
+
+class DocumentStorage(PrivateStorage):
+    location = 'documents'
+
+
+class ChapterNoteStorage(PrivateStorage):
+    location = 'documents/mfn/chapter'
+
+
+class MFNScheduleStorage(PrivateStorage):
+    location = 'documents/mfn/schedule'
+
+
+class MFNClassificationStorage(PrivateStorage):
+    location = 'documents/mfn/classification'
+
+
+class MFNStorage(S3Boto3Storage):
+    location = 'documents/mfn/downloads'
+
+
+class Agreement(models.Model):
 
     slug = models.SlugField(verbose_name='Unique ID', unique=True)
 
@@ -38,7 +60,9 @@ class Agreement(models.Model):
     document = models.FileField(null=True, blank=True, storage=DocumentStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
     document_status = models.CharField(
-        choices=DOCUMENT_STATUS_CHOICES, default=UNAVAILABLE, max_length=20
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
     )
 
     @property
@@ -87,15 +111,15 @@ class Agreement(models.Model):
 
     @property
     def is_document_available(self):
-        return self.document_status == self.AVAILABLE
+        return self.document_status == DocumentStatus.AVAILABLE
 
     @property
     def is_document_generating(self):
-        return self.document_status == self.GENERATING
+        return self.document_status == DocumentStatus.GENERATING
 
     @property
     def is_document_unavailable(self):
-        return self.document_status == self.UNAVAILABLE
+        return self.document_status == DocumentStatus.UNAVAILABLE
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'

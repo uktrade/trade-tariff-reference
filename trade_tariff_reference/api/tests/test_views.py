@@ -2,7 +2,7 @@ from django.shortcuts import reverse
 
 import pytest
 
-from trade_tariff_reference.schedule.models import Agreement
+from trade_tariff_reference.schedule.models import DocumentStatus
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 
 
@@ -36,9 +36,9 @@ class TestAgreementAPIViews:
     @pytest.mark.parametrize(
         'document_status',
         (
-            Agreement.AVAILABLE,
-            Agreement.GENERATING,
-            Agreement.UNAVAILABLE,
+            DocumentStatus.AVAILABLE,
+            DocumentStatus.GENERATING,
+            DocumentStatus.UNAVAILABLE,
         ),
     )
     def test_agreement_detail_view(self, authenticated_client, document_status):
@@ -68,7 +68,7 @@ class TestAgreementAPIViews:
         assert actual_result['country_codes'] == agreement.country_codes
         assert actual_result['document_status'] == agreement.document_status
         assert actual_result['document_created_at'] == agreement.document_created_at
-        if agreement.document_status == Agreement.AVAILABLE:
+        if agreement.document_status == DocumentStatus.AVAILABLE:
             assert actual_result['download_url'].endswith(reverse('schedule:download', kwargs={'slug': agreement.slug}))
         else:
             assert actual_result['download_url'] == ''

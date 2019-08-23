@@ -3,7 +3,7 @@ from celery import shared_task
 from trade_tariff_reference.documents.fta.application import Application as FTAApplication
 from trade_tariff_reference.documents.mfn.application import Application as MFNApplication
 from trade_tariff_reference.documents.utils import update_agreement_document_status
-from trade_tariff_reference.schedule.models import Agreement
+from trade_tariff_reference.schedule.models import Agreement, DocumentStatus
 
 
 def handle_document_generation_fail(self, exc, task_id, args, kwargs, einfo):
@@ -13,12 +13,12 @@ def handle_document_generation_fail(self, exc, task_id, args, kwargs, einfo):
     try:
         agreement = Agreement.objects.get(
             slug=slug,
-            document_status=Agreement.GENERATING
+            document_status=DocumentStatus.GENERATING
         )
     except Agreement.DoesNotExist:
         pass
     else:
-        update_agreement_document_status(agreement, Agreement.UNAVAILABLE)
+        update_agreement_document_status(agreement, DocumentStatus.UNAVAILABLE)
 
 
 @shared_task(

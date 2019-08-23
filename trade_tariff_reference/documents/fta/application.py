@@ -15,7 +15,7 @@ from trade_tariff_reference.documents.fta.constants import (
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.documents.utils import update_agreement_document_status
-from trade_tariff_reference.schedule.models import Agreement
+from trade_tariff_reference.schedule.models import Agreement, DocumentStatus
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Application(DatabaseConnect):
 
     def __init__(self, country_profile, force_document_generation=True):
         self.agreement = self.get_agreement(country_profile)
-        update_agreement_document_status(self.agreement, Agreement.GENERATING)
+        update_agreement_document_status(self.agreement, DocumentStatus.GENERATING)
 
         self.force_document_generation = force_document_generation
         self.debug = False
