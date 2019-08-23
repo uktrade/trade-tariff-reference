@@ -313,7 +313,7 @@ class Commodity:
             # print ("Adding a special on", self.commodity_code)
 
     def check_for_authorised_use(self):
-        if self.commodity_code in self.application.authoriseduse_list:
+        if self.commodity_code in self.application.authorised_use_list:
             if self.product_line_suffix == "80":
                 if len(self.special_list) == 0:
                     if len(self.notes_list) != 0:

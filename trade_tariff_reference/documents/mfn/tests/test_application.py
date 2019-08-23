@@ -20,7 +20,7 @@ def test_initialise():
     assert application.document_type == SCHEDULE
     assert application.first_chapter == 1
     assert application.last_chapter == 99
-    assert application.authoriseduse_list == []
+    assert application.authorised_use_list == []
     assert application.special_list == []
     assert application.section_chapter_list == []
     assert application.latin_phrases == []

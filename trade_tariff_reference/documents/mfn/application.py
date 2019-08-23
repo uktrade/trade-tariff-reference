@@ -18,7 +18,7 @@ class Application(DatabaseConnect):
         self.document_type = document_type
         self.first_chapter = first_chapter
         self.last_chapter = last_chapter
-        self.authoriseduse_list = []
+        self.authorised_use_list = []
         self.special_list = []
         self.section_chapter_list = []
         self.suppress_duties = False
@@ -26,17 +26,13 @@ class Application(DatabaseConnect):
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.SOURCE_DIR = os.path.join(self.BASE_DIR, "source")
-        self.CHAPTER_NOTES_DIR = os.path.join(self.SOURCE_DIR, "chapter_notes")
         self.MODEL_DIR = os.path.join(self.BASE_DIR, "model")
-
-        self.OUTPUT_DIR = os.path.join(self.BASE_DIR, "output")
-        self.OUTPUT_DIR = os.path.join(self.OUTPUT_DIR, self.document_type)
 
     def main(self):
         self.latin_phrases = self.get_latin_phrases()
         self.section_chapter_list = self.get_sections_chapters()
         if self.document_type == SCHEDULE:
-            self.authoriseduse_list = self.get_authorised_use_commodities()
+            self.authorised_use_list = self.get_authorised_use_commodities()
             self.special_list = self.get_special_notes()
         for i in range(self.first_chapter, self.last_chapter + 1):
             process_chapter(self, i)
