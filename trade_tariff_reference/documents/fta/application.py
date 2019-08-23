@@ -80,7 +80,7 @@ class Application(DatabaseConnect):
 
         # Personalise and write the document
         my_document.create_document(context_data)
-        update_agreement_document_status(self.agreement, self.agreement.AVAILABLE)
+        update_agreement_document_status(self.agreement, DocumentStatus.AVAILABLE)
 
     def get_mfns_for_siv_products(self):
         logger.debug(" - Getting MFNs for SIV products")
