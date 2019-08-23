@@ -1,0 +1,41 @@
+     <w:tr>
+        <w:trPr>
+          <w:cantSplit/>
+        </w:trPr>
+        <w:tc>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+				<w:rPr><w:b/></w:rPr>
+              <w:t>{{ commodity.COMMODITY }}</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+			  <w:tabs>
+                <w:tab w:pos="113" w:val="left"/>
+                <w:tab w:pos="227" w:val="left"/>
+                <w:tab w:pos="340" w:val="left"/>
+                <w:tab w:pos="454" w:val="left"/>
+                <w:tab w:pos="567" w:val="left"/>
+                <w:tab w:pos="680" w:val="left"/>
+                <w:tab w:pos="794" w:val="left"/>
+                <w:tab w:pos="907" w:val="left"/>
+                <w:tab w:pos="1020" w:val="left"/>
+                <w:tab w:pos="1134" w:val="left"/>
+                <w:tab w:pos="1247" w:val="left"/>
+                <w:tab w:pos="1361" w:val="left"/>
+              </w:tabs>
+			  {{ commodity.INDENT  | safe }}
+            </w:pPr>
+            <w:r>
+              {{ commodity.DESCRIPTION  | safe }}
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>

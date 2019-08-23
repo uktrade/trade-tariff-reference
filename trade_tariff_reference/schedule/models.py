@@ -6,15 +6,10 @@ from django.shortcuts import reverse
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from trade_tariff_reference.documents.fta.functions import list_to_sql
+from trade_tariff_reference.documents.functions import format_seasonal_expression, list_to_sql
 
 
-class DocumentStorage(S3Boto3Storage):
-    location = 'documents'
-    default_acl = 'private'
-
-
-class Agreement(models.Model):
+class DocumentStatus:
     AVAILABLE = 'available'
     UNAVAILABLE = 'unavailable'
     GENERATING = 'generating'
@@ -24,6 +19,33 @@ class Agreement(models.Model):
         (UNAVAILABLE, 'Unavailable'),
         (GENERATING, 'Generating'),
     )
+
+
+class PrivateStorage(S3Boto3Storage):
+    default_acl = 'private'
+
+
+class DocumentStorage(PrivateStorage):
+    location = 'documents'
+
+
+class ChapterNoteStorage(PrivateStorage):
+    location = 'documents/mfn/chapter'
+
+
+class MFNScheduleStorage(PrivateStorage):
+    location = 'documents/mfn/schedule'
+
+
+class MFNClassificationStorage(PrivateStorage):
+    location = 'documents/mfn/classification'
+
+
+class MFNStorage(S3Boto3Storage):
+    location = 'documents/mfn/downloads'
+
+
+class Agreement(models.Model):
 
     slug = models.SlugField(verbose_name='Unique ID', unique=True)
 
@@ -38,7 +60,9 @@ class Agreement(models.Model):
     document = models.FileField(null=True, blank=True, storage=DocumentStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
     document_status = models.CharField(
-        choices=DOCUMENT_STATUS_CHOICES, default=UNAVAILABLE, max_length=20
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
     )
 
     @property
@@ -87,15 +111,15 @@ class Agreement(models.Model):
 
     @property
     def is_document_available(self):
-        return self.document_status == self.AVAILABLE
+        return self.document_status == DocumentStatus.AVAILABLE
 
     @property
     def is_document_generating(self):
-        return self.document_status == self.GENERATING
+        return self.document_status == DocumentStatus.GENERATING
 
     @property
     def is_document_unavailable(self):
-        return self.document_status == self.UNAVAILABLE
+        return self.document_status == DocumentStatus.UNAVAILABLE
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
@@ -163,3 +187,81 @@ class ExtendedQuota(models.Model):
 
     class Meta:
         unique_together = (('agreement', 'quota_order_number_id'),)
+
+
+class LatinTerm(models.Model):
+    text = models.CharField(max_length=2000)
+
+    def __str__(self):
+        return self.text
+
+
+class SpecialNote(models.Model):
+    quota_order_number_id = models.CharField(max_length=120)
+    note = models.TextField()
+
+    @property
+    def commodity_code(self):
+        return self.quota_order_number_id
+
+
+class SeasonalQuota(models.Model):
+    quota_order_number_id = models.CharField(max_length=120)
+
+    def __str__(self):
+        return f'{self.quota_order_number_id}'
+
+
+class SeasonalQuotaSeason(models.Model):
+    seasonal_quota = models.ForeignKey(SeasonalQuota, on_delete=models.CASCADE, related_name='seasons')
+    start_date = models.DateField()
+    end_date = models.DateField()
+    duty = models.CharField(max_length=1000)
+
+    class Meta:
+        ordering = ('start_date',)
+
+    @property
+    def formatted_duty(self):
+        return format_seasonal_expression(self.duty)
+
+    def __str__(self):
+        return f'{self.seasonal_quota.quota_order_number_id} - {self.start_date}/{self.end_date} - {self.duty}'
+
+
+class Chapter(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.TextField()
+    schedule_document = models.FileField(null=True, blank=True, storage=MFNScheduleStorage())
+    schedule_document_created_at = models.DateTimeField(null=True, blank=True)
+    schedule_document_status = models.CharField(
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
+    )
+    classification_document = models.FileField(null=True, blank=True, storage=MFNClassificationStorage())
+    classification_document_created_at = models.DateTimeField(null=True, blank=True)
+    classification_document_status = models.CharField(
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
+    )
+
+    @property
+    def chapter_string(self):
+        return f"{self.id:02d}"
+
+    def __str__(self):
+        return f'{self.chapter_string} - {self.description}'
+
+
+class ChapterNote(models.Model):
+    chapter = models.OneToOneField(Chapter, on_delete=models.CASCADE, related_name='note')
+    document = models.FileField(null=True, blank=True, storage=ChapterNoteStorage())
+    document_created_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.chapter.description} Note'
+
+    class Meta:
+        ordering = ('chapter__id',)

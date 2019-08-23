@@ -1,0 +1,712 @@
+[
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 1,
+    "fields": {
+        "seasonal_quota": 1,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 2,
+    "fields": {
+        "seasonal_quota": 1,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 3,
+    "fields": {
+        "seasonal_quota": 2,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 4,
+    "fields": {
+        "seasonal_quota": 2,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 5,
+    "fields": {
+        "seasonal_quota": 3,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 6,
+    "fields": {
+        "seasonal_quota": 3,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 7,
+    "fields": {
+        "seasonal_quota": 4,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 8,
+    "fields": {
+        "seasonal_quota": 4,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 9,
+    "fields": {
+        "seasonal_quota": 5,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 10,
+    "fields": {
+        "seasonal_quota": 5,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 11,
+    "fields": {
+        "seasonal_quota": 6,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 12,
+    "fields": {
+        "seasonal_quota": 6,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 13,
+    "fields": {
+        "seasonal_quota": 7,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 14,
+    "fields": {
+        "seasonal_quota": 7,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 15,
+    "fields": {
+        "seasonal_quota": 8,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 16,
+    "fields": {
+        "seasonal_quota": 8,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 17,
+    "fields": {
+        "seasonal_quota": 9,
+        "start_date": "2018-06-16",
+        "end_date": "2019-02-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 18,
+    "fields": {
+        "seasonal_quota": 9,
+        "start_date": "2019-02-15",
+        "end_date": "2019-06-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 19,
+    "fields": {
+        "seasonal_quota": 10,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 20,
+    "fields": {
+        "seasonal_quota": 10,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 21,
+    "fields": {
+        "seasonal_quota": 10,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 22,
+    "fields": {
+        "seasonal_quota": 11,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 23,
+    "fields": {
+        "seasonal_quota": 11,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 24,
+    "fields": {
+        "seasonal_quota": 11,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 25,
+    "fields": {
+        "seasonal_quota": 12,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 26,
+    "fields": {
+        "seasonal_quota": 12,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 27,
+    "fields": {
+        "seasonal_quota": 12,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 28,
+    "fields": {
+        "seasonal_quota": 13,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 29,
+    "fields": {
+        "seasonal_quota": 13,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 30,
+    "fields": {
+        "seasonal_quota": 13,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 31,
+    "fields": {
+        "seasonal_quota": 14,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 32,
+    "fields": {
+        "seasonal_quota": 14,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 33,
+    "fields": {
+        "seasonal_quota": 14,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 34,
+    "fields": {
+        "seasonal_quota": 15,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 35,
+    "fields": {
+        "seasonal_quota": 15,
+        "start_date": "2019-06-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 36,
+    "fields": {
+        "seasonal_quota": 15,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 37,
+    "fields": {
+        "seasonal_quota": 16,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 38,
+    "fields": {
+        "seasonal_quota": 16,
+        "start_date": "2019-05-16",
+        "end_date": "2019-06-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 39,
+    "fields": {
+        "seasonal_quota": 17,
+        "start_date": "2019-01-01",
+        "end_date": "2019-04-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 40,
+    "fields": {
+        "seasonal_quota": 17,
+        "start_date": "2019-04-15",
+        "end_date": "2019-11-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 41,
+    "fields": {
+        "seasonal_quota": 17,
+        "start_date": "2019-12-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 42,
+    "fields": {
+        "seasonal_quota": 18,
+        "start_date": "2019-01-01",
+        "end_date": "2019-03-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 43,
+    "fields": {
+        "seasonal_quota": 18,
+        "start_date": "2019-04-01",
+        "end_date": "2019-11-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 44,
+    "fields": {
+        "seasonal_quota": 18,
+        "start_date": "2019-12-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 45,
+    "fields": {
+        "seasonal_quota": 19,
+        "start_date": "2019-01-01",
+        "end_date": "2019-04-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 46,
+    "fields": {
+        "seasonal_quota": 19,
+        "start_date": "2019-05-01",
+        "end_date": "2019-09-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 47,
+    "fields": {
+        "seasonal_quota": 19,
+        "start_date": "2019-10-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 48,
+    "fields": {
+        "seasonal_quota": 20,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 49,
+    "fields": {
+        "seasonal_quota": 20,
+        "start_date": "2019-06-01",
+        "end_date": "2019-08-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 50,
+    "fields": {
+        "seasonal_quota": 20,
+        "start_date": "2019-09-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 51,
+    "fields": {
+        "seasonal_quota": 21,
+        "start_date": "2019-01-01",
+        "end_date": "2019-06-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 52,
+    "fields": {
+        "seasonal_quota": 21,
+        "start_date": "2019-07-01",
+        "end_date": "2019-09-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 53,
+    "fields": {
+        "seasonal_quota": 21,
+        "start_date": "2019-10-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 54,
+    "fields": {
+        "seasonal_quota": 22,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 55,
+    "fields": {
+        "seasonal_quota": 22,
+        "start_date": "2019-06-01",
+        "end_date": "2019-11-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 56,
+    "fields": {
+        "seasonal_quota": 22,
+        "start_date": "2019-12-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 57,
+    "fields": {
+        "seasonal_quota": 23,
+        "start_date": "2019-01-01",
+        "end_date": "2019-03-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 58,
+    "fields": {
+        "seasonal_quota": 23,
+        "start_date": "2019-04-01",
+        "end_date": "2019-10-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 59,
+    "fields": {
+        "seasonal_quota": 23,
+        "start_date": "2019-10-16",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 60,
+    "fields": {
+        "seasonal_quota": 24,
+        "start_date": "2019-01-01",
+        "end_date": "2019-04-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 61,
+    "fields": {
+        "seasonal_quota": 24,
+        "start_date": "2019-05-01",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 62,
+    "fields": {
+        "seasonal_quota": 24,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 63,
+    "fields": {
+        "seasonal_quota": 25,
+        "start_date": "2019-01-01",
+        "end_date": "2019-07-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 64,
+    "fields": {
+        "seasonal_quota": 25,
+        "start_date": "2019-07-15",
+        "end_date": "2019-10-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 65,
+    "fields": {
+        "seasonal_quota": 25,
+        "start_date": "2019-11-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 66,
+    "fields": {
+        "seasonal_quota": 26,
+        "start_date": "2019-01-01",
+        "end_date": "2019-04-30",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 67,
+    "fields": {
+        "seasonal_quota": 26,
+        "start_date": "2019-05-01",
+        "end_date": "2019-07-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 68,
+    "fields": {
+        "seasonal_quota": 26,
+        "start_date": "2019-08-01",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 69,
+    "fields": {
+        "seasonal_quota": 27,
+        "start_date": "2019-01-01",
+        "end_date": "2019-05-14",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 70,
+    "fields": {
+        "seasonal_quota": 27,
+        "start_date": "2019-05-15",
+        "end_date": "2019-11-15",
+        "duty": "0.00%"
+    }
+},
+{
+    "model": "schedule.seasonalquotaseason",
+    "pk": 71,
+    "fields": {
+        "seasonal_quota": 27,
+        "start_date": "2019-11-16",
+        "end_date": "2019-12-31",
+        "duty": "0.00%"
+    }
+}
+]

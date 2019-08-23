@@ -4,7 +4,7 @@ from unittest import mock
 
 import factory
 
-from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
+from trade_tariff_reference.schedule.models import DocumentStatus, ExtendedQuota
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
 
@@ -21,7 +21,7 @@ class AgreementFactory(factory.django.DjangoModelFactory):
     )
     slug = factory.Sequence(lambda n: f'country-{n}')
     document = None
-    document_status = Agreement.AVAILABLE
+    document_status = DocumentStatus.AVAILABLE
 
     class Meta:
         model = 'schedule.Agreement'
@@ -50,7 +50,7 @@ class DocumentHistoryFactory(factory.django.DjangoModelFactory):
 
 class ExtendedQuotaFactory(factory.django.DjangoModelFactory):
     agreement = factory.SubFactory(AgreementFactory)
-    quota_order_number_id = random.randrange(100000, 999999)
+    quota_order_number_id = str(random.randrange(100000, 999999))
     is_origin_quota = True
     measurement_unit_code = 'KGM'
     quota_type = ExtendedQuota.FIRST_COME_FIRST_SERVED
@@ -60,6 +60,30 @@ class ExtendedQuotaFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'schedule.ExtendedQuota'
+
+
+class LatinTermFactory(factory.django.DjangoModelFactory):
+    text = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.LatinTerm'
+
+
+class SpecialNoteFactory(factory.django.DjangoModelFactory):
+    quota_order_number_id = str(random.randrange(100000, 999999))
+    note = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.SpecialNote'
+
+
+class ChapterFactory(factory.django.DjangoModelFactory):
+    id = 1
+    description = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.Chapter'
+        django_get_or_create = ('id',)
 
 
 def setup_quota_data():

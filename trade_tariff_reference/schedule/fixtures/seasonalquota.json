@@ -1,0 +1,191 @@
+[
+{
+    "model": "schedule.seasonalquota",
+    "pk": 1,
+    "fields": {
+        "quota_order_number_id": "0302410000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 2,
+    "fields": {
+        "quota_order_number_id": "0302439000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 3,
+    "fields": {
+        "quota_order_number_id": "0302440000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 4,
+    "fields": {
+        "quota_order_number_id": "0303510000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 5,
+    "fields": {
+        "quota_order_number_id": "0303539000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 6,
+    "fields": {
+        "quota_order_number_id": "0303541000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 7,
+    "fields": {
+        "quota_order_number_id": "0303894000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 8,
+    "fields": {
+        "quota_order_number_id": "0304595000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 9,
+    "fields": {
+        "quota_order_number_id": "0304992300"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 10,
+    "fields": {
+        "quota_order_number_id": "0603110000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 11,
+    "fields": {
+        "quota_order_number_id": "0603120000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 12,
+    "fields": {
+        "quota_order_number_id": "0603130000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 13,
+    "fields": {
+        "quota_order_number_id": "0603140000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 14,
+    "fields": {
+        "quota_order_number_id": "0603150000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 15,
+    "fields": {
+        "quota_order_number_id": "0603190000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 16,
+    "fields": {
+        "quota_order_number_id": "0701905000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 17,
+    "fields": {
+        "quota_order_number_id": "0704100000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 18,
+    "fields": {
+        "quota_order_number_id": "0705110000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 19,
+    "fields": {
+        "quota_order_number_id": "0706901000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 20,
+    "fields": {
+        "quota_order_number_id": "0708100000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 21,
+    "fields": {
+        "quota_order_number_id": "0708200000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 22,
+    "fields": {
+        "quota_order_number_id": "0804400000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 23,
+    "fields": {
+        "quota_order_number_id": "0805108000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 24,
+    "fields": {
+        "quota_order_number_id": "0805400000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 25,
+    "fields": {
+        "quota_order_number_id": "0806109000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 26,
+    "fields": {
+        "quota_order_number_id": "0810100000"
+    }
+},
+{
+    "model": "schedule.seasonalquota",
+    "pk": 27,
+    "fields": {
+        "quota_order_number_id": "0810500000"
+    }
+}
+]

@@ -1,0 +1,87 @@
+     <w:tr>
+        <w:trPr>
+          <w:cantSplit/>
+        </w:trPr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+              <w:right w:val="single" w:sz="4" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+			<w:noWrap/>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            <w:r>
+				<w:rPr><w:b/></w:rPr>
+              <w:t>{{ commodity.COMMODITY }}</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+              <w:left w:val="single" w:sz="4" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="4" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+              <w:tabs>
+                <w:tab w:val="left" w:pos="1250"/>
+              </w:tabs>
+            </w:pPr>
+            {{ commodity.DUTY | safe }}
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+              <w:left w:val="single" w:sz="4" w:space="0" w:color="000000" w:themeColor="text1"/>
+              <w:right w:val="single" w:sz="4" w:space="0" w:color="000000" w:themeColor="text1"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NormalinTable"/>
+            </w:pPr>
+            {{ commodity.NOTES | safe }}
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcBorders>
+              <w:top w:val="single" w:sz="4" w:space="0" w:color="A6A6A6" w:themeColor="background1" w:themeShade="A6"/>
+            </w:tcBorders>
+          </w:tcPr>
+          <w:p>
+            <w:pPr>
+              <w:noProof/>
+              <w:pStyle w:val="NormalinTable"/>
+			  <w:tabs>
+                <w:tab w:pos="113" w:val="left"/>
+                <w:tab w:pos="227" w:val="left"/>
+                <w:tab w:pos="340" w:val="left"/>
+                <w:tab w:pos="454" w:val="left"/>
+                <w:tab w:pos="567" w:val="left"/>
+                <w:tab w:pos="680" w:val="left"/>
+                <w:tab w:pos="794" w:val="left"/>
+                <w:tab w:pos="907" w:val="left"/>
+                <w:tab w:pos="1020" w:val="left"/>
+                <w:tab w:pos="1134" w:val="left"/>
+                <w:tab w:pos="1247" w:val="left"/>
+                <w:tab w:pos="1361" w:val="left"/>
+              </w:tabs>
+			  {{ commodity.INDENT | safe }}
+            </w:pPr>
+            <w:r>
+              {{ commodity.DESCRIPTION | safe }}
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>

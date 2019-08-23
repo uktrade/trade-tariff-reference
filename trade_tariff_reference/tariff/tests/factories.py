@@ -58,3 +58,10 @@ class GoodsNomenclatureFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'tariff.GoodsNomenclatures'
+
+
+class ChapterSectionFactory(factory.django.DjangoModelFactory):
+    pass
+
+    class Meta:
+        model = 'tariff.ChaptersSections'

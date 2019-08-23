@@ -1,0 +1,1250 @@
+[
+{
+    "model": "schedule.chapter",
+    "pk": 1,
+    "fields": {
+        "description": "Live Animals",
+        "schedule_document": "schedule01.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.408Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification01.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.408Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 2,
+    "fields": {
+        "description": "Meat and Edible Meat Offal",
+        "schedule_document": "schedule02.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.411Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification02.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.411Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 3,
+    "fields": {
+        "description": "Fish and Crustaceans, Molluscs and Other Aquatic Invertebrates",
+        "schedule_document": "schedule03.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.413Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification03.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.413Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 4,
+    "fields": {
+        "description": "Dairy Produce; Birds' Eggs; Natural Honey; Edible Products of Animal Origin, Not Elsewhere Specified or Included",
+        "schedule_document": "schedule04.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.415Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification04.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.415Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 5,
+    "fields": {
+        "description": "Products of Animal Origin, Not Elsewhere Specified or Included",
+        "schedule_document": "schedule05.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.417Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification05.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.417Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 6,
+    "fields": {
+        "description": "Live Trees and Other Plants; Bulbs, Roots and The Like; Cut Flowers and Ornamental Foliage",
+        "schedule_document": "schedule06.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.418Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification06.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.418Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 7,
+    "fields": {
+        "description": "Edible Vegetables and Certain Roots and Tubers",
+        "schedule_document": "schedule07.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.419Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification07.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.419Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 8,
+    "fields": {
+        "description": "Edible Fruit and Nuts; Peel of Citrus Fruit or Melons",
+        "schedule_document": "schedule08.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.421Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification08.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.421Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 9,
+    "fields": {
+        "description": "Coffee, Tea, Mat\u00e9 and Spices",
+        "schedule_document": "schedule09.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.422Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification09.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.422Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 10,
+    "fields": {
+        "description": "Cereals",
+        "schedule_document": "schedule10.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.424Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification10.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.424Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 11,
+    "fields": {
+        "description": "Products of The Milling Industry; Malt; Starches; Inulin; Wheat Gluten",
+        "schedule_document": "schedule11.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.425Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification11.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.425Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 12,
+    "fields": {
+        "description": "Oil Seeds and Oleaginous Fruits; Miscellaneous Grains, Seeds and Fruit; Industrial or Medicinal Plants; Straw and Fodder",
+        "schedule_document": "schedule12.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.427Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification12.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.427Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 13,
+    "fields": {
+        "description": "Lac; Gums, Resins and Other Vegetable Saps and Extracts",
+        "schedule_document": "schedule13.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.428Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification13.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.428Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 14,
+    "fields": {
+        "description": "Vegetable Plaiting Materials; Vegetable Products Not Elsewhere Specified or Included",
+        "schedule_document": "schedule14.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.429Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification14.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.429Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 15,
+    "fields": {
+        "description": "Animal or Vegetable Fats and Oils and Their Cleavage Products; Prepared Edible Fats; Animal or Vegetable Waxes",
+        "schedule_document": "schedule15.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.431Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification15.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.431Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 16,
+    "fields": {
+        "description": "Preparations of Meat, of Fish or of Crustaceans, Molluscs or Other Aquatic Invertebrates",
+        "schedule_document": "schedule16.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.432Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification16.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.432Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 17,
+    "fields": {
+        "description": "Sugars and Sugar Confectionery",
+        "schedule_document": "schedule17.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.433Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification17.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.433Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 18,
+    "fields": {
+        "description": "Cocoa and Cocoa Preparations",
+        "schedule_document": "schedule18.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.435Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification18.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.435Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 19,
+    "fields": {
+        "description": "Preparations of Cereals, Flour, Starch or Milk; Pastrycooks' Products",
+        "schedule_document": "schedule19.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.436Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification19.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.436Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 20,
+    "fields": {
+        "description": "Preparations of Vegetables, Fruit, Nuts or Other Parts of Plants",
+        "schedule_document": "schedule20.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.437Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification20.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.437Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 21,
+    "fields": {
+        "description": "Miscellaneous Edible Preparations",
+        "schedule_document": "schedule21.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.438Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification21.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.438Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 22,
+    "fields": {
+        "description": "Beverages, Spirits and Vinegar",
+        "schedule_document": "schedule22.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.440Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification22.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.440Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 23,
+    "fields": {
+        "description": "Residues and Waste from the Food Industries; Prepared Animal Fodder",
+        "schedule_document": "schedule23.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.441Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification23.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.441Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 24,
+    "fields": {
+        "description": "Tobacco and Manufactured Tobacco Substitutes",
+        "schedule_document": "schedule24.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.443Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification24.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.443Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 25,
+    "fields": {
+        "description": "Salt; Sulphur; Earths and Stone; Plastering Materials, Lime and Cement",
+        "schedule_document": "schedule25.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.445Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification25.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.445Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 26,
+    "fields": {
+        "description": "Ores, Slag and Ash",
+        "schedule_document": "schedule26.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.447Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification26.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.447Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 27,
+    "fields": {
+        "description": "Mineral Fuels, Mineral Oils and Products of Their Distillation; Bituminous Substances; Mineral Waxes",
+        "schedule_document": "schedule27.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.448Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification27.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.448Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 28,
+    "fields": {
+        "description": "Inorganic Chemicals; Organic or Inorganic Compounds of Precious Metals, of Rare-Earth Metals, of Radioactive Elements or of Isotopes",
+        "schedule_document": "schedule28.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.450Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification28.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.450Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 29,
+    "fields": {
+        "description": "Organic Chemicals",
+        "schedule_document": "schedule29.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.451Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification29.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.451Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 30,
+    "fields": {
+        "description": "Pharmaceutical Products",
+        "schedule_document": "schedule30.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.452Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification30.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.452Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 31,
+    "fields": {
+        "description": "Fertilisers",
+        "schedule_document": "schedule31.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.453Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification31.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.453Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 32,
+    "fields": {
+        "description": "Tanning or Dyeing Extracts; Tannins and Their Derivatives; Dyes, Pigments and Other Colouring Matter; Paints and Varnishes; Putty and Other Mastics; Inks",
+        "schedule_document": "schedule32.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.455Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification32.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.455Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 33,
+    "fields": {
+        "description": "Essential Oils and Resinoids; Perfumery, Cosmetic or Toilet Preparations",
+        "schedule_document": "schedule33.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.456Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification33.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.456Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 34,
+    "fields": {
+        "description": "Soap, Organic Surface-Active Agents, Washing Preparations, Lubricating Preparations, Artificial Waxes, Prepared Waxes, Polishing or Scouring Preparations, Candles and Similar Articles, Modelling Pastes, 'Dental Waxes' and Dental Preparations with a Basis of Plaste",
+        "schedule_document": "schedule34.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.458Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification34.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.458Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 35,
+    "fields": {
+        "description": "Albuminoidal Substances; Modified Starches; Glues; Enzymes",
+        "schedule_document": "schedule35.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.459Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification35.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.459Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 36,
+    "fields": {
+        "description": "Explosives; Pyrotechnic Products; Matches; Pyrophoric Alloys; Certain Combustible Preparations",
+        "schedule_document": "schedule36.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.460Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification36.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.460Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 37,
+    "fields": {
+        "description": "Photographic or Cinematographic Goods",
+        "schedule_document": "schedule37.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.461Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification37.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.461Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 38,
+    "fields": {
+        "description": "Miscellaneous Chemical Products",
+        "schedule_document": "schedule38.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.463Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification38.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.463Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 39,
+    "fields": {
+        "description": "Plastics and Articles Thereof",
+        "schedule_document": "schedule39.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.464Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification39.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.464Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 40,
+    "fields": {
+        "description": "Rubber and Articles Thereof",
+        "schedule_document": "schedule40.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.465Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification40.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.465Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 41,
+    "fields": {
+        "description": "Raw Hides and Skins (Other Than Furskins) and Leather",
+        "schedule_document": "schedule41.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.466Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification41.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.466Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 42,
+    "fields": {
+        "description": "Articles of Leather; Saddlery and Harness; Travel Goods, Handbags and Similar Containers; Articles of Animal Gut (Other Than Silkworm Gut)",
+        "schedule_document": "schedule42.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.468Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification42.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.468Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 43,
+    "fields": {
+        "description": "Furskins and Artificial Fur; Manufactures Thereof",
+        "schedule_document": "schedule43.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.469Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification43.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.469Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 44,
+    "fields": {
+        "description": "Wood and Articles of Wood; Wood Charcoal",
+        "schedule_document": "schedule44.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.470Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification44.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.470Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 45,
+    "fields": {
+        "description": "Cork and Articles of Cork",
+        "schedule_document": "schedule45.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.471Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification45.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.471Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 46,
+    "fields": {
+        "description": "Manufactures of Straw, of Esparto or of Other Plaiting Materials; Basketware and Wickerwork",
+        "schedule_document": "schedule46.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.473Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification46.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.473Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 47,
+    "fields": {
+        "description": "Pulp of Wood or of Other Fibrous Cellulosic Material; Recovered (Waste and Scrap) Paper or Paperboard",
+        "schedule_document": "schedule47.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.474Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification47.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.474Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 48,
+    "fields": {
+        "description": "Paper and Paperboard; Articles of Paper Pulp, of Paper or of Paperboard",
+        "schedule_document": "schedule48.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.476Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification48.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.476Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 49,
+    "fields": {
+        "description": "Printed Books, Newspapers, Pictures and Other Products of The Printing Industry; Manuscripts, Typescripts and Plans",
+        "schedule_document": "schedule49.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.478Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification49.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.478Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 50,
+    "fields": {
+        "description": "Silk",
+        "schedule_document": "schedule50.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.480Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification50.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.480Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 51,
+    "fields": {
+        "description": "Wool, Fine or Coarse Animal Hair; Horsehair Yarn and Woven Fabric",
+        "schedule_document": "schedule51.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.481Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification51.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.481Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 52,
+    "fields": {
+        "description": "Cotton",
+        "schedule_document": "schedule52.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.483Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification52.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.483Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 53,
+    "fields": {
+        "description": "Other Vegetable Textile Fibres; Paper Yarn and Woven Fabrics of Paper Yarn",
+        "schedule_document": "schedule53.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.484Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification53.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.484Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 54,
+    "fields": {
+        "description": "Man-Made Filaments; Strip and The Like of Man-Made Textile Materials",
+        "schedule_document": "schedule54.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.486Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification54.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.486Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 55,
+    "fields": {
+        "description": "Man-Made Staple Fibres",
+        "schedule_document": "schedule55.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.487Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification55.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.487Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 56,
+    "fields": {
+        "description": "Wadding, Felt and Nonwovens; Special Yarns; Twine, Cordage, Ropes and Cables and Articles Thereof",
+        "schedule_document": "schedule56.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.488Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification56.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.488Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 57,
+    "fields": {
+        "description": "Carpets and Other Textile Floor Coverings",
+        "schedule_document": "schedule57.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.490Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification57.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.490Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 58,
+    "fields": {
+        "description": "Special Woven Fabrics; Tufted Textile Fabrics; Lace; Tapestries; Trimmings; Embroidery",
+        "schedule_document": "schedule58.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.497Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification58.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.497Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 59,
+    "fields": {
+        "description": "Impregnated, Coated, Covered or Laminated Textile Fabrics; Textile Articles of A Kind Suitable For Industrial Use",
+        "schedule_document": "schedule59.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.499Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification59.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.499Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 60,
+    "fields": {
+        "description": "Knitted or Crocheted Fabrics",
+        "schedule_document": "schedule60.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.500Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification60.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.500Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 61,
+    "fields": {
+        "description": "Articles of Apparel and Clothing Accessories, Knitted or Crocheted",
+        "schedule_document": "schedule61.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.501Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification61.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.501Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 62,
+    "fields": {
+        "description": "Articles of Apparel and Clothing Accessories, Not Knitted or Crocheted",
+        "schedule_document": "schedule62.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.503Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification62.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.503Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 63,
+    "fields": {
+        "description": "Other Made-Up Textile Articles; Sets; Worn Clothing and Worn Textile Articles; Rags",
+        "schedule_document": "schedule63.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.504Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification63.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.504Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 64,
+    "fields": {
+        "description": "Footwear, Gaiters and The Like; Parts of Such Articles",
+        "schedule_document": "schedule64.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.506Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification64.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.506Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 65,
+    "fields": {
+        "description": "Headgear and Parts Thereof",
+        "schedule_document": "schedule65.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.508Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification65.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.508Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 66,
+    "fields": {
+        "description": "Umbrellas, Sun Umbrellas, Walking Sticks, Seat-Sticks, Whips, Riding-Crops and Parts Thereof",
+        "schedule_document": "schedule66.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.509Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification66.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.509Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 67,
+    "fields": {
+        "description": "Prepared Feathers and Down and Articles Made of Feathers or of Down; Artificial Flowers; Articles of Human Hair",
+        "schedule_document": "schedule67.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.511Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification67.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.511Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 68,
+    "fields": {
+        "description": "Articles of Stone, Plaster, Cement, Asbestos, Mica or Similar Materials",
+        "schedule_document": "schedule68.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.513Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification68.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.513Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 69,
+    "fields": {
+        "description": "Ceramic Products",
+        "schedule_document": "schedule69.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.514Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification69.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.514Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 70,
+    "fields": {
+        "description": "Glass and Glassware",
+        "schedule_document": "schedule70.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.516Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification70.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.516Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 71,
+    "fields": {
+        "description": "Natural or Cultured Pearls, Precious or Semi-Precious Stones, Precious Metals, Metals Clad With Precious Metal, and Articles Thereof; Imitation Jewellery; Coin",
+        "schedule_document": "schedule71.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.518Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification71.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.518Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 72,
+    "fields": {
+        "description": "Iron and Steel",
+        "schedule_document": "schedule72.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.519Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification72.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.519Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 73,
+    "fields": {
+        "description": "Articles of Iron or Steel",
+        "schedule_document": "schedule73.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.520Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification73.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.520Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 74,
+    "fields": {
+        "description": "Copper and Articles Thereof",
+        "schedule_document": "schedule74.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.522Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification74.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.522Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 75,
+    "fields": {
+        "description": "Nickel and Articles Thereof",
+        "schedule_document": "schedule75.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.523Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification75.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.523Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 76,
+    "fields": {
+        "description": "Aluminium and Articles Thereof",
+        "schedule_document": "schedule76.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.525Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification76.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.525Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 78,
+    "fields": {
+        "description": "Lead and Articles Thereof",
+        "schedule_document": "schedule78.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.526Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification78.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.526Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 79,
+    "fields": {
+        "description": "Zinc and Articles Thereof",
+        "schedule_document": "schedule79.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.528Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification79.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.528Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 80,
+    "fields": {
+        "description": "Tin and Articles Thereof",
+        "schedule_document": "schedule80.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.529Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification80.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.529Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 81,
+    "fields": {
+        "description": "Other Base Metals; Cermets; Articles Thereof",
+        "schedule_document": "schedule81.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.530Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification81.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.530Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 82,
+    "fields": {
+        "description": "Tools, Implements, Cutlery, Spoons and Forks, of Base Metal; Parts Thereof of Base Metal",
+        "schedule_document": "schedule82.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.532Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification82.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.532Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 83,
+    "fields": {
+        "description": "Miscellaneous Articles of Base Metal",
+        "schedule_document": "schedule83.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.533Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification83.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.533Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 84,
+    "fields": {
+        "description": "Nuclear Reactors, Boilers, Machinery and Mechanical Appliances; Parts Thereof",
+        "schedule_document": "schedule84.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.534Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification84.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.534Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 85,
+    "fields": {
+        "description": "Electrical Machinery and Equipment and Parts Thereof; Sound Recorders and Reproducers, Television Image and Sound Recorders and Reproducers, and Parts and Accessories of Such Articles",
+        "schedule_document": "schedule85.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.536Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification85.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.536Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 86,
+    "fields": {
+        "description": "Railway or Tramway Locomotives, Rolling Stock and Parts Thereof; Railway or Tramway Track Fixtures and Fittings and Parts Thereof; Mechanical (Including Electromechanical) Traffic Signalling Equipment of All Kinds",
+        "schedule_document": "schedule86.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.537Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification86.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.537Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 87,
+    "fields": {
+        "description": "Vehicles Other Than Railway or Tramway Rolling Stock, and Parts and Accessories Thereof",
+        "schedule_document": "schedule87.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.538Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification87.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.538Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 88,
+    "fields": {
+        "description": "Aircraft, Spacecraft, and Parts Thereof",
+        "schedule_document": "schedule88.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.540Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification88.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.540Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 89,
+    "fields": {
+        "description": "Ships, Boats and Floating Structures",
+        "schedule_document": "schedule89.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.542Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification89.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.542Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 90,
+    "fields": {
+        "description": "Optical, Photographic, Cinematographic, Measuring, Checking, Precision, Medical or Surgical Instruments and Apparatus; Parts and Accessories Thereof",
+        "schedule_document": "schedule90.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.544Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification90.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.544Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 91,
+    "fields": {
+        "description": "Clocks and Watches and Parts Thereof",
+        "schedule_document": "schedule91.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.545Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification91.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.545Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 92,
+    "fields": {
+        "description": "Musical Instruments; Parts and Accessories of Such Articles",
+        "schedule_document": "schedule92.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.547Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification92.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.547Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 93,
+    "fields": {
+        "description": "Arms and Ammunition; Parts and Accessories Thereof",
+        "schedule_document": "schedule93.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.549Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification93.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.549Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 94,
+    "fields": {
+        "description": "Furniture; Bedding, Mattresses, Mattress Supports, Cushions and Similar Stuffed Furnishings; Lamps and Lighting Fittings, Not Elsewhere Specified or Included; Illuminated Signs, Illuminated Nameplates and The Like; Prefabricated Buildings",
+        "schedule_document": "schedule94.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.551Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification94.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.551Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 95,
+    "fields": {
+        "description": "Toys, Games and Sports Requisites; Parts and Accessories Thereof",
+        "schedule_document": "schedule95.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.552Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification95.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.552Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 96,
+    "fields": {
+        "description": "Miscellaneous Manufactured Articles",
+        "schedule_document": "schedule96.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.553Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification96.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.553Z",
+        "classification_document_status": "available"
+    }
+},
+{
+    "model": "schedule.chapter",
+    "pk": 97,
+    "fields": {
+        "description": "Works of Art, Collectors' Pieces and Antiques",
+        "schedule_document": "schedule97.docx",
+        "schedule_document_created_at": "2019-08-23T11:56:04.555Z",
+        "schedule_document_status": "available",
+        "classification_document": "classification97.docx",
+        "classification_document_created_at": "2019-08-23T11:56:04.555Z",
+        "classification_document_status": "available"
+    }
+}
+]
