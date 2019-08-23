@@ -12,6 +12,7 @@ from docxcompose.composer import Composer
 
 from trade_tariff_reference.documents import functions as f
 from trade_tariff_reference.schedule.models import Chapter as DBChapter
+from trade_tariff_reference.documents.utils import upload_generic_document_to_s3
 
 from .commodity import Commodity
 from .constants import (
@@ -140,7 +141,6 @@ class Chapter:
         # WRITE document.xml
         ###########################################################################
         model_dir = self.application.MODEL_DIR
-        docx_file_name = self.word_file_name
 
         with tempfile.TemporaryDirectory(prefix='mfn_document_generation') as tmp_model_dir:
             copy_tree(model_dir, tmp_model_dir)
@@ -155,21 +155,18 @@ class Chapter:
             ###########################################################################
             # Finally, ZIP everything up
             ###########################################################################
-            temp_doc_file = '/tmp/mydoc.docx'
-            f.zipdir(tmp_model_dir, docx_file_name)
-            logger.info(f"PROCESS COMPLETE - {docx_file_name} created")
+            temp_doc_file = tempfile.NamedTemporaryFile()
+            f.zipdir(tmp_model_dir, temp_doc_file)
+            self.prepend_introduction(temp_doc_file.name)
 
-    def get_word_file_name(self):
-        filename = self.application.document_type + "_" + self.chapter_string + ".docx"
-        return os.path.join(self.application.OUTPUT_DIR, filename)
+            remote_file_name = f'{self.application.document_type}{self.chapter.chapter_string}.docx'
+            upload_generic_document_to_s3(
+                self.chapter, self.document_file_field, temp_doc_file.name, remote_file_name
+            )
+            logger.info(f"PROCESS COMPLETE - {remote_file_name} created")
 
-    def get_chapter_description(self):
-        ###############################################################
-        # Get the chapter description
-        # Relevant to both the classification and the schedule
-        chapter = DBChapter.objects.filter(id=self.chapter_id).first()
-        if chapter:
-            return chapter.description
+    def prepend_introduction(self, filename):
+        return
 
     def get_section_details(self):
         ###############################################################
@@ -228,6 +225,7 @@ class Chapter:
 class ScheduleChapter(Chapter):
     document_title = 'UK Goods Schedule'
     xml_template_name = 'mfn/document_schedule.xml'
+    document_file_field = 'schedule_document'
 
     def format_chapter(self):
         commodity_list = self.get_commodity_list()
@@ -369,6 +367,7 @@ class ScheduleChapter(Chapter):
 class ClassificationChapter(Chapter):
     document_title = "UK Goods Classification"
     xml_template_name = 'mfn/document_classification.xml'
+    document_file_field = 'classification_document'
 
     def format_chapter(self):
         commodity_list = self.get_commodity_list()
@@ -387,13 +386,10 @@ class ClassificationChapter(Chapter):
 
         body_string = render_to_string(self.xml_template_name, context_dict)
         self.write(body_string)
-        self.prepend_chapter_notes()
 
-    def prepend_chapter_notes(self):
-        chapter_notes_filename = "chapter" + self.chapter_string + ".docx"
-        chapter_notes_file = os.path.join(self.application.CHAPTER_NOTES_DIR, chapter_notes_filename)
-        master_document = Document(chapter_notes_file)
+    def prepend_introduction(self, filename):
+        master_document = Document(self.chapter.note.document)
         composer = Composer(master_document)
-        my_chapter_file = Document(self.word_file_name)
+        my_chapter_file = Document(filename)
         composer.append(my_chapter_file)
-        composer.save(self.word_file_name)
+        composer.save(filename)
