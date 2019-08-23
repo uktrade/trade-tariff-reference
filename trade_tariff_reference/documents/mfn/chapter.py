@@ -31,35 +31,46 @@ logger = logging.getLogger(__name__)
 def process_chapter(application, chapter_id):
     if chapter_id in [77, 98, 99]:
         return
+    chapter = get_chapter(chapter_id)
+    if not chapter:
+        logger.error(f'Error: No chapter found of {chapter_id}')
+        return
+
     if application.document_type == CLASSIFICATION:
-        chapter = ClassificationChapter(application, chapter_id)
+        chapter = ClassificationChapter(application, chapter)
     else:
-        chapter = ScheduleChapter(application, chapter_id)
+        chapter = ScheduleChapter(application, chapter)
     chapter.format_chapter()
 
 
-class Chapter:
+def get_chapter(chapter_id):
+    try:
+        return DBChapter.objects.get(id=chapter_id)
+    except DBChapter.DoesNotExist:
+        return
 
-    def __init__(self, application, chapter_id):
-        self.chapter_id = chapter_id
+
+class Chapter:
+    document_file_field = 'document'
+
+    def __init__(self, application, chapter):
         self.application = application
-        self.chapter_string = str(self.chapter_id).zfill(2)
+        self.chapter = chapter
+
         self.footnote_list = []
         self.duty_list = []
         self.supplementary_unit_list = []
         self.seasonal_records = 0
         self.contains_authorised_use = False
 
-        logger.info(f"Creating {self.application.document_type} for chapter {self.chapter_string}")
+        logger.info(f"Creating {self.application.document_type} for chapter {self.chapter.chapter_string}")
 
         self.get_section_details()
-        self.chapter_description = self.get_chapter_description()
         self.duty_list = self.get_duties()
-        self.word_file_name = self.get_word_file_name()
 
     def get_commodity_list(self):
         rows = self.application.execute_sql(
-            GET_CLASSIFICATIONS.format(chapter_string=self.chapter_string)
+            GET_CLASSIFICATIONS.format(chapter_string=self.chapter.chapter_string)
         )
         commodity_list = []
         # Make a list of commodities
@@ -112,7 +123,7 @@ class Chapter:
         return document_dict
 
     def get_width_list(self):
-        if self.chapter_id in [2, 9, 10, 11]:  # These all have misture rule, therefore a wider notes column
+        if self.chapter.id in [2, 9, 10, 11]:  # These all have misture rule, therefore a wider notes column
             return [600, 900, 1150, 2350]
 
         if self.contains_authorised_use:
@@ -173,7 +184,7 @@ class Chapter:
         # Get the section header
         # Relevant to both the classification and the schedule
         row = self.application.execute_sql(
-            GET_SECTION_DETAILS.format(chapter_string=self.chapter_string),
+            GET_SECTION_DETAILS.format(chapter_string=self.chapter.chapter_string),
             only_one_row=True
         )
         try:
@@ -187,7 +198,7 @@ class Chapter:
 
         self.new_section = False
         for r in self.application.section_chapter_list:
-            if int(r[0]) == self.chapter_id:
+            if int(r[0]) == self.chapter.id:
                 self.new_section = r[2]
                 break
 
@@ -196,7 +207,7 @@ class Chapter:
         # Get the duties
         # And this is what is new
         rows = self.application.execute_sql(
-            GET_DUTIES.format(chapter_string=self.chapter_string)
+            GET_DUTIES.format(chapter_string=self.chapter.chapter_string)
         )
 
         # Do a pass through the duties table and create a full duty expression
@@ -247,8 +258,8 @@ class ScheduleChapter(Chapter):
             heading['HEADINGa'] = "Section " + self.section_numeral
             heading['HEADINGb'] = self.section_title
 
-        heading['CHAPTER'] = "Chapter " + self.chapter_string
-        heading['HEADING'] = self.chapter_description
+        heading['CHAPTER'] = "Chapter " + self.chapter.chapter_string
+        heading['HEADING'] = self.chapter.description
         return heading
 
     def format_schedule_chapter(self, commodity_list):
@@ -340,7 +351,7 @@ class ScheduleChapter(Chapter):
                                     my_commodity.suppress_row = True
                                     break
 
-                            if self.chapter_id in (97, 47, 80, 14, 48, 49):
+                            if self.chapter.id in (97, 47, 80, 14, 48, 49):
                                 if upper_commodity.indents <= 1 and upper_commodity.significant_digits == 2:
                                     break
                             else:
