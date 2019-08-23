@@ -227,3 +227,41 @@ class SeasonalQuotaSeason(models.Model):
 
     def __str__(self):
         return f'{self.seasonal_quota.quota_order_number_id} - {self.start_date}/{self.end_date} - {self.duty}'
+
+
+class Chapter(models.Model):
+    id = models.IntegerField(primary_key=True)
+    description = models.TextField()
+    schedule_document = models.FileField(null=True, blank=True, storage=MFNScheduleStorage())
+    schedule_document_created_at = models.DateTimeField(null=True, blank=True)
+    schedule_document_status = models.CharField(
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
+    )
+    classification_document = models.FileField(null=True, blank=True, storage=MFNClassificationStorage())
+    classification_document_created_at = models.DateTimeField(null=True, blank=True)
+    classification_document_status = models.CharField(
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
+    )
+
+    @property
+    def chapter_string(self):
+        return f"{self.id:02d}"
+
+    def __str__(self):
+        return f'{self.chapter_string} - {self.description}'
+
+
+class ChapterNote(models.Model):
+    chapter = models.OneToOneField(Chapter, on_delete=models.CASCADE, related_name='note')
+    document = models.FileField(null=True, blank=True, storage=ChapterNoteStorage())
+    document_created_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.chapter.description} Note'
+
+    class Meta:
+        ordering = ('chapter__id',)

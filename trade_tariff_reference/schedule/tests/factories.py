@@ -77,6 +77,15 @@ class SpecialNoteFactory(factory.django.DjangoModelFactory):
         model = 'schedule.SpecialNote'
 
 
+class ChapterFactory(factory.django.DjangoModelFactory):
+    id = 1
+    description = factory.Faker('text')
+
+    class Meta:
+        model = 'schedule.Chapter'
+        django_get_or_create = ('id',)
+
+
 def setup_quota_data():
     agreement = AgreementFactory()
     origin_quota = ExtendedQuotaFactory(
