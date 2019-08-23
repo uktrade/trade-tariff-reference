@@ -4,7 +4,7 @@ from unittest import mock
 
 import factory
 
-from trade_tariff_reference.schedule.models import Agreement, DocumentStatus, ExtendedQuota
+from trade_tariff_reference.schedule.models import DocumentStatus, ExtendedQuota
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
 

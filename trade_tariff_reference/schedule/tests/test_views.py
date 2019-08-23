@@ -8,7 +8,6 @@ import pytest
 
 from trade_tariff_reference.schedule.models import (
     Agreement,
-    DocumentStatus,
     ExtendedQuota,
 )
 from trade_tariff_reference.schedule.tests.factories import (

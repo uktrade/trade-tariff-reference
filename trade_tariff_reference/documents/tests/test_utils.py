@@ -13,8 +13,7 @@ from trade_tariff_reference.documents.utils import (
     upload_document_to_s3,
     upload_generic_document_to_s3
 )
-
-from trade_tariff_reference.schedule.models import Agreement, DocumentStatus
+from trade_tariff_reference.schedule.models import DocumentStatus
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory, ChapterFactory
 
 

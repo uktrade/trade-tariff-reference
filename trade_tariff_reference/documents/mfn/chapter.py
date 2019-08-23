@@ -11,8 +11,8 @@ from docx import Document
 from docxcompose.composer import Composer
 
 from trade_tariff_reference.documents import functions as f
-from trade_tariff_reference.schedule.models import Chapter as DBChapter
 from trade_tariff_reference.documents.utils import upload_generic_document_to_s3
+from trade_tariff_reference.schedule.models import Chapter as DBChapter
 
 from .commodity import Commodity
 from .constants import (
