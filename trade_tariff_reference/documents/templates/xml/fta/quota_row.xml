@@ -2,7 +2,7 @@
 <w:tc><w:tcPr><w:vMerge/></w:tcPr><w:p><w:pPr><w:pStyle w:val="NormalinTable"/></w:pPr><w:r><w:t></w:t></w:r></w:p></w:tc>
 {% else %}
 				<w:tc>
-{% if row.INSERT_DIVIDER %}{% include 'xml/horiz_line.xml' %}{% elif row.INSERT_DUTY_DIVIDER %}{% include 'xml/horiz_line_soft.xml' %}{% endif %}
+{% if row.INSERT_DIVIDER %}{% include 'xml/fta/horiz_line.xml' %}{% elif row.INSERT_DUTY_DIVIDER %}{% include 'xml/fta/horiz_line_soft.xml' %}{% endif %}
 					{% if restart %}<w:tcPr>
                         <w:vMerge w:val="restart"/>
                     </w:tcPr>{% endif %}

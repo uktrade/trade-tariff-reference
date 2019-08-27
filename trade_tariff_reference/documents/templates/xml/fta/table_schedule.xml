@@ -86,5 +86,5 @@
           </w:p>
         </w:tc>
       </w:tr>
-	  {% include 'xml/tablerow_schedule.xml' %}
+	  {% include 'xml/fta/tablerow_schedule.xml' %}
     </w:tbl>

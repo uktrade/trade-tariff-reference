@@ -30,7 +30,7 @@ class Application(DatabaseConnect):
         self.debug = False
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
+        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml/fta")
 
         # For the output folders
         self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
