@@ -203,7 +203,7 @@
         <w:t>The Preferential Duty Rate in column 2 is defined in regulation 2(2) of the Regulations.</w:t>
       </w:r>
     </w:p>
-    {% if TARIFF_TABLE_ROWS %}{% include 'xml/table_schedule.xml' %}{% endif %}
+    {% if TARIFF_TABLE_ROWS %}{% include 'xml/fta/table_schedule.xml' %}{% endif %}
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Heading3"/>
@@ -407,7 +407,7 @@
         <w:t>The Quota Close Date in column 7 is the date on which the quota period ends under regulations 9(1), 9(3) and 9(4) of the Regulations.</w:t>
       </w:r>
     </w:p>
-    {% if QUOTA_TABLE_ROWS %}{% include 'xml/table_quota.xml' %}{% endif %}
+    {% if QUOTA_TABLE_ROWS %}{% include 'xml/fta/table_quota.xml' %}{% endif %}
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Heading3"/>

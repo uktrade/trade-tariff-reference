@@ -235,7 +235,7 @@ class Chapter:
 
 class ScheduleChapter(Chapter):
     document_title = 'UK Goods Schedule'
-    xml_template_name = 'mfn/document_schedule.xml'
+    xml_template_name = 'xml/mfn/document_schedule.xml'
     document_file_field = 'schedule_document'
 
     def format_chapter(self):
@@ -377,7 +377,7 @@ class ScheduleChapter(Chapter):
 
 class ClassificationChapter(Chapter):
     document_title = "UK Goods Classification"
-    xml_template_name = 'mfn/document_classification.xml'
+    xml_template_name = 'xml/mfn/document_classification.xml'
     document_file_field = 'classification_document'
 
     def format_chapter(self):

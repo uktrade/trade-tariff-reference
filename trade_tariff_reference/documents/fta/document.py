@@ -615,9 +615,9 @@ class Document:
             logger.info("\nPROCESS COMPLETE - Document unchanged no file generated")
             return
 
-        document_template = "xml/document_noquotas.xml"
+        document_template = "xml/fta/document_noquotas.xml"
         if context.get('HAS_QUOTAS'):
-            document_template = "xml/document_hasquotas.xml"
+            document_template = "xml/fta/document_hasquotas.xml"
         document_xml = render_to_string(document_template, context)
         try:
             remote_file_name = self.write(document_xml)

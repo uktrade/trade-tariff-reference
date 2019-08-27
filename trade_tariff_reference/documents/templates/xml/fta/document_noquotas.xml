@@ -182,7 +182,7 @@
         <w:t>The Preferential Duty Rate in column 2 is defined in regulation 2(2) of the Regulations.</w:t>
       </w:r>
     </w:p>
-    {% if TARIFF_TABLE_ROWS %}{% include 'xml/table_schedule.xml' %}{% endif %}
+    {% if TARIFF_TABLE_ROWS %}{% include 'xml/fta/able_schedule.xml' %}{% endif %}
     <w:p>
       <w:pPr>
         <w:pStyle w:val="Heading3"/>

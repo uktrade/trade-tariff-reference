@@ -341,5 +341,5 @@
 //-->
 <!-- HD2 - End 2019 Quota Volume cell //-->
       </w:tr>
-	  {% include 'xml/tablerow_quota.xml' %}
+	  {% include 'xml/fta/tablerow_quota.xml' %}
     </w:tbl>
