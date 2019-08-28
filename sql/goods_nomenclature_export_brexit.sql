@@ -42,42 +42,56 @@ The basic query retrieves all current (and future) nomenclature with indents and
 DROP TABLE IF EXISTS tmp_nomenclature;
 
 CREATE TEMP TABLE tmp_nomenclature ON COMMIT DROP AS
-SELECT gn.goods_nomenclature_sid, gn.goods_nomenclature_item_id, gn.producline_suffix, gn.validity_start_date, gn.validity_end_date, 
-gnd.description,
-gni.number_indents, 
-gndp.goods_nomenclature_description_period_sid,
-gndp.validity_start_date as "desc_validity_start_date",
-gndp.validity_end_date as "desc_validity_end_date",
-"nice_description",
-left (gn.goods_nomenclature_item_id, 2) as "chapter",
-REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') as "node",
-CAST( '0' as text) as "leaf"
-FROM goods_nomenclatures gn
-JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
-JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
-JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
-WHERE (gn.validity_end_date IS NULL OR gn.validity_end_date >= '{validity_start_date}')
-AND gn.goods_nomenclature_item_id LIKE pchapter
-AND gndp.goods_nomenclature_description_period_sid IN
-(SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
-FROM goods_nomenclature_description_periods gndp2
-WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid
-AND gndp2.validity_start_date <= '{validity_start_date}'
-UNION
-SELECT gndp3.goods_nomenclature_description_period_sid
-FROM goods_nomenclature_description_periods gndp3
-WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid
-AND gndp3.validity_start_date >= '{validity_start_date}')
-AND gni.goods_nomenclature_indent_sid IN
-(SELECT MAX (gni2.goods_nomenclature_indent_sid)
-FROM goods_nomenclature_indents gni2
-WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid
-AND gni2.validity_start_date < '{validity_start_date}'
-UNION
-SELECT gni3.goods_nomenclature_indent_sid
-FROM goods_nomenclature_indents gni3
-WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid
-AND gni3.validity_start_date >= '{validity_start_date}');
+SELECT gn.goods_nomenclature_sid,
+  gn.goods_nomenclature_item_id,
+  gn.producline_suffix,
+  gn.validity_start_date,
+  gn.validity_end_date,
+  gnd.description,
+  gni.number_indents,
+  gndp.goods_nomenclature_description_period_sid,
+  gndp.validity_start_date as "desc_validity_start_date",
+  gndp.validity_end_date as "desc_validity_end_date",
+  "nice_description",
+  left (gn.goods_nomenclature_item_id, 2) as "chapter",
+  REGEXP_REPLACE (gn.goods_nomenclature_item_id, '(00)+$', '') as "node",
+  CAST( '0' as text) as "leaf"
+  FROM goods_nomenclatures gn
+    JOIN goods_nomenclature_descriptions gnd ON gnd.goods_nomenclature_sid = gn.goods_nomenclature_sid
+    JOIN goods_nomenclature_description_periods gndp ON gndp.goods_nomenclature_description_period_sid = gnd.goods_nomenclature_description_period_sid
+    JOIN goods_nomenclature_indents gni ON gni.goods_nomenclature_sid = gn.goods_nomenclature_sid
+  WHERE (
+    gn.validity_end_date IS NULL OR
+    gn.validity_end_date >= '{validity_start_date}'
+    ) AND
+    gn.goods_nomenclature_item_id LIKE pchapter AND
+    gn.status = 'published' AND
+    gnd.status = 'published' AND
+    gndp.status = 'published' AND
+    gni.status = 'published' AND
+    gndp.goods_nomenclature_description_period_sid IN
+    (
+      SELECT MAX (gndp2.goods_nomenclature_description_period_sid)
+      FROM goods_nomenclature_description_periods gndp2
+      WHERE gndp2.goods_nomenclature_sid = gnd.goods_nomenclature_sid AND
+        gndp2.validity_start_date <= '{validity_start_date}'
+      UNION
+        SELECT gndp3.goods_nomenclature_description_period_sid
+        FROM goods_nomenclature_description_periods gndp3
+        WHERE gndp3.goods_nomenclature_sid = gnd.goods_nomenclature_sid AND
+        gndp3.validity_start_date >= '{validity_start_date}'
+    ) AND gni.goods_nomenclature_indent_sid IN
+    (
+      SELECT MAX (gni2.goods_nomenclature_indent_sid)
+      FROM goods_nomenclature_indents gni2
+      WHERE gni2.goods_nomenclature_sid = gn.goods_nomenclature_sid AND
+        gni2.validity_start_date < '{validity_start_date}'
+      UNION
+        SELECT gni3.goods_nomenclature_indent_sid
+        FROM goods_nomenclature_indents gni3
+        WHERE gni3.goods_nomenclature_sid = gn.goods_nomenclature_sid AND
+        gni3.validity_start_date >= '{validity_start_date}'
+    );
 
 
 CREATE INDEX t1_i_nomenclature ON tmp_nomenclature (goods_nomenclature_sid, goods_nomenclature_item_id);

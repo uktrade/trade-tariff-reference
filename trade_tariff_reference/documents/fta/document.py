@@ -612,7 +612,7 @@ class Document:
     def create_document(self, context):
         change = self.check_document_for_update(context)
         if change == dict() and not self.application.force_document_generation:
-            logger.info("\nPROCESS COMPLETE - Document unchanged no file generated")
+            logger.info(f'PROCESS COMPLETE - Document for {self.application.agreement.slug} unchanged no file generated')
             return
 
         document_template = "xml/fta/document_noquotas.xml"
