@@ -7,6 +7,7 @@ from django.shortcuts import reverse
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from trade_tariff_reference.documents.functions import format_seasonal_expression, list_to_sql
+from trade_tariff_reference.documents.utils import get_document_check_sum
 
 
 class DocumentStatus:
@@ -18,6 +19,16 @@ class DocumentStatus:
         (AVAILABLE, 'Available'),
         (UNAVAILABLE, 'Unavailable'),
         (GENERATING, 'Generating'),
+    )
+
+
+class ChapterType:
+    SCHEDULE = 'schedule'
+    CLASSIFICATION = 'classification'
+
+    CHAPTER_TYPE_CHOICES = (
+        (SCHEDULE, 'Schedule'),
+        (CLASSIFICATION, 'Classification'),
     )
 
 
@@ -126,7 +137,6 @@ class Agreement(models.Model):
 
 
 class DocumentHistory(models.Model):
-    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE)
     data = JSONField(null=True, blank=True)
     change = JSONField(null=True, blank=True)
     created_at = models.DateTimeField(db_index=True, null=True, blank=True, auto_now_add=True)
@@ -134,11 +144,29 @@ class DocumentHistory(models.Model):
     remote_file_name = models.CharField(max_length=300, null=True, blank=True)
 
     class Meta:
-        verbose_name_plural = 'Document Histories'
+        abstract = True
         ordering = ('-created_at',)
+
+
+class AgreementDocumentHistory(DocumentHistory):
+    agreement = models.ForeignKey('schedule.Agreement', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Agreement Document Histories'
 
     def __str__(self):
         return f'{self.agreement.slug} - Doc History - {self.created_at}'
+
+
+class ChapterDocumentHistory(DocumentHistory):
+    chapter = models.ForeignKey('schedule.Chapter', on_delete=models.CASCADE)
+    chapter_type = models.CharField(choices=ChapterType.CHAPTER_TYPE_CHOICES, max_length=100)
+
+    class Meta:
+        verbose_name_plural = 'Chapter Document Histories'
+
+    def __str__(self):
+        return f'{self.chapter_type} {self.chapter.chapter_string} - Doc History - {self.created_at}'
 
 
 class ExtendedQuota(models.Model):
@@ -239,6 +267,7 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
+    schedule_document_check_sum = models.CharField(max_length=200, null=True, blank=True)
     classification_document = models.FileField(null=True, blank=True, storage=MFNClassificationStorage())
     classification_document_created_at = models.DateTimeField(null=True, blank=True)
     classification_document_status = models.CharField(
@@ -246,6 +275,7 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
+    classification_document_check_sum = models.CharField(max_length=200, null=True, blank=True)
 
     @property
     def chapter_string(self):
@@ -259,6 +289,20 @@ class ChapterNote(models.Model):
     chapter = models.OneToOneField(Chapter, on_delete=models.CASCADE, related_name='note')
     document = models.FileField(null=True, blank=True, storage=ChapterNoteStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
+    document_check_sum = models.CharField(max_length=200, null=True, blank=True)
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if self.document:
+            self.document_check_sum = get_document_check_sum(self.document.read())
+
+        return super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
 
     def __str__(self):
         return f'{self.chapter.description} Note'
