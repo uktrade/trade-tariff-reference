@@ -4,6 +4,8 @@ import os
 import tempfile
 from distutils.dir_util import copy_tree
 
+from botocore.exceptions import EndpointConnectionError
+
 from django.template.loader import render_to_string
 
 from docx import Document
@@ -11,6 +13,10 @@ from docx import Document
 from docxcompose.composer import Composer
 
 from trade_tariff_reference.documents import functions as f
+from trade_tariff_reference.documents.history import (
+    check_mfn_document_for_update,
+    log_mfn_document_history,
+)
 from trade_tariff_reference.documents.utils import upload_generic_document_to_s3
 from trade_tariff_reference.schedule.models import Chapter as DBChapter
 
@@ -146,6 +152,31 @@ class Chapter:
                                 sibling_duty_set = set(sibling_duties)
                                 break
 
+    def create_document(self, context):
+        change = check_mfn_document_for_update(self.chapter, self.application.document_type, context)
+        if change == dict() and not self.application.force_document_generation:
+            logger.info(
+                f'PROCESS COMPLETE - Document for {self.application.document_type}'
+                f' {self.chapter.chapter_string} unchanged no file generated'
+            )
+            return
+
+        document_xml = render_to_string(self.xml_template_name, context)
+        try:
+            remote_file_name = self.write(document_xml)
+        except EndpointConnectionError:
+            logger.error(
+                f'Error - Cannot connect to S3 unable to update document for {self.chapter.chapter_string}'
+            )
+        else:
+            log_mfn_document_history(
+                self.chapter,
+                self.application.document_type,
+                context, change,
+                remote_file_name,
+                self.application.force_document_generation
+            )
+
     def write(self, document_xml):
         document_xml = f.apply_value_format_to_document(document_xml)
         ###########################################################################
@@ -175,6 +206,7 @@ class Chapter:
                 self.chapter, self.document_file_field, temp_doc_file.name, remote_file_name
             )
             logger.info(f"PROCESS COMPLETE - {remote_file_name} created")
+            return remote_file_name
 
     def prepend_introduction(self, filename):
         return
@@ -248,9 +280,7 @@ class ScheduleChapter(Chapter):
             **table_content,
             **document_content,
         }
-
-        body_string = render_to_string(self.xml_template_name, context_dict)
-        self.write(body_string)
+        self.create_document(context_dict)
 
     def format_heading(self):
         heading = {}
@@ -390,13 +420,13 @@ class ClassificationChapter(Chapter):
 
         table_content = self.format_table_content(commodity_list)
         document_content = self.get_document_content()
+        chapter_note_content = self.get_chapter_note_content()
         context_dict = {
             **table_content,
             **document_content,
+            **chapter_note_content,
         }
-
-        body_string = render_to_string(self.xml_template_name, context_dict)
-        self.write(body_string)
+        self.create_document(context_dict)
 
     def prepend_introduction(self, filename):
         master_document = Document(self.chapter.note.document)
@@ -404,3 +434,8 @@ class ClassificationChapter(Chapter):
         my_chapter_file = Document(filename)
         composer.append(my_chapter_file)
         composer.save(filename)
+
+    def get_chapter_note_content(self):
+        return {
+            'CHAPTER_NOTE_DOCUMENT': self.chapter.note.document_check_sum
+        }
