@@ -169,6 +169,17 @@ class ChapterDocumentHistory(DocumentHistory):
         return f'{self.document_type} {self.chapter.chapter_string} - Doc History - {self.created_at}'
 
 
+class MFNDocumentHistory(DocumentHistory):
+    mfn_document = models.ForeignKey('schedule.MFNDocument', on_delete=models.CASCADE)
+    document_type = models.CharField(choices=DocumentType.DOCUMENT_TYPE_CHOICES, max_length=100)
+
+    class Meta:
+        verbose_name_plural = 'MFN Document Histories'
+
+    def __str__(self):
+        return f'{self.document_type} - Doc History - {self.created_at}'
+
+
 class ExtendedQuota(models.Model):
     LICENSED = 'L'
     FIRST_COME_FIRST_SERVED = 'F'
@@ -267,7 +278,7 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
-    schedule_document_check_sum = models.CharField(max_length=200, null=True, blank=True)
+    schedule_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
     classification_document = models.FileField(null=True, blank=True, storage=MFNClassificationStorage())
     classification_document_created_at = models.DateTimeField(null=True, blank=True)
     classification_document_status = models.CharField(
@@ -275,21 +286,27 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
-    classification_document_check_sum = models.CharField(max_length=200, null=True, blank=True)
+    classification_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
 
     @property
     def chapter_string(self):
         return f"{self.id:02d}"
 
+    def get_document_name(self, document_type):
+        return f'{document_type}{self.chapter_string}.docx'
+
     def __str__(self):
         return f'{self.chapter_string} - {self.description}'
+
+    class Meta:
+        ordering = ('id',)
 
 
 class ChapterNote(models.Model):
     chapter = models.OneToOneField(Chapter, on_delete=models.CASCADE, related_name='note')
     document = models.FileField(null=True, blank=True, storage=ChapterNoteStorage())
     document_created_at = models.DateTimeField(null=True, blank=True)
-    document_check_sum = models.CharField(max_length=200, null=True, blank=True)
+    document_check_sum = models.CharField(max_length=32, null=True, blank=True)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -309,3 +326,23 @@ class ChapterNote(models.Model):
 
     class Meta:
         ordering = ('chapter__id',)
+
+
+class MFNDocument(models.Model):
+    document = models.FileField(storage=MFNStorage())
+    document_created_at = models.DateTimeField()
+    document_check_sum = models.CharField(max_length=32)
+    document_type = models.CharField(choices=DocumentType.DOCUMENT_TYPE_CHOICES, max_length=100)
+    document_status = models.CharField(
+        choices=DocumentStatus.DOCUMENT_STATUS_CHOICES,
+        default=DocumentStatus.UNAVAILABLE,
+        max_length=20
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['document_type'], name='MFN Document Type constraint'),
+        ]
+
+    def __str__(self):
+        return f'Master {self.document_type} MFN document'
