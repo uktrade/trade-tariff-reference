@@ -22,11 +22,11 @@ class DocumentStatus:
     )
 
 
-class ChapterType:
+class DocumentType:
     SCHEDULE = 'schedule'
     CLASSIFICATION = 'classification'
 
-    CHAPTER_TYPE_CHOICES = (
+    DOCUMENT_TYPE_CHOICES = (
         (SCHEDULE, 'Schedule'),
         (CLASSIFICATION, 'Classification'),
     )
@@ -160,13 +160,13 @@ class AgreementDocumentHistory(DocumentHistory):
 
 class ChapterDocumentHistory(DocumentHistory):
     chapter = models.ForeignKey('schedule.Chapter', on_delete=models.CASCADE)
-    chapter_type = models.CharField(choices=ChapterType.CHAPTER_TYPE_CHOICES, max_length=100)
+    document_type = models.CharField(choices=DocumentType.DOCUMENT_TYPE_CHOICES, max_length=100)
 
     class Meta:
         verbose_name_plural = 'Chapter Document Histories'
 
     def __str__(self):
-        return f'{self.chapter_type} {self.chapter.chapter_string} - Doc History - {self.created_at}'
+        return f'{self.document_type} {self.chapter.chapter_string} - Doc History - {self.created_at}'
 
 
 class ExtendedQuota(models.Model):
