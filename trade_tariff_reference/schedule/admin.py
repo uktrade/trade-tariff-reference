@@ -8,6 +8,7 @@ from trade_tariff_reference.schedule.models import (
     ChapterNote,
     ExtendedQuota,
     LatinTerm,
+    MFNDocumentHistory,
     SpecialNote,
 )
 
@@ -57,9 +58,15 @@ class AgreementDocumentHistoryAdmin(admin.ModelAdmin):
 
 
 class ChapterDocumentHistoryAdmin(admin.ModelAdmin):
-    readonly_fields = ('chapter', 'chapter_type', 'remote_file_name', 'forced', 'created_at')
-    fields = ('chapter', 'chapter_type', 'data', 'change', 'forced', 'remote_file_name', 'created_at')
-    list_display = ['chapter', 'chapter_type', 'created_at']
+    readonly_fields = ('chapter', 'document_type', 'remote_file_name', 'forced', 'created_at')
+    fields = ('chapter', 'document_type', 'data', 'change', 'forced', 'remote_file_name', 'created_at')
+    list_display = ['chapter', 'document_type', 'created_at']
+
+
+class MFNDocumentHistoryAdmin(admin.ModelAdmin):
+    readonly_fields = ('mfn_document', 'document_type', 'remote_file_name', 'forced', 'created_at')
+    fields = ('mfn_document', 'document_type', 'data', 'change', 'forced', 'remote_file_name', 'created_at')
+    list_display = ['document_type', 'created_at']
 
 
 admin.site.register(Agreement)
@@ -69,4 +76,5 @@ admin.site.register(ChapterDocumentHistory, ChapterDocumentHistoryAdmin)
 admin.site.register(AgreementDocumentHistory, AgreementDocumentHistoryAdmin)
 admin.site.register(ExtendedQuota)
 admin.site.register(SpecialNote)
+admin.site.register(MFNDocumentHistory, MFNDocumentHistoryAdmin)
 admin.site.register(LatinTerm)
