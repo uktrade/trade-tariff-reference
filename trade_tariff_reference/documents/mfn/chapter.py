@@ -13,10 +13,7 @@ from docx import Document
 from docxcompose.composer import Composer
 
 from trade_tariff_reference.documents import functions as f
-from trade_tariff_reference.documents.history import (
-    check_mfn_document_for_update,
-    log_mfn_document_history,
-)
+from trade_tariff_reference.documents.history import ChapterDocumentHistoryLog
 from trade_tariff_reference.documents.utils import upload_generic_document_to_s3
 from trade_tariff_reference.schedule.models import Chapter as DBChapter
 
@@ -153,8 +150,13 @@ class Chapter:
                                 break
 
     def create_document(self, context):
-        change = check_mfn_document_for_update(self.chapter, self.application.document_type, context)
-        if change == dict() and not self.application.force_document_generation:
+        chapter_log = ChapterDocumentHistoryLog(
+            self.chapter,
+            context,
+            self.application.force_document_generation,
+            self.application.document_type
+        )
+        if chapter_log.change == dict() and not self.application.force_document_generation:
             logger.info(
                 f'PROCESS COMPLETE - Document for {self.application.document_type}'
                 f' {self.chapter.chapter_string} unchanged no file generated'
@@ -169,13 +171,7 @@ class Chapter:
                 f'Error - Cannot connect to S3 unable to update document for {self.chapter.chapter_string}'
             )
         else:
-            log_mfn_document_history(
-                self.chapter,
-                self.application.document_type,
-                context, change,
-                remote_file_name,
-                self.application.force_document_generation
-            )
+            chapter_log.log_document_history(remote_file_name)
 
     def write(self, document_xml):
         document_xml = f.apply_value_format_to_document(document_xml)

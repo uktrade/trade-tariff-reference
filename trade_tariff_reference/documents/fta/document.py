@@ -30,7 +30,7 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
-from trade_tariff_reference.documents.history import check_fta_document_for_update, log_fta_document_history
+from trade_tariff_reference.documents.history import AgreementDocumentHistoryLog
 from trade_tariff_reference.documents.utils import upload_document_to_s3
 from trade_tariff_reference.schedule.models import ExtendedQuota
 
@@ -592,8 +592,12 @@ class Document:
         return render_to_string(document_template, context)
 
     def create_document(self, context):
-        change = check_fta_document_for_update(self.application.agreement, context)
-        if change == dict() and not self.application.force_document_generation:
+        agreement_log = AgreementDocumentHistoryLog(
+            self.application.agreement,
+            context,
+            self.application.force_document_generation
+        )
+        if agreement_log.change == dict() and not self.application.force_document_generation:
             logger.info(
                 f'PROCESS COMPLETE - Document for {self.application.agreement.slug} unchanged no file generated')
             return
@@ -606,12 +610,7 @@ class Document:
                 f'Error - Cannot connect to S3 unable to update document for {self.application.agreement.slug}'
             )
         else:
-            log_fta_document_history(
-                self.application.agreement,
-                context, change,
-                remote_file_name,
-                self.application.force_document_generation
-            )
+            agreement_log.log_document_history(remote_file_name)
 
     def write(self, document_xml):
         ###########################################################################

@@ -3,64 +3,108 @@ import logging
 from deepdiff import DeepDiff
 from deepdiff.model import PrettyOrderedSet
 
-from trade_tariff_reference.schedule.models import AgreementDocumentHistory, ChapterDocumentHistory
+from trade_tariff_reference.schedule.models import (
+    AgreementDocumentHistory,
+    ChapterDocumentHistory,
+    MFNDocument,
+    MFNDocumentHistory,
+)
 
 logger = logging.getLogger(__name__)
 
 
-def check_fta_document_for_update(agreement, context):
-    history = AgreementDocumentHistory.objects.filter(
-        agreement=agreement,
-    ).first()
-    return get_change(getattr(history, 'data', None), context)
+class AgreementDocumentHistoryLog:
 
+    def __init__(self, obj, context, is_forced):
+        self.object = obj
+        self.context = context
+        self.is_forced = is_forced
+        self.history = self.get_history()
 
-def check_mfn_document_for_update(chapter, chapter_type, context):
-    history = ChapterDocumentHistory.objects.filter(
-        chapter=chapter,
-        chapter_type=chapter_type,
-    ).first()
-    return get_change(getattr(history, 'data', None), context)
+    @property
+    def change(self):
+        return self.get_change(getattr(self.history, 'data', None), self.context)
 
+    def get_change(self, data, context):
+        if not data:
+            data = {}
+        return DeepDiff(data, context)
 
-def get_change(data, context):
-    change = None
-    if data:
-        change = DeepDiff(data, context)
-    return change
-
-
-def log_fta_document_history(agreement, context, change, remote_file_name, force_document_generation):
-    if change:
-        logger.debug(f'Changes found\n{change}')
-
-    AgreementDocumentHistory.objects.create(
-        agreement=agreement,
-        data=context,
-        change=prepare_change(change),
-        forced=force_document_generation,
-        remote_file_name=remote_file_name,
-    )
-
-
-def log_mfn_document_history(chapter, chapter_type, context, change, remote_file_name, force_document_generation):
-    if change:
-        logger.debug(f'Changes found\n{change}')
-
-    ChapterDocumentHistory.objects.create(
-        chapter=chapter,
-        chapter_type=chapter_type,
-        data=context,
-        change=prepare_change(change),
-        forced=force_document_generation,
-        remote_file_name=remote_file_name,
-    )
-
-
-def prepare_change(change):
-    if not change:
+    def prepare_change(self, change):
+        if not change:
+            return change
+        for key in change.keys():
+            if isinstance(change[key], PrettyOrderedSet):
+                change[key] = list(change[key])
         return change
-    for key in change.keys():
-        if isinstance(change[key], PrettyOrderedSet):
-            change[key] = list(change[key])
-    return change
+
+    def log_document_history(self, remote_file_name, obj=None):
+        change = self.change
+        if change:
+            logger.debug(f'Changes found\n{change}')
+        self.create_history_event(change, remote_file_name)
+
+    def get_history(self):
+        return AgreementDocumentHistory.objects.filter(
+            agreement=self.object,
+        ).first()
+
+    def create_history_event(self, change, remote_file_name):
+        AgreementDocumentHistory.objects.create(
+            agreement=self.object,
+            data=self.context,
+            change=self.prepare_change(change),
+            forced=self.is_forced,
+            remote_file_name=remote_file_name,
+        )
+
+
+class ChapterDocumentHistoryLog(AgreementDocumentHistoryLog):
+
+    def __init__(self, obj, context, is_forced, document_type):
+        self.document_type = document_type
+        super().__init__(obj, context, is_forced)
+
+    def get_history(self):
+        return ChapterDocumentHistory.objects.filter(
+            chapter=self.object,
+            document_type=self.document_type,
+        ).first()
+
+    def create_history_event(self, change, remote_file_name, obj=None):
+        ChapterDocumentHistory.objects.create(
+            chapter=self.object,
+            document_type=self.document_type,
+            data=self.context,
+            change=self.prepare_change(change),
+            forced=self.is_forced,
+            remote_file_name=remote_file_name,
+        )
+
+
+class MFNDocumentHistoryLog(AgreementDocumentHistoryLog):
+
+    def __init__(self, obj, context, is_forced, document_type):
+        self.document_type = document_type
+        super().__init__(obj, context, is_forced)
+
+    def get_history(self):
+        return MFNDocumentHistory.objects.filter(
+            mfn_document=self.object,
+            document_type=self.document_type,
+        ).first()
+
+    def create_history_event(self, change, remote_file_name):
+        MFNDocumentHistory.objects.create(
+            mfn_document=self.get_object(),
+            document_type=self.document_type,
+            data=self.context,
+            change=self.prepare_change(change),
+            forced=self.is_forced,
+            remote_file_name=remote_file_name,
+        )
+
+    def get_object(self):
+        if self.object:
+            return self.object
+        return MFNDocument.objects.get(document_type=self.document_type)
