@@ -22,12 +22,12 @@ def upload_generic_document_to_s3(model, field_name, local_file_name, remote_fil
         check_sum_field = f'{field_name}_check_sum'
         if getattr(model, check_sum_field) != new_check_sum:
             contents = ContentFile(file_contents)
-            field = getattr(model, field_name)
-            field.save(remote_file_name, contents, save=True)
             created_at_field = f'{field_name}_created_at'
             setattr(model, check_sum_field, new_check_sum)
             setattr(model, created_at_field, timezone.now())
-            model.save(update_fields=[created_at_field, check_sum_field])
+            model.save()
+            field = getattr(model, field_name)
+            field.save(remote_file_name, contents, save=True)
     return remote_file_name
 
 

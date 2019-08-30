@@ -1,7 +1,4 @@
-
-
 from django.core.management.base import BaseCommand
-
 
 from trade_tariff_reference.documents.mfn.constants import CLASSIFICATION, SCHEDULE
 from trade_tariff_reference.documents.tasks import generate_mfn_master_document
