@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from .views import (
     CreateAgreementScheduleView,
@@ -10,7 +10,7 @@ from .views import (
 
 app_name = 'schedule'
 
-urlpatterns = [
+fta_urls = [
     path(
         'create/',
         CreateAgreementScheduleView.as_view(),
@@ -36,4 +36,8 @@ urlpatterns = [
         EditAgreementScheduleView.as_view(),
         name='edit',
     )
+]
+
+urlpatterns = [
+    path('fta/', include((fta_urls, app_name), namespace='fta')),
 ]

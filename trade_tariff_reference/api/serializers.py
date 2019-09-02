@@ -14,6 +14,6 @@ class AgreementSerializer(serializers.ModelSerializer):
     def get_download_url(self, instance):
         if instance.is_document_available:
             return reverse(
-                'schedule:download', kwargs={'slug': instance.slug}, request=self.context.get('request'),
+                'schedule:fta:download', kwargs={'slug': instance.slug}, request=self.context.get('request'),
             )
         return ''
