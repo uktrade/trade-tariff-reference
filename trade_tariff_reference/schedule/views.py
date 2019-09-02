@@ -189,5 +189,5 @@ class RegenerateMFNScheduleView(RedirectView):
     def get(self, request, *args, **kwargs):
         mfn_document = self.get_mfn_document()
         if not mfn_document or not mfn_document.is_document_generating:
-            generate_mfn_master_document.delay(self.kwargs['document_type'], True)
+            generate_mfn_master_document.delay(self.kwargs['document_type'], force=True)
         return redirect(reverse('schedule:mfn:manage'))
