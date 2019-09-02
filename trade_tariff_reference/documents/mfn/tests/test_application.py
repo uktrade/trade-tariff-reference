@@ -96,5 +96,5 @@ def test_main(mock_process_chapter):
     application = Application(SCHEDULE, first_chapter=10, last_chapter=11)
     application.main()
     assert mock_process_chapter.call_count == 2
-    mock_process_chapter.called_once_with(application, 10)
-    mock_process_chapter.called_once_with(application, 11)
+    mock_process_chapter.assert_any_call(application, 10)
+    mock_process_chapter.assert_any_call(application, 11)
