@@ -1,9 +1,10 @@
 import random
-from datetime import date
+from datetime import date, datetime
 from unittest import mock
 
 import factory
 
+from trade_tariff_reference.documents.mfn.constants import SCHEDULE
 from trade_tariff_reference.schedule.models import DocumentStatus, ExtendedQuota
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
@@ -84,6 +85,27 @@ class ChapterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'schedule.Chapter'
         django_get_or_create = ('id',)
+
+
+class MFNDocumentFactory(factory.django.DjangoModelFactory):
+    document_type = SCHEDULE
+    document = None
+    document_status = DocumentStatus.AVAILABLE
+    document_created_at = datetime.now()
+
+    class Meta:
+        model = 'schedule.MFNDocument'
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """ Workaround for FileField being a post generation attribute """
+        with mock.patch('storages.backends.s3boto3.S3Boto3Storage.save') as mock_file_save:
+            mock_file_save.return_value = 'annex.docx'
+            return super().create(*args, **kwargs)
+
+
+class MFNDocumentWithDocumentFactory(MFNDocumentFactory):
+    document = factory.django.FileField(filename='mfn.docx')
 
 
 def setup_quota_data():

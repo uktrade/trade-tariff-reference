@@ -6,6 +6,7 @@ from django.shortcuts import reverse
 
 import pytest
 
+from trade_tariff_reference.documents.mfn.constants import CLASSIFICATION, SCHEDULE
 from trade_tariff_reference.schedule.models import (
     Agreement,
     DocumentStatus,
@@ -14,6 +15,8 @@ from trade_tariff_reference.schedule.models import (
 from trade_tariff_reference.schedule.tests.factories import (
     AgreementFactory,
     AgreementWithDocumentFactory,
+    MFNDocumentFactory,
+    MFNDocumentWithDocumentFactory,
     setup_quota_data,
 )
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
@@ -26,10 +29,10 @@ pytestmark = pytest.mark.django_db
     'url,expected_template_used,expected_heading,is_fieldset',
     (
         (
-            'schedule:fta:create', 'schedule/fta/create.html', 'Create new agreement', True,
+            'schedule:fta:create', ['schedule/fta/create.html'], 'Create new agreement', True,
         ),
         (
-            'schedule:fta:manage', 'schedule/fta/manage.html', 'Manage agreement schedules', False,
+            'schedule:fta:manage', ['schedule/fta/manage.html'], 'Manage agreement schedules', False,
         ),
     ),
 )
@@ -38,10 +41,11 @@ def test_view_renders_successfully(authenticated_client, url, expected_template_
     _assert_view_propoerties(authenticated_client, uri, expected_template_used, expected_heading, is_fieldset)
 
 
-def _assert_view_propoerties(authenticated_client, uri, expected_template_used, expected_heading, is_fieldset):
+def _assert_view_propoerties(authenticated_client, uri, expected_templates_used, expected_heading, is_fieldset):
     response = authenticated_client.get(uri)
     assert response.status_code == 200
-    assert expected_template_used in [template.name for template in response.templates]
+    for expected_template_used in expected_templates_used:
+        assert expected_template_used in [template.name for template in response.templates]
     if is_fieldset:
         expected_page_title = f'<h1 class="govuk-fieldset__heading">{expected_heading}</h1>'
     else:
@@ -52,7 +56,7 @@ def _assert_view_propoerties(authenticated_client, uri, expected_template_used, 
 def test_view_edit_agreement_renders_successfully(authenticated_client):
     agreement = AgreementFactory()
     uri = reverse('schedule:fta:edit', kwargs={'slug': agreement.slug})
-    _assert_view_propoerties(authenticated_client, uri, 'schedule/fta/create.html', 'Edit agreement', True)
+    _assert_view_propoerties(authenticated_client, uri, ['schedule/fta/create.html'], 'Edit agreement', True)
 
 
 def test_view_manage_extended_information_renders_successfully(authenticated_client):
@@ -62,7 +66,7 @@ def test_view_manage_extended_information_renders_successfully(authenticated_cli
     _assert_view_propoerties(
         authenticated_client,
         uri,
-        'schedule/fta/manage_extended_information.html',
+        ['schedule/fta/manage_extended_information.html'],
         'Manage extended information',
         True,
     )
@@ -236,13 +240,29 @@ def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(
     assert not mock_generate_document.called
 
 
-def test_download_document_when_slug_unknown(authenticated_client):
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
+def test_manage_extended_information_without_quota_data(
+    mock_generate_document,
+    authenticated_client,
+):
+    agreement = AgreementFactory()
+    agreement.save()
+    uri = reverse('schedule:fta:manage-extended-info', kwargs={'slug': agreement.slug})
+    data = {}
+    response = authenticated_client.post(uri, data=data, follow=True)
+    assert response.status_code == 200
+    quotas = ExtendedQuota.objects.filter(agreement=agreement)
+    assert quotas.count() == 0
+    assert not mock_generate_document.called
+
+
+def test_download_agreement_document_when_slug_unknown(authenticated_client):
     uri = reverse('schedule:fta:download', kwargs={'slug': 'hello'})
     response = authenticated_client.get(uri)
     assert response.status_code == 404
 
 
-def test_download_document_when_no_document_exists_for_agreement(authenticated_client):
+def test_download_agreement_document_when_no_document_exists_for_agreement(authenticated_client):
     agreement = AgreementFactory(slug='hello', document=None)
     uri = reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
     response = authenticated_client.get(uri)
@@ -251,7 +271,7 @@ def test_download_document_when_no_document_exists_for_agreement(authenticated_c
 
 
 @mock.patch('storages.backends.s3boto3.S3Boto3Storage.open')
-def test_download_document(mock_open, authenticated_client):
+def test_download_agreement_document(mock_open, authenticated_client):
     mock_open.return_value = SimpleUploadedFile('doc', b'hello')
     agreement = AgreementWithDocumentFactory(slug='test_agreement')
     uri = reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
@@ -293,3 +313,82 @@ def test_regenerate_document_when_agreement(
     assert response.status_code == 302
     assert response.get('Location') == reverse('schedule:fta:manage')
     assert mock_generate_document.called is expected_document_to_be_generated
+
+
+@mock.patch('trade_tariff_reference.documents.tasks.generate_mfn_master_document.delay')
+def test_regenerate_mfn_document_when_document_type_does_not_exist(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
+    response = authenticated_client.get('/schedule/mfn/regenerate/hello')
+    assert response.status_code == 404
+    assert mock_generate_document.called is False
+
+
+@pytest.mark.parametrize(
+    'create_mfn_document,document_status,document_type,expected_document_to_be_generated',
+    (
+        (True, DocumentStatus.AVAILABLE, SCHEDULE, True),
+        (True, DocumentStatus.UNAVAILABLE, SCHEDULE, True),
+        (True, DocumentStatus.GENERATING, SCHEDULE, False),
+        (True, DocumentStatus.AVAILABLE, CLASSIFICATION, True),
+        (True, DocumentStatus.UNAVAILABLE, CLASSIFICATION, True),
+        (True, DocumentStatus.GENERATING, CLASSIFICATION, False),
+        (False, None, SCHEDULE, True),
+        (False, None, CLASSIFICATION, True),
+    )
+)
+@mock.patch('trade_tariff_reference.documents.tasks.generate_mfn_master_document.delay')
+def test_regenerate_mfn_document(
+    mock_generate_document,
+    authenticated_client,
+    create_mfn_document,
+    document_status,
+    document_type,
+    expected_document_to_be_generated
+):
+    mock_generate_document.return_value = None
+    if create_mfn_document:
+        MFNDocumentFactory(document_status=document_status, document_type=document_type)
+    uri = reverse('schedule:mfn:regenerate', kwargs={'document_type': document_type})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('schedule:mfn:manage')
+    assert mock_generate_document.called is expected_document_to_be_generated
+
+
+def test_download_mfn_document_when_document_type_unknown(authenticated_client):
+    uri = reverse('schedule:mfn:download', kwargs={'document_type': 'hello'})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 404
+
+
+def test_download_mfn_document_when_no_document_exists_for_agreement(authenticated_client):
+    MFNDocumentFactory()
+    uri = reverse('schedule:mfn:download', kwargs={'document_type': SCHEDULE})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('schedule:mfn:manage')
+
+
+@mock.patch('storages.backends.s3boto3.S3Boto3Storage.open')
+def test_download_mfn_document(mock_open, authenticated_client):
+    mock_open.return_value = SimpleUploadedFile('doc', b'hello')
+    mfn_document = MFNDocumentWithDocumentFactory()
+    uri = reverse('schedule:mfn:download', kwargs={'document_type': mfn_document.document_type})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 200
+    assert response.content == b'hello'
+    assert response.get('Content-type') == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    assert response.get('Content-Disposition') == f'inline; filename={mfn_document.document_type}.docx'
+
+
+def test_view_mfn_schedules_renders_successfully(authenticated_client):
+    MFNDocumentFactory(document_type=SCHEDULE)
+    MFNDocumentFactory(document_type=CLASSIFICATION)
+    uri = reverse('schedule:mfn:manage')
+    _assert_view_propoerties(
+        authenticated_client,
+        uri,
+        ['schedule/mfn/manage.html', 'schedule/mfn/document_summary.html'],
+        'MFN schedules',
+        False
+    )
