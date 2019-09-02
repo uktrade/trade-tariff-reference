@@ -41,7 +41,7 @@
                             <ul class="govuk-list">
                                 <li class="govuk-!-padding-top-1">
                                     {% if agreement.is_document_available %}
-                                        <a href="{{ agreement.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download schedule' %}</a>
+                                        <a href="{{ agreement.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download' %}</a>
                                     {% elif agreement.is_document_generating %}
                                         <div class="govuk-text">{% trans 'Updating document' %}</div>
                                     {% else %}
@@ -49,8 +49,13 @@
                                     {% endif %}
                                 </li>
                                 <li class="govuk-!-padding-top-2">
-                                    <a href="{{ agreement.edit_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Edit agreement' %}</a>
+                                    <a href="{{ agreement.edit_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Edit' %}</a>
                                 </li>
+                                 {% if not agreement.is_document_generating or agreement.is_document_unavailable %}
+                                     <li class="govuk-!-padding-top-2">
+                                        <a href="{{ agreement.regenerate_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
+                                     </li>
+                                {% endif %}
                             </ul>
                         </td>
                     </tr>

@@ -34,6 +34,7 @@ def test_agreement_model():
     assert str(agreement) == f'Test agreement - israel'
     assert agreement.download_url == reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
     assert agreement.edit_url == reverse('schedule:fta:edit', kwargs={'slug': agreement.slug})
+    assert agreement.regenerate_url == reverse('schedule:fta:regenerate', kwargs={'slug': agreement.slug})
     assert agreement.is_document_available is True
     assert agreement.is_document_unavailable is False
     assert agreement.is_document_generating is False

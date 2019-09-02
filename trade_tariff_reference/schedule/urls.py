@@ -8,6 +8,7 @@ from .views import (
     ManageAgreementScheduleView,
     ManageExtendedInformationAgreementScheduleView,
     ManageMFNScheduleView,
+    RegenerateAgreementScheduleView,
     RegenerateMFNScheduleView,
 )
 
@@ -33,6 +34,11 @@ fta_urls = [
         'download/<slug:slug>/',
         DownloadAgreementScheduleView.as_view(),
         name='download',
+    ),
+    path(
+        'regenerate/<slug:slug>/',
+        RegenerateAgreementScheduleView.as_view(),
+        name='regenerate',
     ),
     path(
         'edit/<slug:slug>/',

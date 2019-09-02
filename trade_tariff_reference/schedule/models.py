@@ -105,6 +105,10 @@ class Agreement(models.Model):
         return reverse('schedule:fta:edit', kwargs={'slug': self.slug})
 
     @property
+    def regenerate_url(self):
+        return reverse('schedule:fta:regenerate', kwargs={'slug': self.slug})
+
+    @property
     def origin_quotas(self):
         return self.quotas.filter(is_origin_quota=True)
 
