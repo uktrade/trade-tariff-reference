@@ -32,6 +32,7 @@ class Application:
         if mfn_document:
             update_document_status(mfn_document, DocumentStatus.GENERATING)
         self.create_document(mfn_document)
+        mfn_document = MFNDocument.objects.get(document_type=self.document_type)
         update_document_status(mfn_document, DocumentStatus.AVAILABLE)
 
     @transaction.atomic
