@@ -339,6 +339,22 @@ class MFNDocument(models.Model):
         max_length=20
     )
 
+    @property
+    def is_document_available(self):
+        return self.document_status == DocumentStatus.AVAILABLE
+
+    @property
+    def is_document_generating(self):
+        return self.document_status == DocumentStatus.GENERATING
+
+    @property
+    def is_document_unavailable(self):
+        return self.document_status == DocumentStatus.UNAVAILABLE
+
+    @property
+    def download_url(self):
+        return reverse('schedule:mfn:download', kwargs={'document_type': self.document_type})
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['document_type'], name='MFN Document Type constraint'),

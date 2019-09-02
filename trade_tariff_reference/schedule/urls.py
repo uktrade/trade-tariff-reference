@@ -1,11 +1,14 @@
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from .views import (
     CreateAgreementScheduleView,
     DownloadAgreementScheduleView,
+    DownloadMFNScheduleView,
     EditAgreementScheduleView,
     ManageAgreementScheduleView,
     ManageExtendedInformationAgreementScheduleView,
+    ManageMFNScheduleView,
+    RegenerateMFNScheduleView,
 )
 
 app_name = 'schedule'
@@ -35,9 +38,29 @@ fta_urls = [
         'edit/<slug:slug>/',
         EditAgreementScheduleView.as_view(),
         name='edit',
-    )
+    ),
+
+]
+
+mfn_urls = [
+    path(
+        'manage/',
+        ManageMFNScheduleView.as_view(),
+        name='manage',
+    ),
+    path(
+        'download/<str:document_type>/',
+        DownloadMFNScheduleView.as_view(),
+        name='download',
+    ),
+    re_path(
+        'generate/(?P<document_type>schedule|classification)/',
+        RegenerateMFNScheduleView.as_view(),
+        name='regenerate',
+    ),
 ]
 
 urlpatterns = [
     path('fta/', include((fta_urls, app_name), namespace='fta')),
+    path('mfn/', include((mfn_urls, app_name), namespace='mfn')),
 ]

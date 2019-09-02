@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<tr class="govuk-table__row">
+    <td class="govuk-table__cell">{% trans title %}</td>
+    <td class="govuk-table__cell">1 - 99</td>
+    <td class="govuk-table__cell">{{ document.document_created_at }}</td>
+    <td class="govuk-table__cell">{{ document.document_created_at }}</td>
+    <td class="govuk-table__cell">
+        <ul class="govuk-list">
+            <li class="govuk-!-padding-top-1">
+                {% if document.is_document_available %}
+                    <a href="{{ document.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download' %}</a>
+                {% elif document.is_document_generating %}
+                    <div class="govuk-text">{% trans 'Updating document' %}</div>
+                {% else %}
+                    <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
+                {% endif %}
+            </li>
+            {% if not document.is_document_generating %}
+                 <li class="govuk-!-padding-top-2">
+                    <a href="{% url 'schedule:mfn:regenerate' document_type=document_type %}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
+                 </li>
+            {% endif %}
+        </ul>
+    </td>
+</tr>
