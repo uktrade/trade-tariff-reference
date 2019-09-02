@@ -11,7 +11,7 @@ from .utils import generate_document
 
 
 class ManageAgreementScheduleView(TemplateView):
-    template_name = 'schedule/manage.html'
+    template_name = 'schedule/fta/manage.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -27,21 +27,21 @@ class DownloadAgreementScheduleView(RedirectView):
     def get(self, request, *args, **kwargs):
         agreement = self.get_agreement()
         if not agreement.document and agreement.is_document_available:
-            return redirect(reverse('schedule:manage'))
+            return redirect(reverse('schedule:fta:manage'))
         response = HttpResponse(agreement.document.read(), content_type=DOCX_CONTENT_TYPE)
         response['Content-Disposition'] = f'inline; filename={agreement.slug}_annex.docx'
         return response
 
 
 class BaseAgreementScheduleView:
-    template_name = 'schedule/create.html'
+    template_name = 'schedule/fta/create.html'
     form_class = AgreementModelForm
 
     def get_success_url(self):
         if 'extended_information' in self.request.POST.dict():
-            return reverse('schedule:manage-extended-info', kwargs={'slug': self.object.slug})
+            return reverse('schedule:fta:manage-extended-info', kwargs={'slug': self.object.slug})
         generate_document(self.object)
-        return reverse('schedule:manage')
+        return reverse('schedule:fta:manage')
 
 
 class CreateAgreementScheduleView(BaseAgreementScheduleView, CreateView):
@@ -62,7 +62,7 @@ class EditAgreementScheduleView(BaseAgreementScheduleView, UpdateView):
 
 
 class ManageExtendedInformationAgreementScheduleView(FormView):
-    template_name = 'schedule/manage_extended_information.html'
+    template_name = 'schedule/fta/manage_extended_information.html'
     form_class = ManageExtendedInformationForm
 
     def get_agreement(self):
@@ -78,7 +78,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
         quota_data = process_quotas(form.cleaned_data)
         agreement = self.get_agreement()
         if not quota_data:
-            return redirect(reverse('schedule:manage'))
+            return redirect(reverse('schedule:fta:manage'))
 
         try:
             with transaction.atomic():
@@ -92,7 +92,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
             return self.form_invalid(form)
 
         generate_document(agreement)
-        return redirect(reverse('schedule:manage'))
+        return redirect(reverse('schedule:fta:manage'))
 
     def save_quotas(self, agreement, quota_data):
         errors = {}

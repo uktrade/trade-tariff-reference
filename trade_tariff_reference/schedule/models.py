@@ -87,11 +87,11 @@ class Agreement(models.Model):
 
     @property
     def download_url(self):
-        return reverse('schedule:download', kwargs={'slug': self.slug})
+        return reverse('schedule:fta:download', kwargs={'slug': self.slug})
 
     @property
     def edit_url(self):
-        return reverse('schedule:edit', kwargs={'slug': self.slug})
+        return reverse('schedule:fta:edit', kwargs={'slug': self.slug})
 
     @property
     def origin_quotas(self):

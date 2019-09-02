@@ -25,10 +25,10 @@ pytestmark = pytest.mark.django_db
     'url,expected_template_used,expected_heading,is_fieldset',
     (
         (
-            'schedule:create', 'schedule/create.html', 'Create new agreement', True,
+            'schedule:fta:create', 'schedule/fta/create.html', 'Create new agreement', True,
         ),
         (
-            'schedule:manage', 'schedule/manage.html', 'Manage agreement schedules', False,
+            'schedule:fta:manage', 'schedule/fta/manage.html', 'Manage agreement schedules', False,
         ),
     ),
 )
@@ -50,25 +50,25 @@ def _assert_view_propoerties(authenticated_client, uri, expected_template_used, 
 
 def test_view_edit_agreement_renders_successfully(authenticated_client):
     agreement = AgreementFactory()
-    uri = reverse('schedule:edit', kwargs={'slug': agreement.slug})
-    _assert_view_propoerties(authenticated_client, uri, 'schedule/create.html', 'Edit agreement', True)
+    uri = reverse('schedule:fta:edit', kwargs={'slug': agreement.slug})
+    _assert_view_propoerties(authenticated_client, uri, 'schedule/fta/create.html', 'Edit agreement', True)
 
 
 def test_view_manage_extended_information_renders_successfully(authenticated_client):
     origin_quota, licensed_quota, scope_quota, staging_quota = setup_quota_data()
     agreement = origin_quota.agreement
-    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:manage-extended-info', kwargs={'slug': agreement.slug})
     _assert_view_propoerties(
         authenticated_client,
         uri,
-        'schedule/manage_extended_information.html',
+        'schedule/fta/manage_extended_information.html',
         'Manage extended information',
         True,
     )
 
 
 def test_create_agreement_with_no_data(authenticated_client):
-    response = authenticated_client.post(reverse('schedule:create'), data={})
+    response = authenticated_client.post(reverse('schedule:fta:create'), data={})
     assert response.status_code == 200
     expected_errors = {
         'agreement_date_day': ['This field is required.'],
@@ -100,9 +100,9 @@ def test_create_agreement(mock_generate_document, authenticated_client):
         'agreement_date_day': 2,
 
     }
-    response = authenticated_client.post(reverse('schedule:create'), data=data, follow=True)
+    response = authenticated_client.post(reverse('schedule:fta:create'), data=data, follow=True)
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse('schedule:manage'), 302)]
+    assert response.redirect_chain == [(reverse('schedule:fta:manage'), 302)]
     assert agreement_name in str(response.content)
 
     actual_agreement = Agreement.objects.get(slug=data['slug'])
@@ -136,9 +136,9 @@ def test_create_agreement_and_redirect_to_add_extended_information(mock_generate
         'extended_information': True,
 
     }
-    response = authenticated_client.post(reverse('schedule:create'), data=data, follow=True)
+    response = authenticated_client.post(reverse('schedule:fta:create'), data=data, follow=True)
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse('schedule:manage-extended-info', kwargs={'slug': 'name'}), 302)]
+    assert response.redirect_chain == [(reverse('schedule:fta:manage-extended-info', kwargs={'slug': 'name'}), 302)]
     assert 'Manage extended information' in str(response.content)
 
     actual_agreement = Agreement.objects.get(slug=data['slug'])
@@ -157,7 +157,7 @@ def test_create_agreement_and_redirect_to_add_extended_information(mock_generate
 def test_manage_extended_information(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     agreement = AgreementFactory()
-    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
         'origin_quotas': '123\r\n456\r\n890\r\n\r\n',
         'licensed_quotas': '123,1,A\r\n456,2,B\r\n890,1,C\r\n\r\n',
@@ -166,7 +166,7 @@ def test_manage_extended_information(mock_generate_document, authenticated_clien
     }
     response = authenticated_client.post(uri, data=data, follow=True)
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse('schedule:manage'), 302)]
+    assert response.redirect_chain == [(reverse('schedule:fta:manage'), 302)]
     quotas = ExtendedQuota.objects.filter(agreement=agreement)
     assert quotas.count() == 3
 
@@ -200,7 +200,7 @@ def test_manage_extended_information(mock_generate_document, authenticated_clien
 def test_manage_extended_information_when_data_is_missing(mock_generate_document, authenticated_client):
     mock_generate_document.return_value = None
     agreement = AgreementFactory()
-    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
         'licensed_quotas': '890,,C\r\n\r\n',
     }
@@ -224,7 +224,7 @@ def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(
 ):
     agreement = AgreementFactory()
     agreement.save()
-    uri = reverse('schedule:manage-extended-info', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:manage-extended-info', kwargs={'slug': agreement.slug})
     data = {
         'licensed_quotas': '890,hello,C\r\n\r\n',
     }
@@ -236,24 +236,24 @@ def test_manage_extended_information_when_data_is_invalid_does_not_save_quota(
 
 
 def test_download_document_when_slug_unknown(authenticated_client):
-    uri = reverse('schedule:download', kwargs={'slug': 'hello'})
+    uri = reverse('schedule:fta:download', kwargs={'slug': 'hello'})
     response = authenticated_client.get(uri)
     assert response.status_code == 404
 
 
 def test_download_document_when_no_document_exists_for_agreement(authenticated_client):
     agreement = AgreementFactory(slug='hello', document=None)
-    uri = reverse('schedule:download', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
     response = authenticated_client.get(uri)
     assert response.status_code == 302
-    assert response.get('Location') == reverse('schedule:manage')
+    assert response.get('Location') == reverse('schedule:fta:manage')
 
 
 @mock.patch('storages.backends.s3boto3.S3Boto3Storage.open')
 def test_download_document(mock_open, authenticated_client):
     mock_open.return_value = SimpleUploadedFile('doc', b'hello')
     agreement = AgreementWithDocumentFactory(slug='test_agreement')
-    uri = reverse('schedule:download', kwargs={'slug': agreement.slug})
+    uri = reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
     response = authenticated_client.get(uri)
     assert response.status_code == 200
     assert response.content == b'hello'
