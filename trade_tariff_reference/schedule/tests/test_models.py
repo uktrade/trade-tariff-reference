@@ -5,8 +5,8 @@ from freezegun import freeze_time
 import pytest
 
 from schedule.tests.factories import (
+    AgreementDocumentHistoryFactory,
     AgreementFactory,
-    DocumentHistoryFactory,
     ExtendedQuotaFactory,
     setup_quota_data,
 )
@@ -41,7 +41,7 @@ def test_agreement_model():
 
 @freeze_time('2019-02-01 02:00:00')
 def test_document_history_model():
-    document_history = DocumentHistoryFactory(agreement__slug='doc-history-slug')
+    document_history = AgreementDocumentHistoryFactory(agreement__slug='doc-history-slug')
     assert str(document_history) == 'doc-history-slug - Doc History - 2019-02-01 02:00:00+00:00'
 
 

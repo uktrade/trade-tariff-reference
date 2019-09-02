@@ -9,7 +9,7 @@ from override_storage import override_storage
 import pytest
 
 from trade_tariff_reference.documents.utils import (
-    update_agreement_document_status,
+    update_document_status,
     upload_document_to_s3,
     upload_generic_document_to_s3
 )
@@ -52,6 +52,6 @@ def test_upload_generic_document_to_s3():
 
 def test_update_agreement_document_status():
     agreement = AgreementFactory()
-    update_agreement_document_status(agreement, DocumentStatus.UNAVAILABLE)
+    update_document_status(agreement, DocumentStatus.UNAVAILABLE)
     agreement.refresh_from_db()
     assert agreement.document_status == DocumentStatus.UNAVAILABLE

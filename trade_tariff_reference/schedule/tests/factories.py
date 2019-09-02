@@ -38,14 +38,14 @@ class AgreementWithDocumentFactory(AgreementFactory):
     document = factory.django.FileField(filename='annex.docx')
 
 
-class DocumentHistoryFactory(factory.django.DjangoModelFactory):
+class AgreementDocumentHistoryFactory(factory.django.DjangoModelFactory):
     agreement = factory.SubFactory(AgreementFactory)
     data = {}
     change = {}
     forced = True
 
     class Meta:
-        model = 'schedule.DocumentHistory'
+        model = 'schedule.AgreementDocumentHistory'
 
 
 class ExtendedQuotaFactory(factory.django.DjangoModelFactory):

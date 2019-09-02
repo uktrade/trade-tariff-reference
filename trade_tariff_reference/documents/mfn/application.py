@@ -14,7 +14,8 @@ from .constants import (
 
 class Application(DatabaseConnect):
 
-    def __init__(self, document_type, first_chapter=1, last_chapter=99):
+    def __init__(self, document_type, first_chapter=1, last_chapter=99, force=False):
+        self.force_document_generation = force
         self.document_type = document_type
         self.first_chapter = first_chapter
         self.last_chapter = last_chapter
