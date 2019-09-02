@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
 from trade_tariff_reference.documents.mfn.constants import CLASSIFICATION, SCHEDULE
-from trade_tariff_reference.documents.tasks import generate_mfn_master_document
+from trade_tariff_reference.documents.tasks import generate_fta_document, generate_mfn_master_document
 
 from .constants import DOCX_CONTENT_TYPE
 from .forms import AgreementModelForm, ExtendedQuotaForm, ManageExtendedInformationForm
@@ -34,6 +34,18 @@ class DownloadAgreementScheduleView(RedirectView):
         response = HttpResponse(agreement.document.read(), content_type=DOCX_CONTENT_TYPE)
         response['Content-Disposition'] = f'inline; filename={agreement.slug}_annex.docx'
         return response
+
+
+class RegenerateAgreementScheduleView(RedirectView):
+
+    def get_agreement(self):
+        return get_object_or_404(Agreement, slug=self.kwargs['slug'])
+
+    def get(self, request, *args, **kwargs):
+        agreement = self.get_agreement()
+        if not agreement.is_document_generating:
+            generate_fta_document.delay(agreement.slug, force=True)
+        return redirect(reverse('schedule:fta:manage'))
 
 
 class BaseAgreementScheduleView:

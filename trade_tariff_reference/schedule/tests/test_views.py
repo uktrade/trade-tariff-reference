@@ -8,6 +8,7 @@ import pytest
 
 from trade_tariff_reference.schedule.models import (
     Agreement,
+    DocumentStatus,
     ExtendedQuota,
 )
 from trade_tariff_reference.schedule.tests.factories import (
@@ -259,3 +260,36 @@ def test_download_document(mock_open, authenticated_client):
     assert response.content == b'hello'
     assert response.get('Content-type') == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     assert response.get('Content-Disposition') == 'inline; filename=test_agreement_annex.docx'
+
+
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
+def test_regenerate_document_when_agreement_does_not_exist(mock_generate_document, authenticated_client):
+    mock_generate_document.return_value = None
+    uri = reverse('schedule:fta:regenerate', kwargs={'slug': 'hello'})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 404
+    assert mock_generate_document.called is False
+
+
+@pytest.mark.parametrize(
+    'document_status,expected_document_to_be_generated',
+    (
+        (DocumentStatus.AVAILABLE, True),
+        (DocumentStatus.UNAVAILABLE, True),
+        (DocumentStatus.GENERATING, False),
+    )
+)
+@mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
+def test_regenerate_document_when_agreement(
+    mock_generate_document,
+    authenticated_client,
+    document_status,
+    expected_document_to_be_generated
+):
+    mock_generate_document.return_value = None
+    agreement = AgreementFactory(slug='hello', document=None, document_status=document_status)
+    uri = reverse('schedule:fta:regenerate', kwargs={'slug': agreement.slug})
+    response = authenticated_client.get(uri)
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('schedule:fta:manage')
+    assert mock_generate_document.called is expected_document_to_be_generated
