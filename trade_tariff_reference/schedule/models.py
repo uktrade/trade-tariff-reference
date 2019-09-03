@@ -247,6 +247,9 @@ class SpecialNote(models.Model):
     def commodity_code(self):
         return self.quota_order_number_id
 
+    def __str__(self):
+        return f'{self.quota_order_number_id} - {self.note[0:30]}'
+
 
 class SeasonalQuota(models.Model):
     quota_order_number_id = models.CharField(max_length=120)
@@ -326,7 +329,7 @@ class ChapterNote(models.Model):
         )
 
     def __str__(self):
-        return f'{self.chapter.description} Note'
+        return f'Chapter Note - {self.chapter.description[0:30]}'
 
     class Meta:
         ordering = ('chapter__id',)
