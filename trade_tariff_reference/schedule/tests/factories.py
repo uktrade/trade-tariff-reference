@@ -87,11 +87,37 @@ class ChapterFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('id',)
 
 
+class ChapterNoteFactory(factory.django.DjangoModelFactory):
+    chapter = factory.SubFactory(ChapterFactory)
+    document = None
+    document_created_at = None
+    document_check_sum = None
+
+    class Meta:
+        model = 'schedule.ChapterNote'
+
+
+class ChapterNoteWithDocumentFactory(factory.django.DjangoModelFactory):
+    document = factory.django.FileField(filename='chapter_note.docx')
+
+
+class ChapterDocumentHistoryFactory(factory.django.DjangoModelFactory):
+    chapter = factory.SubFactory(ChapterFactory)
+    document_type = SCHEDULE
+    data = {}
+    change = {}
+    forced = True
+
+    class Meta:
+        model = 'schedule.ChapterDocumentHistory'
+
+
 class MFNDocumentFactory(factory.django.DjangoModelFactory):
     document_type = SCHEDULE
     document = None
     document_status = DocumentStatus.AVAILABLE
     document_created_at = datetime.now()
+    document_check_sum = ''
 
     class Meta:
         model = 'schedule.MFNDocument'
@@ -106,6 +132,34 @@ class MFNDocumentFactory(factory.django.DjangoModelFactory):
 
 class MFNDocumentWithDocumentFactory(MFNDocumentFactory):
     document = factory.django.FileField(filename='mfn.docx')
+    document_check_sum = '5d41402abc4b2a76b9719d911017c592'
+
+
+class MFNDocumentHistoryFactory(factory.django.DjangoModelFactory):
+    mfn_document = factory.SubFactory(MFNDocumentFactory)
+    document_type = SCHEDULE
+    data = {}
+    change = {}
+    forced = True
+
+    class Meta:
+        model = 'schedule.MFNDocumentHistory'
+
+
+class SeasonalQuotaFactory(factory.django.DjangoModelFactory):
+    quota_order_number_id = str(random.randrange(100000, 999999))
+
+    class Meta:
+        model = 'schedule.SeasonalQuota'
+
+
+class SeasonalQuotaSeasonFactory(factory.django.DjangoModelFactory):
+    seasonal_quota = factory.SubFactory(SeasonalQuotaFactory)
+    start_date = factory.Faker('date')
+    end_date = factory.Faker('date')
+
+    class Meta:
+        model = 'schedule.SeasonalQuotaSeason'
 
 
 def setup_quota_data():

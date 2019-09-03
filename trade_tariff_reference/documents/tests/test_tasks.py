@@ -1,6 +1,6 @@
-import pytest
-
 from unittest import mock
+
+import pytest
 
 from trade_tariff_reference.documents.tasks import (
     generate_all_fta_documents,
@@ -9,8 +9,8 @@ from trade_tariff_reference.documents.tasks import (
     generate_mfn_master_document,
     handle_agreement_document_generation_fail,
 )
-from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.schedule.models import DocumentStatus
+from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 
 
 pytestmark = pytest.mark.django_db
