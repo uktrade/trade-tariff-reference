@@ -38,7 +38,7 @@ class AgreementDocumentHistoryLog:
                 change[key] = list(change[key])
         return change
 
-    def log_document_history(self, remote_file_name, obj=None):
+    def log_document_history(self, remote_file_name):
         change = self.change
         if change:
             logger.debug(f'Changes found\n{change}')
@@ -71,7 +71,7 @@ class ChapterDocumentHistoryLog(AgreementDocumentHistoryLog):
             document_type=self.document_type,
         ).first()
 
-    def create_history_event(self, change, remote_file_name, obj=None):
+    def create_history_event(self, change, remote_file_name):
         ChapterDocumentHistory.objects.create(
             chapter=self.object,
             document_type=self.document_type,
