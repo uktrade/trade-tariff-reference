@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.db.utils import IntegrityError
 from django.shortcuts import reverse
 
 from freezegun import freeze_time
@@ -108,6 +109,12 @@ def test_mfn_document_model():
     assert mfn_document.is_document_unavailable is False
     assert mfn_document.is_document_generating is False
     assert mfn_document.download_url == reverse('schedule:mfn:download', kwargs={'document_type': SCHEDULE})
+
+
+def test_mfn_document_model_constraint():
+    MFNDocumentWithDocumentFactory(document_type=SCHEDULE)
+    with pytest.raises(IntegrityError):
+        MFNDocumentWithDocumentFactory(document_type=SCHEDULE)
 
 
 def test_latin_term_model():
