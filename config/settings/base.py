@@ -58,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'trade_tariff_reference.core.middleware.TimezoneMiddleware',
     'trade_tariff_reference.core.middleware.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -175,6 +176,10 @@ SASS_OUTPUT_STYLE = 'compressed'
 
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
 
+SCHEDULE = 'schedule'
+CLASSIFICATION = 'classification'
+
+
 CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
 
 CELERY_REDIS_INDEX = '1'
@@ -184,11 +189,21 @@ CELERY_BROKER_URL = f'redis://trade_application_redis:6379/{CELERY_REDIS_INDEX}'
 CELERY_BEAT_SCHEDULE = {}
 
 if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
-    CELERY_BEAT_SCHEDULE['refresh-documents'] = {
+    CELERY_BEAT_SCHEDULE['refresh-fta-documents'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
         'schedule': crontab(minute='3', hour='1'),
         'args': (False, False),
-     }
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-schedule-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
+        'schedule': crontab(minute='3', hour='2'),
+        'args': (SCHEDULE, False),
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-classification-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
+        'schedule': crontab(minute='45', hour='2'),
+        'args': (CLASSIFICATION, False),
+    }
 
 # authbroker config
 AUTHBROKER_URL = env('AUTHBROKER_URL', default='http://localhost')

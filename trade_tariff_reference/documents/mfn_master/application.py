@@ -11,6 +11,7 @@ from trade_tariff_reference.documents.history import MFNDocumentHistoryLog
 from trade_tariff_reference.documents.utils import (
     update_document_status,
     upload_generic_document_to_s3,
+    update_last_checked,
 )
 from trade_tariff_reference.schedule.models import (
     Chapter,
@@ -40,6 +41,7 @@ class Application:
         self.create_document(mfn_document)
         mfn_document = self.get_object()
         update_document_status(mfn_document, DocumentStatus.AVAILABLE)
+        update_last_checked(mfn_document)
 
     def write_document(self, mfn_document, mfn_document_log):
         document_field = f"{self.document_type}_document"

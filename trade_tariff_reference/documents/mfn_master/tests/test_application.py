@@ -71,14 +71,20 @@ def test_main_updates_document_status(mock_create_document, mock_update_status):
     assert mock_update_status.call_args_list[1] == mock.call(mfn_document, DocumentStatus.AVAILABLE)
 
 
+@mock.patch('trade_tariff_reference.documents.mfn_master.application.update_last_checked')
 @mock.patch('trade_tariff_reference.documents.mfn_master.application.update_document_status')
 @mock.patch('trade_tariff_reference.documents.mfn_master.application.Application.create_document')
-def test_main_updates_document_status_when_mfn_document_does_not_exist(mock_create_document, mock_update_status):
+def test_main_updates_document_status_when_mfn_document_does_not_exist(
+    mock_create_document,
+    mock_update_status,
+    mock_update_last_checked
+):
     mock_create_document.return_value = None
     app = Application(SCHEDULE)
     app.main()
     assert mock_create_document.call_count == 1
     assert mock_update_status.call_count == 1
+    assert mock_update_last_checked.call_count == 1
     assert mock_update_status.call_args_list[0] == mock.call(None, DocumentStatus.AVAILABLE)
 
 

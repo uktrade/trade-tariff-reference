@@ -36,6 +36,11 @@ def update_document_status(model, status):
     model.save(update_fields=['document_status'])
 
 
+def update_last_checked(model):
+    model.last_checked = timezone.now()
+    model.save(update_fields=['last_checked'])
+
+
 def get_document_check_sum(file_contents):
     document_hash = hashlib.md5(file_contents)
     return document_hash.hexdigest()

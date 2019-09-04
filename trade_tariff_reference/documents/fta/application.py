@@ -14,7 +14,7 @@ from trade_tariff_reference.documents.fta.constants import (
 )
 from trade_tariff_reference.documents.fta.document import Document
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
-from trade_tariff_reference.documents.utils import update_document_status
+from trade_tariff_reference.documents.utils import update_document_status, update_last_checked
 from trade_tariff_reference.schedule.models import Agreement, DocumentStatus
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,7 @@ class Application(DatabaseConnect):
         self.mfn_list = []
 
     def main(self):
+        update_last_checked(self.agreement)
         self.create_document()
 
     def get_agreement(self, country_profile):

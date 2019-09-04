@@ -55,6 +55,11 @@
                                      <li class="govuk-!-padding-top-2">
                                         <a href="{{ agreement.regenerate_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
                                      </li>
+                                     {% if agreement.document_created_at %}
+                                         <li class="govuk-!-padding-top-2">
+                                             <p class="govuk-body govuk-!-font-size-14">{% trans 'Last updated' %}:<br /> {{ agreement.document_created_at }}</p>
+                                        </li>
+                                     {% endif %}
                                 {% endif %}
                             </ul>
                         </td>
