@@ -75,6 +75,7 @@ class Agreement(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
+    last_checked = models.DateTimeField(null=True, blank=True)
 
     @property
     def country_profile(self):
@@ -285,6 +286,7 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
+    schedule_last_checked = models.DateTimeField(null=True, blank=True)
     schedule_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
     classification_document = models.FileField(null=True, blank=True, storage=MFNClassificationStorage())
     classification_document_created_at = models.DateTimeField(null=True, blank=True)
@@ -293,6 +295,7 @@ class Chapter(models.Model):
         default=DocumentStatus.UNAVAILABLE,
         max_length=20
     )
+    classification_last_checked = models.DateTimeField(null=True, blank=True)
     classification_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
 
     @property
@@ -338,6 +341,7 @@ class ChapterNote(models.Model):
 class MFNDocument(models.Model):
     document = models.FileField(storage=MFNStorage())
     document_created_at = models.DateTimeField()
+    last_checked = models.DateTimeField(null=True, blank=True)
     document_check_sum = models.CharField(max_length=32)
     document_type = models.CharField(choices=DocumentType.DOCUMENT_TYPE_CHOICES, max_length=100)
     document_status = models.CharField(

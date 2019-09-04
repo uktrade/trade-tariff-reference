@@ -3,8 +3,7 @@
 <tr class="govuk-table__row text-top">
     <td class="govuk-table__cell">{% trans title %}</td>
     <td class="govuk-table__cell">1 - 99</td>
-    <td class="govuk-table__cell">{{ document.document_created_at }}</td>
-    <td class="govuk-table__cell">{{ document.document_created_at }}</td>
+    <td class="govuk-table__cell">{{ document.last_checked }}</td>
     <td class="govuk-table__cell">
         <ul class="govuk-list">
             <li class="govuk-!-padding-top-1">
@@ -20,6 +19,11 @@
                  <li class="govuk-!-padding-top-2">
                     <a href="{% url 'schedule:mfn:regenerate' document_type=document_type %}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
                  </li>
+            {% endif %}
+            {% if document.document_created_at %}
+                 <li class="govuk-!-padding-top-2">
+                     <p class="govuk-body govuk-!-font-size-14">{% trans 'Last updated' %}:<br /> {{ document.document_created_at }}</p>
+                </li>
             {% endif %}
         </ul>
     </td>

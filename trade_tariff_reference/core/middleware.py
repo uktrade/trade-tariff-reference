@@ -1,5 +1,10 @@
 import time
 
+import pytz
+
+from django.utils import timezone
+from django.utils.deprecation import MiddlewareMixin
+
 
 class HealthCheckMiddleware(object):
 
@@ -9,3 +14,10 @@ class HealthCheckMiddleware(object):
     def __call__(self, request):
         request.start_time = time.time()
         return self.get_response(request)
+
+
+class TimezoneMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        tzname = 'Europe/London'
+        timezone.activate(pytz.timezone(tzname))

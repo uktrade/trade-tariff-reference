@@ -47,7 +47,7 @@ class AgreementDocumentHistoryLog:
     def get_history(self):
         return AgreementDocumentHistory.objects.filter(
             agreement=self.object,
-        ).first()
+        ).last()
 
     def create_history_event(self, change, remote_file_name):
         AgreementDocumentHistory.objects.create(
@@ -69,7 +69,7 @@ class ChapterDocumentHistoryLog(AgreementDocumentHistoryLog):
         return ChapterDocumentHistory.objects.filter(
             chapter=self.object,
             document_type=self.document_type,
-        ).first()
+        ).last()
 
     def create_history_event(self, change, remote_file_name):
         ChapterDocumentHistory.objects.create(
@@ -92,7 +92,7 @@ class MFNDocumentHistoryLog(AgreementDocumentHistoryLog):
         return MFNDocumentHistory.objects.filter(
             mfn_document=self.object,
             document_type=self.document_type,
-        ).first()
+        ).last()
 
     def create_history_event(self, change, remote_file_name):
         MFNDocumentHistory.objects.create(

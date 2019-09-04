@@ -9,6 +9,7 @@ from trade_tariff_reference.schedule.models import (
     ExtendedQuota,
     LatinTerm,
     MFNDocumentHistory,
+    MFNDocument,
     SpecialNote,
 )
 
@@ -78,3 +79,4 @@ admin.site.register(ExtendedQuota)
 admin.site.register(SpecialNote)
 admin.site.register(MFNDocumentHistory, MFNDocumentHistoryAdmin)
 admin.site.register(LatinTerm)
+admin.site.register(MFNDocument)

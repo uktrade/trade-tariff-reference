@@ -49,6 +49,7 @@ class TestAgreementAPIViews:
         self.assert_agreement(agreement, actual_result)
 
     def assert_agreement(self, agreement, actual_result):
+        agreement.refresh_from_db()
         assert set(actual_result.keys()) == {
             'agreement_date',
             'agreement_name',
@@ -58,7 +59,8 @@ class TestAgreementAPIViews:
             'document_status',
             'download_url',
             'slug',
-            'document_created_at'
+            'document_created_at',
+            'last_checked',
         }
         assert actual_result['slug'] == agreement.slug
         assert actual_result['agreement_date'] == agreement.agreement_date.strftime('%Y-%m-%d')
@@ -68,6 +70,7 @@ class TestAgreementAPIViews:
         assert actual_result['country_codes'] == agreement.country_codes
         assert actual_result['document_status'] == agreement.document_status
         assert actual_result['document_created_at'] == agreement.document_created_at
+        assert actual_result['last_checked'] == agreement.last_checked
         if agreement.document_status == DocumentStatus.AVAILABLE:
             assert actual_result['download_url'].endswith(
                 reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
