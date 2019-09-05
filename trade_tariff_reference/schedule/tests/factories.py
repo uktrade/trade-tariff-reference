@@ -129,6 +129,7 @@ class MFNDocumentFactory(factory.django.DjangoModelFactory):
     document = None
     document_status = DocumentStatus.AVAILABLE
     document_created_at = datetime.now()
+    last_checked = datetime.now()
     document_check_sum = ''
 
     class Meta:
