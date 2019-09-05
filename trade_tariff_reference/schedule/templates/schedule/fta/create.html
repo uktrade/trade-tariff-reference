@@ -21,17 +21,34 @@
 
                 {% include 'schedule/input_field.html' with field=form.slug %}
 
-                {% if form.instance.country_codes %}
-                    {% for country_code in form.instance.country_codes %}
-                        {% include 'schedule/input_field.html' with field=form.country_codes hint='Enter a geographical area id' %}
-                    {% endfor %}
-                {% else %}
-                    {% include 'schedule/input_field.html' with field=form.country_codes hint='Enter a geographical area id' %}
-                {% endif %}
+                <div id="country_codes">
+                    <div class="govuk-form-group {% if form.country_codes.errors %}govuk-form-group--error{% endif %}" v-for="(country, index) in country_codes">
+                        <label class="govuk-label" :for="'id_country_codes_' + index">
+                            Country code
+                            <span v-if="index">
+                                <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="removeCountryCode(index)">{% trans 'Remove country' %}</a>
+                            </span>
+                            <span :id="'country_code-hint-' + index" class="govuk-hint">Enter a geographical area id</span>
+                            {% if form.country_codes.errors %}
+                                {% for error in form.country_codes.errors %}
+                                    <span class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>{{ error }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                        </label>
+                        <!-- Switch those to work with an array of values and valid HTML -->
+                        <input class="govuk-input" id="id_country_codes" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
+                        <!-- <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes[]" type="text" value="country" v-model="country_codes[index]" required="required"> -->
+                    </div>
 
-                <div class="govuk-form-group govuk-!-padding-top-2">
-                    <a href="#" class="govuk-link govuk-!-font-size-19">{% trans 'Add another country' %}</a>
+                    <div class="govuk-form-group govuk-!-padding-top-2">
+                        <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="addCountryCode">{% trans 'Add another country' %}</a>
+                    </div>
                 </div>
+
+
+
 
                 {% include 'schedule/input_field.html' with field=form.agreement_name %}
 
@@ -57,7 +74,7 @@
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for=id_"agreement_date_month">Month</label>
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_month">Month</label>
                                     {{ form.agreement_date_month }}
                                 </div>
                             </div>
@@ -100,3 +117,26 @@
     </div>
 </form>
 {% endblock content %}
+
+{% block vue_additions %}
+<script>
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#country_codes',
+        data: {
+            country_codes: JSON.parse(JSON.stringify({% autoescape off %}{{form.instance.country_codes}}{% endautoescape %})),
+        },
+        methods: {
+            addCountryCode: function() {
+                this.country_codes.push('');
+            },
+            removeCountryCode: function(i, event) {
+                if (this.country_codes.length) {
+                    this.country_codes.splice(i, 1)
+                }
+            }
+        }
+    });
+</script>
+{% endblock vue_additions %}
+

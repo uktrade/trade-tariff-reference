@@ -128,5 +128,10 @@
         {% block footer_additions %} {% endblock footer_additions %}
         <script src="{% static 'tariff/js/gov-uk-all.js' %}"></script>
         <script>window.GOVUKFrontend.initAll()</script>
+        <!-- Vue for production -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script> -->
+        <!-- Vue for development -->
+        <script src="{% static 'tariff/js/vue.js' %}"></script>
+        {% block vue_additions %} {% endblock vue_additions %}
     </body>
 </html>
