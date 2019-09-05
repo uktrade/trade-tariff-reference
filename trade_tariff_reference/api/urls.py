@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AgreementViewSet
+from .views import AgreementViewSet, MFNDocumentViewSet
 
 
 app_name = 'api'
@@ -20,5 +20,15 @@ urlpatterns = [
         'agreement/<slug:slug>/',
         AgreementViewSet.as_view(actions=GET_OBJECT),
         name='agreement-detail',
+    ),
+    path(
+        'mfn/',
+        MFNDocumentViewSet.as_view(actions=GET_LIST),
+        name='mfn-document-list',
+    ),
+    path(
+        'mfn/<str:document_type>/',
+        MFNDocumentViewSet.as_view(actions=GET_OBJECT),
+        name='mfn-document-detail',
     ),
 ]
