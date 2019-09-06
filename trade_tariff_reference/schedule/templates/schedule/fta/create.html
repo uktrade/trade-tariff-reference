@@ -24,14 +24,14 @@
                 <div id="country_codes">
                     <div class="govuk-form-group" v-bind:class="{ 'govuk-form-group--error': errors[index] && errors[index].message!=='None'}" v-for="(country, index) in country_codes">
                         <label class="govuk-label" :for="'id_country_codes_' + index">
-                            Country code
+                            {% trans 'Country code' %}
                             <span v-if="index">
                                 <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="removeCountryCode(index)">{% trans 'Remove country' %}</a>
                             </span>
-                            <span :id="'country_code-hint-' + index" class="govuk-hint">Enter a geographical area id</span>
+                            <span :id="'country_code-hint-' + index" class="govuk-hint">{% trans 'Enter a geographical area id' %}</span>
 
                             <span class="govuk-error-message" v-if="errors[index] && errors[index].message!=='None'">
-                                <span class="govuk-visually-hidden">Error:</span> [[errors[index].message]]
+                                <span class="govuk-visually-hidden">{% trans 'Error:' %}</span> [[errors[index].message]]
                             </span>
                         </label>
                         <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
@@ -42,16 +42,12 @@
                     </div>
                 </div>
 
-
-
-
                 {% include 'schedule/input_field.html' with field=form.agreement_name %}
-
 
                 <div class="govuk-form-group {% if form.agreement_date.errors %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="agreement-date-hint" role="group">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                            <label class="govuk-label" for="id_agreement_date">Agreement date</label>
+                            <label class="govuk-label" for="id_agreement_date">{% trans 'Agreement date' %}</label>
                         </legend>
                         {% if form.agreement_date.errors %}
                             {% for error in form.agreement_date.errors %}
@@ -63,19 +59,19 @@
                         <div class="govuk-date-input" id="agreement-date">
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_day">Day</label>
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_day">{% trans 'Day' %}</label>
                                     {{ form.agreement_date_day }}
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_month">Month</label>
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_month">{% trans 'Month' %}</label>
                                     {{ form.agreement_date_month }}
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_year">Year</label>
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_year">{% trans 'Year' %}</label>
                                     {{ form.agreement_date_year }}
                                 </div>
                             </div>
@@ -119,8 +115,8 @@
         delimiters: ['[[', ']]'],
         el: '#country_codes',
         data: {
-            country_codes: {% autoescape off %}{{form.instance.country_codes}}{% endautoescape %},
-            errors: {% autoescape off %}{{form.country_codes.errors.as_json }}{% endautoescape %},
+            country_codes: {% autoescape off %}{{ form.instance.country_codes }}{% endautoescape %},
+            errors: {% autoescape off %}{{ form.country_codes.errors.as_json }}{% endautoescape %},
         },
         methods: {
             addCountryCode: function() {

@@ -111,25 +111,25 @@ class AgreementModelForm(forms.ModelForm):
         invalid_country_codes_list = []
         country_codes = self.data.getlist('country_codes')
         found = False
-        errors = []
         for country_code in country_codes:
             if country_code not in geographical_areas:
                 found = True
-                errors.append(f'Invalid country code {country_code}')
+                invalid_country_codes_list.append(f'Invalid country code {country_code}')
             else:
-                errors.append(None)
+                invalid_country_codes_list.append(None)
         if found:
-            self.add_error('country_codes', errors)
+            self.add_error('country_codes', invalid_country_codes_list)
         return country_codes
 
     def is_valid(self):
         is_valid = super().is_valid()
         for field_name, error in self.errors.items():
             field = self.fields.get(field_name)
-            if field:
-                field_class = field.widget.attrs.get('class')
-                if field_class:
-                    self.fields[field_name].widget.attrs['class'] = f'{field_class} {field_class}--error'
+            if not field:
+                return is_valid
+            field_class = field.widget.attrs.get('class')
+            if field_class:
+                self.fields[field_name].widget.attrs['class'] = f'{field_class} {field_class}--error'
         return is_valid
 
 
