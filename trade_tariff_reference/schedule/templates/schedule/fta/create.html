@@ -22,23 +22,18 @@
                 {% include 'schedule/input_field.html' with field=form.slug %}
 
                 <div id="country_codes">
-                    <div class="govuk-form-group {% if form.country_codes.errors %}govuk-form-group--error{% endif %}" v-for="(country, index) in country_codes">
+                    <div class="govuk-form-group" v-bind:class="{ 'govuk-form-group--error': errors[index] && errors[index].message!=='None'}" v-for="(country, index) in country_codes">
                         <label class="govuk-label" :for="'id_country_codes_' + index">
                             Country code
                             <span v-if="index">
                                 <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="removeCountryCode(index)">{% trans 'Remove country' %}</a>
                             </span>
                             <span :id="'country_code-hint-' + index" class="govuk-hint">Enter a geographical area id</span>
-                            {% if form.country_codes.errors %}
-                                {% for error in form.country_codes.errors %}
-                                    <span class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>{{ error }}
-                                    </span>
-                                {% endfor %}
-                            {% endif %}
+
+                            <span class="govuk-error-message" v-if="errors[index] && errors[index].message!=='None'">
+                                <span class="govuk-visually-hidden">Error:</span> [[errors[index].message]]
+                            </span>
                         </label>
-                        <!-- Switch those to work with an array of values and valid HTML -->
-                        <!-- <input class="govuk-input" id="id_country_codes" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required"> -->
                         <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
                     </div>
 
@@ -124,15 +119,18 @@
         delimiters: ['[[', ']]'],
         el: '#country_codes',
         data: {
-            country_codes: JSON.parse(JSON.stringify({% autoescape off %}{{form.instance.country_codes}}{% endautoescape %})),
+            country_codes: {% autoescape off %}{{form.instance.country_codes}}{% endautoescape %},
+            errors: {% autoescape off %}{{form.country_codes.errors.as_json }}{% endautoescape %},
         },
         methods: {
             addCountryCode: function() {
                 this.country_codes.push('');
+                this.errors.push('');
             },
             removeCountryCode: function(i, event) {
                 if (this.country_codes.length) {
                     this.country_codes.splice(i, 1)
+                    this.errors.splice(i, 1)
                 }
             }
         }
