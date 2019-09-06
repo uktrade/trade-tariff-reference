@@ -38,8 +38,8 @@
                             {% endif %}
                         </label>
                         <!-- Switch those to work with an array of values and valid HTML -->
-                        <input class="govuk-input" id="id_country_codes" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
-                        <!-- <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes[]" type="text" value="country" v-model="country_codes[index]" required="required"> -->
+                        <!-- <input class="govuk-input" id="id_country_codes" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required"> -->
+                        <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
                     </div>
 
                     <div class="govuk-form-group govuk-!-padding-top-2">
