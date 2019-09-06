@@ -6,15 +6,12 @@
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
                 {% for field in form %}
-                    {% trans 'begin' as index %}
                     {% for error in field.errors %}
-                        {% if error == 'None' %}
-                            {% trans 'error' as index %}
-                        {% else %}
+                        {% if error != 'None' %}
                             <li>
-                                <a href="#id_{{ field.name }}{% if index == 'error' %}_{{ forloop.counter0 }}{% endif %}">{{ field.label }} - {{ error }}</a>
+                                <a href="#id_{{ field.name }}{% if field.name == 'country_codes' %}_{{ forloop.counter0 }}{% endif %}">{{ field.label }} - {{ error }}</a>
                             </li>
-                         {% endif %}
+                        {% endif %}
                      {% endfor %}
                 {% endfor %}
             </ul>
