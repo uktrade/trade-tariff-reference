@@ -123,7 +123,10 @@ def test_create_agreement(mock_generate_document, authenticated_client):
 
 
 @mock.patch('trade_tariff_reference.documents.tasks.generate_fta_document.delay')
-def test_create_agreement_and_redirect_to_add_extended_information(mock_generate_document, authenticated_client):
+def test_create_agreement_and_redirect_to_add_extended_information(
+    mock_generate_document,
+    authenticated_client
+):
     mock_generate_document.return_value = None
     assert Agreement.objects.count() == 0
     GeographicalAreaFactory(geographical_area_id='RTD')
