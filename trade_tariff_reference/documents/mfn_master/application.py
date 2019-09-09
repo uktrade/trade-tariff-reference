@@ -10,8 +10,8 @@ from docxcompose.composer import Composer
 from trade_tariff_reference.documents.history import MFNDocumentHistoryLog
 from trade_tariff_reference.documents.utils import (
     update_document_status,
-    upload_generic_document_to_s3,
     update_last_checked,
+    upload_generic_document_to_s3,
 )
 from trade_tariff_reference.schedule.models import (
     Chapter,

@@ -1,21 +1,23 @@
-import pytest
-
 import copy
+
+from django.db.models.fields.files import FieldFile
 from django.shortcuts import reverse
 
+import pytest
+
+from rest_framework import status
+
 from trade_tariff_reference.schedule.tests.factories import (
-    AgreementFactory,
     AgreementDocumentHistoryFactory,
-    ChapterFactory,
+    AgreementFactory,
     ChapterDocumentHistoryFactory,
+    ChapterFactory,
     ChapterNoteFactory,
     ExtendedQuotaFactory,
-    MFNDocumentHistoryFactory,
     LatinTermFactory,
+    MFNDocumentHistoryFactory,
     SpecialNoteFactory,
 )
-from rest_framework import status
-from django.db.models.fields.files import FieldFile
 
 pytestmark = pytest.mark.django_db
 
@@ -117,7 +119,7 @@ def test_admin_views(
         post_data.update(post)
         post_response = authenticated_admin_client.post(uri, data=post_data, follow=True)
         assert post_response.status_code == status.HTTP_200_OK
-        assert b'errorlist' not in post_response.content,str(post_response.content)
+        assert b'errorlist' not in post_response.content, str(post_response.content)
 
         factory.refresh_from_db()
         for key, value in post.items():

@@ -46,7 +46,7 @@ To run the webserver follow these extra steps before visiting the web site.
 8.  Enter container
 
     ```shell
-    docker exec -ti trade-tariff-reference_tariffs_1 /bin/bash
+    docker exec -ti tariff_trade_application_1 /bin/bash
     ```
 
 9.  Run application from within the container

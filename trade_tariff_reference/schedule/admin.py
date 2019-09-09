@@ -8,8 +8,8 @@ from trade_tariff_reference.schedule.models import (
     ChapterNote,
     ExtendedQuota,
     LatinTerm,
-    MFNDocumentHistory,
     MFNDocument,
+    MFNDocumentHistory,
     SpecialNote,
 )
 
@@ -70,6 +70,23 @@ class MFNDocumentHistoryAdmin(admin.ModelAdmin):
     list_display = ['document_type', 'created_at']
 
 
+class MFNDocumentAdmin(admin.ModelAdmin):
+    fields = (
+        'document_type',
+        'document',
+        'document_status',
+        'document_check_sum',
+        'document_created_at',
+        'last_checked'
+    )
+    readonly_fields = (
+        'document_created_at',
+        'document_check_sum',
+        'document_type',
+        'last_checked'
+    )
+
+
 admin.site.register(Agreement)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register(ChapterNote, ChapterNoteAdmin)
@@ -79,4 +96,4 @@ admin.site.register(ExtendedQuota)
 admin.site.register(SpecialNote)
 admin.site.register(MFNDocumentHistory, MFNDocumentHistoryAdmin)
 admin.site.register(LatinTerm)
-admin.site.register(MFNDocument)
+admin.site.register(MFNDocument, MFNDocumentAdmin)
