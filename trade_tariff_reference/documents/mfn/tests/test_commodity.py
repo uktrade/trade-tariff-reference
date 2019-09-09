@@ -2,7 +2,136 @@ from unittest import mock
 
 import pytest
 
+from trade_tariff_reference.core.tests.utils import assert_xml
 from trade_tariff_reference.documents.mfn.commodity import Commodity
+
+
+EXP_FORMAT_DESCRIPTION_1 = '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/><w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/><w:p>' \
+                           '<w:r/><w:r><w:t>Other</w:t>' \
+                           '</w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
+
+EXP_FORMAT_DESCRIPTION_2 = '<w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:p>' \
+                           '<w:r/>' \
+                           '<w:r><w:t>kg liters</w:t></w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
+
+
+EXP_FORMAT_DESCRIPTION_3 = '<w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:p>' \
+                           '<w:r/>' \
+                           '<w:r><w:t>Other - Sweets</w:t></w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
+
+EXP_FORMAT_DESCRIPTION_4 = '<w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:pPr>' \
+                           '<w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:p>' \
+                           '<w:r/>' \
+                           '<w:r><w:t>Electroplated interior or exterior decorative parts consisting of:</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a copolymer of acrylonitrile-butadiene-styrene (ABS), ' \
+                           'whether or not mixed with polycarbonate,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- layers of copper, nickel and chromium</w:t></w:r>' \
+                           '<w:r><w:br/><w:t>for use in the manufacturing of parts for motor vehicles of heading ' \
+                           '8701 to 8705</w:t></w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
+
+EXP_FORMAT_DESCRIPTION_5 = '<w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:pPr>' \
+                           '<w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:p>' \
+                           '<w:r/>' \
+                           '<w:r><w:t>Heat-, infra- and UV insulating poly(vinyl butyral) film:</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- laminated with a metal layer with a thickness of 0,05 mm(±0,01 mm),' \
+                           '</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- containing by weight 29,75 % or more but not more than 40,25 % of' \
+                           ' triethyleneglycol di (2-ethyl hexanoate) as plasticizer,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- with a light transmission of 70 % or more' \
+                           ' (as determined by the ISO 9050 standard);</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- with an UV transmission of 1 % or less (as determined ' \
+                           'by the ISO 9050 standard);</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- with a total thickness of 0,43 mm (± 0,043 mm)</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
+
+EXP_FORMAT_DESCRIPTION_6 = '<w:pPr><w:jc w:val="left"/>' \
+                           '</w:pPr><w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr>' \
+                           '<w:t>-</w:t><w:tab/>' \
+                           '<w:p><w:r/>' \
+                           '<w:r><w:t>Thermoplastic polyurethane foil in rolls with:</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a width of more than 900 mm but not more than 1016 mm,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a matt finish,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a thickness of 0,43 mm (± 0.03 mm),</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- an elongation to break of 420 % or more but not more than 520 %,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a tensile strength of 55 N/mm</w:t></w:r>' \
+                           '<w:r><w:rPr>  <w:vertAlign w:val="superscript"/></w:rPr>' \
+                           '<w:t>2</w:t>' \
+                           '</w:r>' \
+                           '<w:r><w:t>$ (± 3) (as determined by the method EN ISO 527)</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a hardness of 90 (± 4) (as determined by the method: Shore A [ASTM D2240]),' \
+                           '</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- wrinkle inside (waves) of 6,35 mm,</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
+                           '<w:r><w:t>- a flatness of 0,025 mm</w:t></w:r>' \
+                           '<w:r><w:br/></w:r>' \
+                           '<w:r/>' \
+                           '</w:p>'
 
 
 def test_initialise():
@@ -12,7 +141,7 @@ def test_initialise():
     assert commodity.commodity_code == ''
     assert commodity.commodity_code_formatted == ''
     assert commodity.description == ''
-    assert commodity.description_formatted == "<w:rPr><w:b/></w:rPr><w:t xml:space='preserve'></w:t>"
+    assert_xml(commodity.description_formatted, "<w:p><w:r/></w:p>")
     assert commodity.product_line_suffix == ''
     assert commodity.indents == 0
     assert commodity.leaf == 0
@@ -89,3 +218,47 @@ def test_get_indent_string(indents, expected_result):
     application = mock.MagicMock()
     commodity = Commodity(application, indents=indents)
     assert commodity.get_indent_string() == expected_result
+
+
+@pytest.mark.parametrize(
+    'db_description,indents,expected_description',
+    (
+        ('Other', 4, EXP_FORMAT_DESCRIPTION_1),
+        ('|kg liters', 1, EXP_FORMAT_DESCRIPTION_2),
+        ('Other - Sweets', 1, EXP_FORMAT_DESCRIPTION_3),
+        (
+            'Electroplated interior or exterior decorative parts consisting of:<br> <br><br><br>- a copolymer of'
+            ' acrylonitrile-butadiene-styrene (ABS), whether or not mixed with polycarbonate,<br> <br><br><br>- layers'
+            ' of copper, nickel and chromium<br>for use in the manufacturing of parts for motor vehicles of heading'
+            ' 8701 to 8705',
+            2,
+            EXP_FORMAT_DESCRIPTION_4,
+        ),
+        (
+            " Heat-, infra- and UV insulating poly(vinyl butyral) film:<br> <br><br><br>- laminated with a metal layer"
+            " with a thickness of 0,05 mm(±0,01 mm),<br> <br><br><br>- containing by weight 29,75 % or more but not "
+            "more than 40,25 % of triethyleneglycol di (2-ethyl hexanoate) as plasticizer,<br> <br><br><br>- with a "
+            "light transmission of 70 % or more (as determined by the ISO 9050 standard);<br> <br><br><br>- with an "
+            "UV transmission of 1 % or less (as determined by the ISO 9050 standard);<br> <br><br><br>- with "
+            "a total thickness of 0,43 mm (± 0,043 mm)<br>",
+            4,
+            EXP_FORMAT_DESCRIPTION_5,
+        ),
+        (
+            "Thermoplastic polyurethane foil in rolls with:<br> <br><br><br>- a width of more than 900 mm but not"
+            " more than 1016 mm,<br> <br><br><br>- a matt finish,<br> <br><br><br>- a thickness"
+            " of 0,43 mm (± 0.03 mm),<br> <br><br><br>- an elongation to break of 420 % or more but not more than"
+            " 520 %,<br> <br><br><br>- a tensile strength of 55 N/mm<sup>2</sup>$ (± 3) (as determined by the"
+            " method EN ISO 527)<br> <br><br><br>- a hardness of 90 (± 4) (as determined by the method:"
+            " Shore A [ASTM D2240]),<br> <br><br><br>- wrinkle inside (waves) of 6,35 mm,<br> "
+            "<br><br><br>- a flatness of 0,025 mm<br>",
+            5,
+            EXP_FORMAT_DESCRIPTION_6,
+        )
+    )
+)
+def test_format_description(db_description, indents, expected_description):
+    application = mock.MagicMock()
+    commodity = Commodity(application, indents=indents)
+    actual_description = str(commodity.format_description(db_description))
+    assert_xml(actual_description, expected_description)
