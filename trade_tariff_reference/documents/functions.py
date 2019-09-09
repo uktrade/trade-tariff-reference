@@ -171,8 +171,9 @@ def apply_value_format_to_document(document_xml_string):
     document_xml_string = re.sub(
         "([0-9]),([0-9]{1,3}) kvar", "\\1.\\2 kvar", document_xml_string, flags=re.MULTILINE
     )
-    document_xml_string = re.sub("±([0-9]),([0-9]{1,3})", "±\\1.\\2", document_xml_string, flags=re.MULTILINE)
+    document_xml_string = re.sub("±([0-9]{1,2}),([0-9]{1,3})", "±\\1.\\2", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub(
         "€ ([0-9]{1,3}),([0-9]{1,3})", "€ \\1.\\2", document_xml_string, flags=re.MULTILINE
     )
+
     return document_xml_string
