@@ -4,6 +4,8 @@ from unittest import mock
 
 import factory
 
+import pytz
+
 from trade_tariff_reference.documents.mfn.constants import SCHEDULE
 from trade_tariff_reference.schedule.models import DocumentStatus, ExtendedQuota
 from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
@@ -128,8 +130,8 @@ class MFNDocumentFactory(factory.django.DjangoModelFactory):
     document_type = SCHEDULE
     document = None
     document_status = DocumentStatus.AVAILABLE
-    document_created_at = datetime.now()
-    last_checked = datetime.now()
+    document_created_at = datetime.now(pytz.utc)
+    last_checked = datetime.now(pytz.utc)
     document_check_sum = ''
 
     class Meta:

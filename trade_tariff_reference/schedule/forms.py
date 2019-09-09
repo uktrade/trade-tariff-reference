@@ -1,6 +1,7 @@
 from datetime import date
 
 from django import forms
+from django.utils import timezone
 
 from trade_tariff_reference.tariff.models import GeographicalAreas
 
@@ -101,9 +102,9 @@ class AgreementModelForm(forms.ModelForm):
     def clean_country_codes(self):
         geographical_areas = list(
             GeographicalAreas.objects.filter(
-                validity_start_date__lte=date.today()
+                validity_start_date__lte=timezone.now()
             ).exclude(
-                validity_end_date__lte=date.today()
+                validity_end_date__lte=timezone.now()
             ).values_list(
                 'geographical_area_id', flat=True
             )
