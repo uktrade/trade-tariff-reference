@@ -6,7 +6,7 @@
     <td class="govuk-table__cell">{{ document.last_checked }}</td>
     <td class="govuk-table__cell">
         {% if document %}
-            <update-record record-data="{{document.to_json }}" regenarate-url="{{document.regenerate_url}}" edit-url="{{document.edit_url}}" update-url="/api/mfn/{{document.document_type}}/?format=json"  v-bind:poll-interval="6000"></update-record>
+            <update-record record-data="{{ document.to_json }}" regenarate-url="{{ document.regenerate_url }}" update-url="/api/mfn/{{ document.document_type }}/?format=json"  v-bind:poll-interval="6000"></update-record>
         {% else %}
             <ul class="govuk-list">
                 <li class="govuk-!-padding-top-1">

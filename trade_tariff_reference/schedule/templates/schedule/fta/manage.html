@@ -38,7 +38,7 @@
                         <td class="govuk-table__cell">{{ agreement.agreement_date_long }}</td>
                         <td class="govuk-table__cell">{{ agreement.version }}</td>
                         <td class="govuk-table__cell">
-                            <update-record record-data="{{agreement.to_json}}" regenarate-url="{{agreement.regenerate_url}}" edit-url="{{agreement.edit_url}}" update-url="/api/agreement/{{agreement.slug}}/?format=json" v-bind:poll-interval="4000"></update-record>
+                            <update-record record-data="{{ agreement.to_json }}" regenarate-url="{{ agreement.regenerate_url }}" edit-url="{{ agreement.edit_url }}" update-url="/api/agreement/{{ agreement.slug }}/?format=json" v-bind:poll-interval="4000"></update-record>
                         </td>
                     </tr>
                 {% endfor %}

@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -8,8 +9,8 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from trade_tariff_reference.documents.functions import format_seasonal_expression, list_to_sql
 from trade_tariff_reference.documents.utils import get_document_check_sum
-from rest_framework.renderers import JSONRenderer
-import json
+
+
 class DocumentStatus:
     AVAILABLE = 'available'
     UNAVAILABLE = 'unavailable'

@@ -14,7 +14,6 @@ Vue.component('update-record', {
     },
     "edit-url": {
       type: String,
-      required: true
     },
     "update-url": {
       type: String,
@@ -53,7 +52,7 @@ Vue.component('update-record', {
         <div v-else-if="is_document_generating" class="govuk-text">Updating document</div>
         <div v-else class="govuk-text">Error document unavailable</div>
       </li>
-      <li>
+      <li v-if="editUrl">
         <a v-bind:href="editUrl" class="govuk-link govuk-link--no-visited-state">Edit</a>
       </li>
       <li v-if="!is_document_generating() || is_document_unavailable()">
