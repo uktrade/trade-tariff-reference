@@ -7,6 +7,11 @@ from trade_tariff_reference.schedule.models import SeasonalQuota
 
 logger = logging.getLogger(__name__)
 
+AUTHORISED_USE_NOTE = (
+    'Code reserved for authorised use; the duty rate is specified under regulations made under '
+    'section 19 of the Taxation (Cross-border Trade) Act 2018'
+)
+
 
 class Commodity:
 
@@ -38,26 +43,18 @@ class Commodity:
         self.special_list = []
 
     def combine_notes(self):
-        if len(self.notes_list) > 1:
-            # print ("More than one note", self.commodity_code)
-            # sys.exit()
-            pass
         self.notes_list.sort(reverse=True)
         if len(self.notes_list) == 0:
-            self.notes_string = "<w:r><w:t></w:t></w:r>"
+            notes_string = "<w:r><w:t></w:t></w:r>"
         else:
-            # print ("combine notes")
-            self.notes_string = ""
-            i = 1
-            break_string = "<w:br/>"
-            for n in self.notes_list:
-                if i > 1:
-                    break_string = "<w:br/>"
-                else:
-                    break_string = ""
-                self.notes_string += "<w:r>" + break_string + "<w:t>" + n + "</w:t></w:r>"
-                # print (n)
-                i = i + 1
+            notes_string = ''
+            for num, n in enumerate(self.notes_list):
+                br = '<w:br/>'
+                if num == 0:
+                    br = ''
+                note = f"<w:r>{br}<w:t>{n}</w:t></w:r>"
+                notes_string += note
+        self.notes_string = notes_string
 
     def combine_duties(self):
         self.combined_duty = ""
@@ -104,18 +101,11 @@ class Commodity:
         self.combined_duty = self.combined_duty.strip()
 
     def latinise(self, description):
-        # Italicise any Latin text based on the content of the file latin_phrases.txt
-        my_phrases = []
+        # Italicise any Latin text
         for latin_phrase in self.application.latin_phrases:
-            latin_phrase_parts = latin_phrase.split(" ")
             if description.find(latin_phrase) > -1:
-                if latin_phrase not in my_phrases:
-                    replacement_string = self.style_latin(latin_phrase)
-                    description = description.replace(latin_phrase, replacement_string)
-                for part in latin_phrase_parts:
-                    my_phrases.append(part)
-                    if "thynnus" in latin_phrase:
-                        my_phrases.append("thynnus")
+                replacement_string = self.style_latin(latin_phrase)
+                description = description.replace(latin_phrase, replacement_string)
         return description
 
     def style_latin(self, phrase):
@@ -215,18 +205,12 @@ class Commodity:
         if self.commodity_code in self.application.authorised_use_list:
             if self.product_line_suffix == "80":
                 if len(self.special_list) == 0:
-                    if len(self.notes_list) != 0:
-                        print(self.notes_list)
-                    self.notes_list.append(
-                        "Code reserved for authorised use; the duty rate is specified under"
-                        " regulations made under section 19 of the Taxation (Cross-border Trade) Act 2018"
-                    )
+                    self.notes_list.append(AUTHORISED_USE_NOTE)
                     self.combined_duty = "AU"
                     self.assigned = True
                     self.special_list.append("authoriseduse")
 
     def check_for_seasonal(self):
-        # print ("Checking for seasonal commodities")
         seasonal_records = 0
         if self.product_line_suffix != "80":
             return seasonal_records

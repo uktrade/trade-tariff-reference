@@ -32,7 +32,7 @@ def test_get_latin_phrases():
     latin_term = LatinTermFactory()
     application = Application(SCHEDULE)
     actual_latin_phrases = application.get_latin_phrases()
-    assert actual_latin_phrases == [latin_term.text]
+    assert actual_latin_phrases == {latin_term.text}
 
 
 def test_special_notes():

@@ -1,9 +1,26 @@
+from datetime import datetime, timedelta
+
 from unittest import mock
+
+from freezegun import freeze_time
 
 import pytest
 
 from trade_tariff_reference.core.tests.utils import assert_xml
-from trade_tariff_reference.documents.mfn.commodity import Commodity
+from trade_tariff_reference.documents.mfn.commodity import (
+    AUTHORISED_USE_NOTE,
+    Commodity,
+)
+from trade_tariff_reference.documents.mfn.duty import Duty
+from trade_tariff_reference.schedule.models import LatinTerm
+from trade_tariff_reference.schedule.tests.factories import (
+    LatinTermFactory,
+    SeasonalQuotaFactory,
+    SeasonalQuotaSeasonFactory,
+    SpecialNoteFactory,
+)
+
+pytestmark = pytest.mark.django_db
 
 
 EXP_FORMAT_DESCRIPTION_1 = '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/><w:pPr><w:jc w:val="left"/>' \
@@ -134,6 +151,14 @@ EXP_FORMAT_DESCRIPTION_6 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:p>'
 
 
+EXP_SEASONAL_XML = '<w:r><w:t>2019-02-01 to 2019-05-12</w:t></w:r><w:r><w:tab/><w:t>DUTY / 100 kg</w:t></w:r>' \
+                   '<w:r><w:br/></w:r>' \
+                   '<w:r><w:t>2019-03-03 to 2019-07-01</w:t></w:r><w:r><w:tab/><w:t>/ 100 kg gross</w:t></w:r>'
+
+
+EXP_MIXTURE_AU_FORMULA_XML = '<w:r><w:t>Formula</w:t></w:r><w:r><w:br/><w:t>AU</w:t></w:r>'
+
+
 def test_initialise():
     application = mock.MagicMock()
     commodity = Commodity(application)
@@ -262,3 +287,466 @@ def test_format_description(db_description, indents, expected_description):
     commodity = Commodity(application, indents=indents)
     actual_description = str(commodity.format_description(db_description))
     assert_xml(actual_description, expected_description)
+
+
+@pytest.mark.parametrize(
+    'commodity_code,expected_result',
+    (
+        ('', 10),
+        ('0000000000', 2),
+        ('1100000000', 2),
+        ('1111000000', 4),
+        ('1111110000', 6),
+        ('1111111100', 8),
+        ('1111111111', 10),
+        ('0000000011', 10),
+        ('0000001111', 10),
+        ('0000111111', 10),
+        ('0011111111', 10),
+    )
+)
+def test_get_significant_digits(commodity_code, expected_result):
+    application = mock.MagicMock()
+    commodity = Commodity(application, commodity_code=commodity_code)
+    assert commodity.significant_digits == expected_result
+
+
+@pytest.mark.parametrize(
+    'commodity_code,expected_result',
+    (
+        ('', 10),
+        ('0000000000', 2),
+        ('1100000000', 2),
+        ('1111000000', 4),
+        ('1111110000', 6),
+        ('1111111100', 8),
+        ('1111111111', 10),
+        ('0000000011', 10),
+        ('0000001111', 10),
+        ('0000111111', 10),
+        ('0011111111', 10),
+    )
+)
+def test_get_significant_digits(commodity_code, expected_result):
+    application = mock.MagicMock()
+    commodity = Commodity(application, commodity_code=commodity_code)
+    assert commodity.significant_digits == expected_result
+
+
+@pytest.mark.parametrize(
+    'phrase,indents,expected_result',
+    (
+        ('hello', 0, '<b><i>hello</i></b>'),
+        ('hello', 1, '<b><i>hello</i></b>'),
+        ('hello', 2, '<i>hello</i>'),
+        ('hello', 20, '<i>hello</i>'),
+
+    )
+)
+def test_style_latin(phrase, indents, expected_result):
+    application = mock.MagicMock()
+    commodity = Commodity(application, indents=indents)
+    assert commodity.style_latin(phrase) == expected_result
+
+
+def test_latinise():
+    LatinTermFactory(text='weather')
+    LatinTermFactory(text='sunny thynnus')
+    LatinTermFactory(text='weather')
+    LatinTermFactory(text='sunny')
+
+    application = mock.MagicMock()
+    application.latin_phrases = get_latin_terms()
+
+    commodity = Commodity(application)
+    assert commodity.application.latin_phrases == {'weather', 'sunny thynnus', 'sunny'}
+    assert (
+        commodity.latinise('sunny weather is bad, no the weather is good thynnus.') ==
+        '<b><i>sunny</i></b> <b><i>weather</i></b> is bad, no the <b><i>weather</i></b> is good thynnus.'
+    )
+
+
+def get_latin_terms():
+    return set(LatinTerm.objects.values_list('text', flat=True))
+
+
+@pytest.mark.parametrize(
+    'product_line_suffix,'
+    'commodity_code,'
+    'add_season,'
+    'expected_result,'
+    'expected_combined_duty,'
+    'expected_notes_list,'
+    'expected_special_list,'
+    'expected_assigned_status',
+    (
+        ('HELLO', '', False, 0, '', [], [], False),
+        ('80', '', False, 0, '', [], [], False),
+        ('80', '1234567890', False, 1, '', ['Seasonally variable rate'], ['seasonal'], True),
+        ('80', '1234567890', True, 1, EXP_SEASONAL_XML, ['Seasonally variable rate'], ['seasonal'], True),
+    ),
+)
+@freeze_time('2019-02-01 02:00:00')
+def test_check_for_seasonal(
+    product_line_suffix,
+    commodity_code,
+    add_season,
+    expected_result,
+    expected_combined_duty,
+    expected_notes_list,
+    expected_special_list,
+    expected_assigned_status,
+):
+    seasonal_quota = SeasonalQuotaFactory(quota_order_number_id='1234567890')
+    if add_season:
+        start_date = datetime.now()
+        end_date_1 = start_date + timedelta(days=100)
+        end_date_2 = start_date + timedelta(days=150)
+        SeasonalQuotaSeasonFactory(
+            seasonal_quota=seasonal_quota,
+            duty='DUTY DTN',
+            start_date=start_date,
+            end_date=end_date_1
+        )
+        SeasonalQuotaSeasonFactory(
+            seasonal_quota=seasonal_quota,
+            duty='DTN G',
+            start_date=start_date + timedelta(days=30),
+            end_date=end_date_2
+        )
+
+    application = mock.MagicMock()
+    commodity = Commodity(application, commodity_code=commodity_code, product_line_suffix=product_line_suffix)
+    assert commodity.check_for_seasonal() == expected_result
+    assert commodity.notes_list == expected_notes_list
+    assert commodity.special_list == expected_special_list
+    assert commodity.assigned is expected_assigned_status
+    assert commodity.combined_duty == expected_combined_duty
+
+
+@pytest.mark.parametrize(
+    'product_line_suffix,'
+    'commodity_code,'
+    'authorised_use_list,'
+    'special_list,'
+    'expected_combined_duty,'
+    'expected_notes_list,'
+    'expected_special_list,'
+    'expected_assigned_status',
+    (
+        ('HELLO', '', [], [], '', [], [], False),
+        ('82', '1234567890', ['1234567890'], [], '', [], [], False),
+        ('80', '1234567890', ['1234567890'], ['special'], '', [], ['special'], False),
+        ('80', '1234567890', ['1234567890'], [], 'AU', [AUTHORISED_USE_NOTE], ['authoriseduse'], True),
+    ),
+)
+def test_check_for_authorised_use(
+    product_line_suffix,
+    commodity_code,
+    authorised_use_list,
+    special_list,
+    expected_combined_duty,
+    expected_notes_list,
+    expected_special_list,
+    expected_assigned_status
+):
+    application = mock.MagicMock(
+        authorised_use_list=authorised_use_list,
+    )
+    commodity = Commodity(
+        application,
+        commodity_code=commodity_code,
+        product_line_suffix=product_line_suffix
+    )
+    commodity.special_list = special_list
+    commodity.check_for_authorised_use()
+    assert commodity.combined_duty == expected_combined_duty
+    assert commodity.special_list == expected_special_list
+    assert commodity.assigned is expected_assigned_status
+    assert commodity.notes_list == expected_notes_list
+
+
+@pytest.mark.parametrize(
+    'commodity_code,'
+    'application_special_list,'
+    'expected_special_list,'
+    'expected_assigned_status',
+    (
+        ('', [], [], False),
+        ('1234567890', [], [], False),
+        ('1234567890', ['1234567890'],  ['special'], True),
+
+    ),
+)
+def test_check_for_specials(
+    commodity_code,
+    application_special_list,
+    expected_special_list,
+    expected_assigned_status,
+):
+    application_special_list = [
+        SpecialNoteFactory(quota_order_number_id=commodity_code) for commodity_code in application_special_list
+    ]
+
+    expected_notes_list = [
+        special_note.note for special_note in application_special_list
+    ]
+
+    application = mock.MagicMock(
+        special_list=application_special_list,
+    )
+    commodity = Commodity(application, commodity_code=commodity_code)
+    commodity.check_for_specials()
+    assert commodity.notes_list == expected_notes_list
+    assert commodity.special_list == expected_special_list
+    assert commodity.assigned is expected_assigned_status
+    assert commodity.combined_duty == ''
+
+
+@pytest.mark.parametrize(
+    'commodity_code,'
+    'combined_duty,'
+    'expected_combined_duty,'
+    'expected_notes_list,'
+    'expected_special_list,'
+    'expected_assigned_status',
+    (
+        ('', '', '', [], [], False),
+        ('0300000000', '', '', [], [], False),
+        ('0900000000', '', '', [], [], False),
+        ('0200000000', '', '', [], [], False),
+        ('0200000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0200000000', 'AU', EXP_MIXTURE_AU_FORMULA_XML, ['Mixture rule; non-mixture'], ['mixture'], True),
+        ('0200000011', 'HELLO', 'HELLO', [], [], False),
+        ('1000213000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('1101121200', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0904000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0905000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0906000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0907000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0908000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0909000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0910000000', 'HELLO', 'Formula', ['Mixture rule; non-mixture: HELLO'], ['mixture'], True),
+        ('0911000000', '', '', [], [], False),
+        ('0910000001', '', '', [], [], False),
+
+    ),
+)
+def test_check_for_mixture(
+    commodity_code,
+    combined_duty,
+    expected_combined_duty,
+    expected_notes_list,
+    expected_special_list,
+    expected_assigned_status,
+):
+    application = mock.MagicMock()
+    commodity = Commodity(application, commodity_code=commodity_code)
+    commodity.combined_duty = combined_duty
+    commodity.check_for_mixture()
+
+    assert commodity.special_list == expected_special_list
+    assert commodity.assigned is expected_assigned_status
+    assert commodity.combined_duty == expected_combined_duty
+    assert commodity.notes_list == expected_notes_list
+
+
+@pytest.mark.parametrize(
+    'notes_list,'
+    'expected_notes_string',
+    (
+        (
+            [],
+            '<w:r><w:t></w:t></w:r>',
+        ),
+        (
+            ['Note 1'],
+            '<w:r><w:t>Note 1</w:t></w:r>',
+        ),
+        (
+            ['Note 1', 'Note 2'],
+            '<w:r><w:t>Note 2</w:t></w:r><w:r><w:br/><w:t>Note 1</w:t></w:r>',
+        ),
+        (
+            ['Note 1', 'Note 2', 'Note 3'],
+            '<w:r><w:t>Note 3</w:t></w:r><w:r><w:br/><w:t>Note 2</w:t></w:r><w:r><w:br/><w:t>Note 1</w:t></w:r>',
+        ),
+    ),
+)
+def test_combine_notes(
+    notes_list,
+    expected_notes_string,
+):
+    application = mock.MagicMock()
+    commodity = Commodity(application)
+    commodity.notes_list = notes_list
+    commodity.combine_notes()
+    assert commodity.notes_string == expected_notes_string
+
+
+@pytest.mark.parametrize(
+    'duty_list,'
+    'expected_combined_duty',
+    (
+        ([], ''),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'additional_code_id': '1'
+                }
+            ],
+            '+ FD'
+        ),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'additional_code_id': '1'
+                },
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '21',
+                    'measurement_unit_code': 'MTK',
+                    'measurement_unit_qualifier_code': 'G',
+                    'additional_code_id': '1'
+                }
+            ],
+            '+ FD + SD'
+        ),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 1,
+                    'additional_code_id': '1'
+                },
+                {
+                    'measure_type_id': 2,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'MTK',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 2,
+                    'additional_code_id': '1',
+                }
+            ],
+            ''
+        ),
+        (
+            [
+                {
+                    'measure_type_id': '105',
+                    'duty_amount': 1,
+                    'duty_expression_id': '21',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': '105',
+                    'additional_code_id': '1',
+                },
+                {
+                    'measure_type_id': 2,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 2,
+                    'additional_code_id': '1',
+                }
+            ],
+            '+ SD'
+        ),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '21',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': '1',
+                    'additional_code_id': '1',
+                },
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 1,
+                    'additional_code_id': '2',
+                }
+            ],
+            ''
+        ),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '21',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': '1',
+                    'additional_code_id': '1',
+                },
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 1,
+                    'additional_code_id': '500',
+                }
+            ],
+            '+ FD'
+        ),
+        (
+            [
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '21',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': '1',
+                    'additional_code_id': '500',
+                },
+                {
+                    'measure_type_id': 1,
+                    'duty_amount': 1,
+                    'duty_expression_id': '27',
+                    'measurement_unit_code': 'KGM',
+                    'measurement_unit_qualifier_code': 'G',
+                    'measure_sid': 1,
+                    'additional_code_id': '550',
+                }
+            ],
+            '+ SD + FD'
+        )
+    )
+)
+def test_combine_duties(
+    duty_list,
+    expected_combined_duty,
+):
+    application = mock.MagicMock()
+    commodity = Commodity(application)
+    duty_list = [Duty(**duty_dict) for duty_dict in duty_list]
+    commodity.duty_list = duty_list
+    commodity.combine_duties()
+    assert commodity.combined_duty == expected_combined_duty
