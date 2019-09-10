@@ -30,7 +30,7 @@
                 </thead>
                 <tbody class="govuk-table__body">
                 {% for agreement in agreements %}
-                    <tr class="govuk-table__row text-top">
+                    <tr class="govuk-table__row text-top govuk-!-padding-top-2">
                         <td class="govuk-table__cell">{{ agreement.slug }}</td>
                         <td class="govuk-table__cell">{{ agreement.country_name }}</td>
                         <td class="govuk-table__cell">{{ agreement.country_codes_string }}</td>
@@ -38,30 +38,7 @@
                         <td class="govuk-table__cell">{{ agreement.agreement_date_long }}</td>
                         <td class="govuk-table__cell">{{ agreement.version }}</td>
                         <td class="govuk-table__cell">
-                            <ul class="govuk-list">
-                                <li class="govuk-!-padding-top-1">
-                                    {% if agreement.is_document_available %}
-                                        <a href="{{ agreement.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download' %}</a>
-                                    {% elif agreement.is_document_generating %}
-                                        <div class="govuk-text">{% trans 'Updating document' %}</div>
-                                    {% else %}
-                                        <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
-                                    {% endif %}
-                                </li>
-                                <li class="govuk-!-padding-top-2">
-                                    <a href="{{ agreement.edit_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Edit' %}</a>
-                                </li>
-                                 {% if not agreement.is_document_generating or agreement.is_document_unavailable %}
-                                     <li class="govuk-!-padding-top-2">
-                                        <a href="{{ agreement.regenerate_url }}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
-                                     </li>
-                                     {% if agreement.document_created_at %}
-                                         <li class="govuk-!-padding-top-2">
-                                             <p class="govuk-body govuk-!-font-size-14">{% trans 'Last updated' %}:<br /> {{ agreement.document_created_at }}</p>
-                                        </li>
-                                     {% endif %}
-                                {% endif %}
-                            </ul>
+                            <update-record record-data="{{agreement.to_json}}" regenarate-url="{{agreement.regenerate_url}}" edit-url="{{agreement.edit_url}}" update-url="/api/agreement/{{agreement.slug}}/?format=json" v-bind:poll-interval="4000"></update-record>
                         </td>
                     </tr>
                 {% endfor %}

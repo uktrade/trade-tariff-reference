@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'trade_tariff_reference.api',
     'sass_processor',
     'authbroker_client',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +157,13 @@ STATIC_FOLDER = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     ('tariff', STATIC_FOLDER),
 ]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'tariff/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}
 
 SASS_PROCESSOR_INCLUDE_DIRS = [
     STATIC_FOLDER,
