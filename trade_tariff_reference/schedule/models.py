@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -136,6 +137,10 @@ class Agreement(models.Model):
     @property
     def is_document_unavailable(self):
         return self.document_status == DocumentStatus.UNAVAILABLE
+
+    def to_json(self):
+        from trade_tariff_reference.api.serializers import AgreementSerializer
+        return json.dumps(AgreementSerializer(instance=self).data)
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
@@ -366,10 +371,18 @@ class MFNDocument(models.Model):
     def download_url(self):
         return reverse('schedule:mfn:download', kwargs={'document_type': self.document_type})
 
+    @property
+    def regenerate_url(self):
+        return reverse('schedule:mfn:regenerate', kwargs={'document_type': self.document_type})
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['document_type'], name='MFN Document Type constraint'),
         ]
+
+    def to_json(self):
+        from trade_tariff_reference.api.serializers import MFNDocumentSerializer
+        return json.dumps(MFNDocumentSerializer(instance=self).data)
 
     def __str__(self):
         return f'Master {self.document_type} MFN document'

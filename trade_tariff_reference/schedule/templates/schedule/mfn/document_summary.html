@@ -5,26 +5,19 @@
     <td class="govuk-table__cell">1 - 99</td>
     <td class="govuk-table__cell">{{ document.last_checked }}</td>
     <td class="govuk-table__cell">
-        <ul class="govuk-list">
-            <li class="govuk-!-padding-top-1">
-                {% if document.is_document_available %}
-                    <a href="{{ document.download_url }}" class="govuk-link govuk-link--no-visited-state">{% trans 'Download' %}</a>
-                {% elif document.is_document_generating %}
-                    <div class="govuk-text">{% trans 'Updating document' %}</div>
-                {% else %}
-                    <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
-                {% endif %}
-            </li>
-            {% if not document.is_document_generating %}
-                 <li class="govuk-!-padding-top-2">
-                    <a href="{% url 'schedule:mfn:regenerate' document_type=document_type %}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
-                 </li>
-            {% endif %}
-            {% if document.document_created_at %}
-                 <li class="govuk-!-padding-top-2">
-                     <p class="govuk-body govuk-!-font-size-14">{% trans 'Last updated' %}:<br /> {{ document.document_created_at }}</p>
+        {% if document %}
+            <update-record record-data="{{ document.to_json }}" regenarate-url="{{ document.regenerate_url }}" update-url="/api/mfn/{{ document.document_type }}/?format=json"  v-bind:poll-interval="6000"></update-record>
+        {% else %}
+            <ul class="govuk-list">
+                <li class="govuk-!-padding-top-1">
+                        <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
                 </li>
-            {% endif %}
-        </ul>
+                {% if not document.is_document_generating %}
+                    <li class="govuk-!-padding-top-2">
+                        <a href="{% url 'schedule:mfn:regenerate' document_type=document_type %}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
     </td>
 </tr>
