@@ -9,7 +9,7 @@
     "clean-bundles": "rimraf assets/tariff/bundles assets/tariff/tariff/bundles static/tariff/bundles static/bundles",
     "start": "webpack --config webpack.local.config.js  --watch --progress --colors",
     "prestart": "npm run clean-bundles",
-    "build": "webpack --config webpack.prod.config.js --progress --colors",
+    "build": "./node_modules/webpack/bin/webpack.js --config webpack.prod.config.js --progress --colors",
     "prebuild": "npm run clean-bundles"
   },
   "repository": {
