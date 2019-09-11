@@ -1,5 +1,6 @@
 #!/bin/bash -xe
 
+npm install
 node -v
 npm run build
 python manage.py compilescss --delete-files
