@@ -2,6 +2,9 @@
   "name": "trade-tariff-reference",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "10.*"
+  },
   "scripts": {
     "clean-bundles": "rimraf assets/tariff/bundles assets/tariff/tariff/bundles static/tariff/bundles static/bundles",
     "start": "webpack --config webpack.local.config.js  --watch --progress --colors",
