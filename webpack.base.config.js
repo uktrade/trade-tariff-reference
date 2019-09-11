@@ -12,7 +12,7 @@ module.exports = {
     vueComponents:  glob.sync('./static/js/vue/components/*.js'),
   },
   output: {
-      path: path.resolve(__dirname, './static/bundles/'),
+      path: path.resolve(__dirname, './static/js/bundles'),
       filename: "[name]-[hash].js",
   },
   module: {
