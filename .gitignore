@@ -141,6 +141,8 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# Webpack stats
+# Webpack
 webpack-stats.json
 webpack-stats-prod.json
+static/js/bundles
+
