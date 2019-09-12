@@ -1,4 +1,4 @@
-import trade_tariff_reference.documents.fta.functions as functions
+import trade_tariff_reference.documents.functions as functions
 
 PLUS_PREFIX = '+ '
 MIN_PREFIX = 'MIN '

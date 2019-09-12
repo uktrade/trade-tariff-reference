@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+
+{% load i18n %}
+
+{% block back_button %}
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+{% endblock back_button %}
+
+
+{% block content %}
+<form action="." method="post" name="agreement_form">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% csrf_token %}
+            {% include 'schedule/error_summary.html' %}
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">{{ heading }}</h1>
+                </legend>
+
+                {% include 'schedule/input_field.html' with field=form.slug %}
+
+                <div id="country_codes">
+                    <div class="govuk-form-group" v-bind:class="{ 'govuk-form-group--error': errors[index] && errors[index].message!=='None'}" v-for="(country, index) in country_codes">
+                        <label class="govuk-label" :for="'id_country_codes_' + index">
+                            {% trans 'Country code' %}
+                            <span v-if="index">
+                                <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="removeCountryCode(index)">{% trans 'Remove country' %}</a>
+                            </span>
+                            <span :id="'country_code-hint-' + index" class="govuk-hint">{% trans 'Enter a geographical area id' %}</span>
+
+                            <span class="govuk-error-message" v-if="errors[index] && errors[index].message!=='None'">
+                                <span class="govuk-visually-hidden">{% trans 'Error:' %}</span> [[errors[index].message]]
+                            </span>
+                        </label>
+                        <input class="govuk-input" :id="'id_country_codes_' + index" name="country_codes" type="text" value="country" v-model="country_codes[index]" required="required">
+                    </div>
+
+                    <div class="govuk-form-group govuk-!-padding-top-2">
+                        <a href="#" class="govuk-link govuk-!-font-size-19" @click.stop.prevent="addCountryCode">{% trans 'Add another country' %}</a>
+                    </div>
+                </div>
+
+                {% include 'schedule/input_field.html' with field=form.agreement_name %}
+
+                <div class="govuk-form-group {% if form.agreement_date.errors %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset" aria-describedby="agreement-date-hint" role="group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <label class="govuk-label" for="id_agreement_date">{% trans 'Agreement date' %}</label>
+                        </legend>
+                        {% if form.agreement_date.errors %}
+                            {% for error in form.agreement_date.errors %}
+                                <span class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>{{ error }}
+                                </span>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="govuk-date-input" id="agreement-date">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_day">{% trans 'Day' %}</label>
+                                    {{ form.agreement_date_day }}
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_month">{% trans 'Month' %}</label>
+                                    {{ form.agreement_date_month }}
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="id_agreement_date_year">{% trans 'Year' %}</label>
+                                    {{ form.agreement_date_year }}
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+               {% include 'schedule/input_field.html' with field=form.version %}
+
+                <div class="govuk-form-group govuk-!-padding-top-6">
+                    <fieldset class="govuk-fieldset" aria-describedby="extended-information-hint">
+                        <div class="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="id_extended_information" name="extended_information" type="checkbox" value="1">
+                                <label class="govuk-label govuk-checkboxes__label" for="id_extended_information">{% trans 'Do you want to manage extended information?' %}</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="gov-form-group govuk-!-padding-top-6">
+                    <ul class="govuk-list">
+                        <li>
+                            <input type="submit" value="{% trans 'Continue' %}" class="govuk-button govuk-!-margin-bottom-4">
+                        </li>
+                        <li>
+                            <a href="{% url 'schedule:fta:manage' %}" class="govuk-link">{% trans 'Cancel' %}</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</form>
+{% endblock content %}
+
+{% block vue-app %}
+<script>
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#country_codes',
+        data: {
+            country_codes: {% autoescape off %}{{ form.instance.country_codes }}{% endautoescape %},
+            errors: {% autoescape off %}{{ form.country_codes.errors.as_json }}{% endautoescape %},
+        },
+        methods: {
+            addCountryCode: function() {
+                this.country_codes.push('');
+                this.errors.push('');
+            },
+            removeCountryCode: function(i, event) {
+                if (this.country_codes.length) {
+                    this.country_codes.splice(i, 1)
+                    this.errors.splice(i, 1)
+                }
+            }
+        }
+    });
+</script>
+{% endblock vue-app %}
+

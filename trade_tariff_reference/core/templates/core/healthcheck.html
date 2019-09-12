@@ -1,4 +1,13 @@
-<pingdom_http_custom_check>
-    <status>{{ status }}</status>
-    <response_time>{{ response_time }}</response_time>
-</pingdom_http_custom_check>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        {% include 'core/styles.html' %}
+    </head>
+    <body>
+    <pingdom_http_custom_check>
+        <status>{{ status }}</status>
+        <response_time>{{ response_time }}</response_time>
+    </pingdom_http_custom_check>
+    {% include 'core/footer_additions.html' %}
+    </body>
+</html>

@@ -8,14 +8,11 @@ from functools import lru_cache
 
 from botocore.exceptions import EndpointConnectionError
 
-from deepdiff import DeepDiff
-from deepdiff.model import PrettyOrderedSet
-
 from django.conf import settings
 from django.template.loader import render_to_string
 
 
-import trade_tariff_reference.documents.fta.functions as f
+import trade_tariff_reference.documents.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
     GET_COMMODITIES_SQL,
@@ -33,8 +30,9 @@ from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
 from trade_tariff_reference.documents.fta.quota_commodity import QuotaCommodity
 from trade_tariff_reference.documents.fta.quota_definition import QuotaDefinition
 from trade_tariff_reference.documents.fta.quota_order_number import QuotaOrderNumber
+from trade_tariff_reference.documents.history import AgreementDocumentHistoryLog
 from trade_tariff_reference.documents.utils import upload_document_to_s3
-from trade_tariff_reference.schedule.models import DocumentHistory, ExtendedQuota
+from trade_tariff_reference.schedule.models import ExtendedQuota
 
 
 logger = logging.getLogger(__name__)
@@ -587,38 +585,24 @@ class Document:
         }
         return quota_data
 
-    def check_document_for_update(self, context):
-        history = DocumentHistory.objects.filter(
-            agreement=self.application.agreement,
-        ).first()
-
-        change = None
-        if history:
-            change = DeepDiff(history.data, context)
-        return change
-
-    def log_document_history(self, context, change, remote_file_name):
-        if change:
-            logger.debug(f'Changes found\n{change}')
-
-        DocumentHistory.objects.create(
-            agreement=self.application.agreement,
-            data=context,
-            change=self.prepare_change(change),
-            forced=self.application.force_document_generation,
-            remote_file_name=remote_file_name,
-        )
+    def get_document_xml(self, context):
+        document_template = "xml/fta/document_noquotas.xml"
+        if context.get('HAS_QUOTAS'):
+            document_template = "xml/fta/document_hasquotas.xml"
+        return render_to_string(document_template, context)
 
     def create_document(self, context):
-        change = self.check_document_for_update(context)
-        if change == dict() and not self.application.force_document_generation:
-            logger.info("\nPROCESS COMPLETE - Document unchanged no file generated")
+        agreement_log = AgreementDocumentHistoryLog(
+            self.application.agreement,
+            context,
+            self.application.force_document_generation
+        )
+        if agreement_log.change == dict() and not self.application.force_document_generation:
+            logger.info(
+                f'PROCESS COMPLETE - Document for {self.application.agreement.slug} unchanged no file generated')
             return
 
-        document_template = "xml/document_noquotas.xml"
-        if context.get('HAS_QUOTAS'):
-            document_template = "xml/document_hasquotas.xml"
-        document_xml = render_to_string(document_template, context)
+        document_xml = self.get_document_xml(context)
         try:
             remote_file_name = self.write(document_xml)
         except EndpointConnectionError:
@@ -626,15 +610,7 @@ class Document:
                 f'Error - Cannot connect to S3 unable to update document for {self.application.agreement.slug}'
             )
         else:
-            self.log_document_history(context, change, remote_file_name)
-
-    def prepare_change(self, change):
-        if not change:
-            return change
-        for key in change.keys():
-            if isinstance(change[key], PrettyOrderedSet):
-                change[key] = list(change[key])
-        return change
+            agreement_log.log_document_history(remote_file_name)
 
     def write(self, document_xml):
         ###########################################################################

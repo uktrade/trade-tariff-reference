@@ -1,7 +1,6 @@
 {% load i18n %}
 {% load useful %}
 {% load static %}
-{% load sass_tags %}
 
 <!doctype html>
 <html lang="en" class="govuk-template ">
@@ -14,49 +13,7 @@
         <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'tariff/img/favicon.ico' %}" type="image/x-icon">
         <meta name="twitter:dnt" content="on">
         <meta name="format-detection" content="telephone=no">
-        <link href="{% sass_src 'tariff/css/global.sass' %}" rel="stylesheet" media="all" />
-        <!--[if lte IE 9]>
-            <link href="{% sass_src 'tariff/css/global.sass' %}" rel="stylesheet" media="all" />
-        <![endif]-->
-        <!--[if lt IE 9]>
-            <script>
-                (function(){
-                var elements = [
-                      "abbr",
-                      "article",
-                      "aside",
-                      "audio",
-                      "canvas",
-                      "datalist",
-                      "details",
-                      "figure",
-                      "footer",
-                      "header",
-                      "hgroup",
-                      "main",
-                      "mark",
-                      "menu",
-                      "meter",
-                      "nav",
-                      "output",
-                      "progress",
-                      "section",
-                      "time",
-                      "video"
-                 ]
-                for (var i = 0; i < elements.length; i++) {
-                    document.createElement(elements[i])
-                }
-                })()
-            </script>
-            <style>
-              .govuk-width-container {
-                  width: 960px;
-                  margin-left: auto !important;
-                  margin-right: auto !important;
-              }
-            </style>
-        <![endif]-->
+        {% include 'core/styles.html' %}
     </head>
     <body class="govuk-template__body">
         <script>
@@ -123,9 +80,6 @@
                 </div>
             </div>
         </footer>
-
-        {% block footer_additions %} {% endblock footer_additions %}
-        <script src="{% static 'tariff/js/gov-uk-all.js' %}"></script>
-        <script>window.GOVUKFrontend.initAll()</script>
+    {% include 'core/footer_additions.html' %}
     </body>
 </html>

@@ -3,8 +3,8 @@ from datetime import timezone
 
 import pytest
 
+from trade_tariff_reference.documents.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.application import Application
-from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.tariff.models import MeursingComponents
@@ -38,6 +38,9 @@ def get_mfn_siv_product(
     measure_type_id=103,
     measure_quota_number=10,
     reduction_indicator=5,
+    measure_status='published',
+    measure_condition_status='published',
+    measure_condition_component_status='published',
 ):
     start_date_object = datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     start_date_object = start_date_object.replace(tzinfo=timezone.utc)
@@ -50,15 +53,18 @@ def get_mfn_siv_product(
         geographical_area_id=geographical_area_id,
         quota_order_number_id=measure_quota_number,
         reduction_indicator=reduction_indicator,
+        status=measure_status,
     )
     measure_condition = MeasureConditionFactory(
         measure_sid=measure.measure_sid,
         condition_code=condition_code,
+        status=measure_condition_status,
     )
     MeasureConditionComponentFactory(
         measure_condition_sid=measure_condition.measure_condition_sid,
         duty_expression_id=duty_expression_id,
         duty_amount=duty_amount,
+        status=measure_condition_component_status,
     )
     return measure
 
@@ -149,6 +155,9 @@ def test_get_mfns_for_siv_products_with_products():
     get_mfn_siv_product(1236, duty_expression_id='02')
     get_mfn_siv_product(1237, condition_code='C')
     get_mfn_siv_product(1238, start_date='2017-01-01 01:00:00')
+    get_mfn_siv_product(1239, duty_amount=300, measure_status='awaiting approval')
+    get_mfn_siv_product(1240, duty_amount=300, measure_condition_status='awaiting approval')
+    get_mfn_siv_product(1241, duty_amount=300, measure_condition_component_status='awaiting approval')
 
     application = get_application('israel')
     application.get_mfns_for_siv_products()

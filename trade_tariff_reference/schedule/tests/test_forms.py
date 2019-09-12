@@ -9,6 +9,7 @@ from trade_tariff_reference.schedule.tests.factories import (
     AgreementFactory,
     setup_quota_data,
 )
+from trade_tariff_reference.tariff.tests.factories import GeographicalAreaFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -52,12 +53,23 @@ def test_empty_create_agreement_form():
                 'country_codes': ['HELLO1'],
             },
             {
-                'country_codes': ['Invalid country code [HELLO1]'],
+                'country_codes': ['Invalid country code HELLO1'],
             },
         ),
+        (
+            {
+                'country_codes': ['RTD', 'HELLO1', 'GB'],
+            },
+            {
+                'country_codes': ['None', 'Invalid country code HELLO1', 'None'],
+            },
+        ),
+
     ),
 )
 def test_update_agreement_errors(update_post_data, expected_errors):
+    GeographicalAreaFactory(geographical_area_id='RTD')
+    GeographicalAreaFactory(geographical_area_id='GB')
     agreement = AgreementFactory()
     data = {
         'version': agreement.version,

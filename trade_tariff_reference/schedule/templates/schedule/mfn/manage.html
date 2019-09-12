@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% load i18n %}
+
+{% block back_button %}
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+{% endblock back_button %}
+
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{{ heading }}</h1>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">{% trans 'Document type' %}</th>
+                        <th class="govuk-table__header" scope="col">{% trans 'Chapters' %}</th>
+                        <th class="govuk-table__header" scope="col">{% trans 'Last time checked for update' %}</th>
+                        <th class="govuk-table__header" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    {% include 'schedule/mfn/document_summary.html' with document=schedule_document document_type='schedule' title='Schedule' %}
+                    {% include 'schedule/mfn/document_summary.html' with document=classification_document document_type='classification' title='Classification' %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

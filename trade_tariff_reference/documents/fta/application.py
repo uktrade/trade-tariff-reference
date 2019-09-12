@@ -5,17 +5,17 @@ from functools import lru_cache
 
 from django.conf import settings
 
+from trade_tariff_reference.documents.database import DatabaseConnect
+from trade_tariff_reference.documents.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.constants import (
     GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL,
     GET_MEUSRING_PERCENTAGE_SQL,
     GET_MFNS_FOR_SIV_PRODUCTS_SQL,
 )
-from trade_tariff_reference.documents.fta.database import DatabaseConnect
 from trade_tariff_reference.documents.fta.document import Document
-from trade_tariff_reference.documents.fta.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
-from trade_tariff_reference.documents.utils import update_agreement_document_status
-from trade_tariff_reference.schedule.models import Agreement
+from trade_tariff_reference.documents.utils import update_document_status, update_last_checked
+from trade_tariff_reference.schedule.models import Agreement, DocumentStatus
 
 logger = logging.getLogger(__name__)
 
@@ -24,22 +24,25 @@ class Application(DatabaseConnect):
 
     def __init__(self, country_profile, force_document_generation=True):
         self.agreement = self.get_agreement(country_profile)
-        update_agreement_document_status(self.agreement, Agreement.GENERATING)
+        update_document_status(self.agreement, DocumentStatus.GENERATING)
 
         self.force_document_generation = force_document_generation
         self.debug = False
 
         self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml")
+        self.COMPONENT_DIR = os.path.join(self.BASE_DIR, "../templates/xml/fta")
 
         # For the output folders
         self.OUTPUT_DIR = settings.GENERATED_DOCUMENT_LOCATION
 
         os.makedirs(self.OUTPUT_DIR, exist_ok=True)
-        self.connect()
 
         # MPP TODO: Move these
         self.mfn_list = []
+
+    def main(self):
+        update_last_checked(self.agreement)
+        self.create_document()
 
     def get_agreement(self, country_profile):
         try:
@@ -78,7 +81,7 @@ class Application(DatabaseConnect):
 
         # Personalise and write the document
         my_document.create_document(context_data)
-        update_agreement_document_status(self.agreement, self.agreement.AVAILABLE)
+        update_document_status(self.agreement, DocumentStatus.AVAILABLE)
 
     def get_mfns_for_siv_products(self):
         logger.debug(" - Getting MFNs for SIV products")

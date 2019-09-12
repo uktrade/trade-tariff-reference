@@ -13,6 +13,6 @@ def test_load_sql_file():
     agreement = AgreementFactory()
     TEST_SQL_DIR = os.path.dirname(os.path.abspath(__file__))
     with override_settings(BASE_DIR=TEST_SQL_DIR):
-        result = load_data_from_sql('test_utils.sql', {'slug': agreement.slug}, 'default')
+        result = load_data_from_sql('test_utils.sql', {'slug': agreement.slug}, 'default', return_result=True)
         assert len(result) == 1
         assert result[0][0] == agreement.agreement_name

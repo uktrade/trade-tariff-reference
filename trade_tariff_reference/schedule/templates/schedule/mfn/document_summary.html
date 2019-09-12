@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<tr class="govuk-table__row text-top">
+    <td class="govuk-table__cell">{% trans title %}</td>
+    <td class="govuk-table__cell">1 - 99</td>
+    <td class="govuk-table__cell">{{ document.last_checked }}</td>
+    <td class="govuk-table__cell">
+        {% if document %}
+            <update-record record-data="{{ document.to_json }}" regenarate-url="{{ document.regenerate_url }}" update-url="/api/mfn/{{ document.document_type }}/?format=json"  v-bind:poll-interval="6000"></update-record>
+        {% else %}
+            <ul class="govuk-list">
+                <li class="govuk-!-padding-top-1">
+                        <div class="govuk-text">{% trans 'Error document unavailable' %}</div>
+                </li>
+                {% if not document.is_document_generating %}
+                    <li class="govuk-!-padding-top-2">
+                        <a href="{% url 'schedule:mfn:regenerate' document_type=document_type %}" class="govuk-link govuk-link--no-visited-state" >{% trans 'Regenerate' %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </td>
+</tr>

@@ -12,14 +12,14 @@
           <p class="govuk-heading-m govuk-!-margin-bottom-2">{% trans 'Trade Agreements' %}</p>
           <ul class="govuk-list">
               <li>
-                  <a class="govuk-link" href="{% url 'schedule:manage' %}">{% trans 'Generate and view Trade Agreement reference document' %}</a>
+                  <a class="govuk-link" href="{% url 'schedule:fta:manage' %}">{% trans 'Generate and view Trade Agreement reference document' %}</a>
               </li>
           </ul>
 
           <p class="govuk-heading-m govuk-!-margin-bottom-2">{% trans 'MFN Schedules' %}</p>
           <ul class="govuk-list">
               <li>
-                  <a class="govuk-link" href="#">{% trans 'Generate MFN Schedule' %}</a>
+                  <a class="govuk-link" href="{% url 'schedule:mfn:manage' %}">{% trans 'Generate MFN Schedule' %}</a>
               </li>
               <li>
                   <a class="govuk-link" href="#">{% trans 'Generate WTO HTML pages' %}</a>

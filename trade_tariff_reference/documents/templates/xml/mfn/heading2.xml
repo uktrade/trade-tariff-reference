@@ -1,0 +1,12 @@
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:t>{{ CHAPTER }}</w:t>
+      </w:r>
+	  <w:r>
+		<w:br/>
+		<w:t>{{ HEADING }}</w:t>
+	</w:r>
+    </w:p>

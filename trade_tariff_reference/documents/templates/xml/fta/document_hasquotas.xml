@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 w16se w16cid wp14">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Title"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Preferential Tariff implementing the {{ AGREEMENT_NAME }}, version {{ VERSION }}, dated {{ AGREEMENT_DATE }}</w:t>
+      </w:r>
+    </w:p>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Contents"/>
+      </w:pPr>
+      <w:r>
+        <w:t>PART ONE: Overview</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Contents"/>
+      </w:pPr>
+      <w:r>
+        <w:t>PART TWO: UK Preferential Tariff</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Contents"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Annex I: Preferential Duty Tariff Table</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Contents"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Annex II: Preferential Quota Table</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:t>PART ONE: OVERVIEW</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:ind w:left="284" w:hanging="284"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">This document is the Preferential Tariff Document made under the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 for the Free Trade Agreement between the Government of the United Kingdom, of the one part, and the Government of {{ COUNTRY_NAME }}, of the other part, signed on {{ AGREEMENT_DATE_SHORT }} ("the Agreement"). It is made pursuant to regulations 2 and 3 and column 1 and 2 of the Schedule to the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:ind w:left="284" w:hanging="284"/>
+      </w:pPr>
+      <w:r>
+        <w:t>This document sets out the relevant tables for the preferential duty rates and quota rates and volumes pursuant to the Agreement.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:ind w:left="284" w:hanging="284"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Part Two of this document and the associated annexes set out the UK Preferential Tariff of the Agreement by specifying the rate of import duty applicable to goods falling within codes defined by the Goods Classification Table and falling within the Agreement.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="7"/>
+        </w:numPr>
+        <w:ind w:left="284" w:hanging="284"/>
+      </w:pPr>
+      <w:r>
+        <w:t>In this Reference Document, words and expressions have the meaning given in the Customs Tariff (Preferential Trade Arrangements) (EU Exit) Regulations 2019 ("the Regulations") and the Customs Tariff (Establishment) (EU Exit) Regulations 2019, including the Goods Classification Table and Tariff of the United Kingdom made thereunder.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:t>PART TWO: UK PREFERENTIAL TARIFF</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="10"/>
+        </w:numPr>
+        <w:ind w:left="284" w:hanging="284"/>
+      </w:pPr>
+      <w:r>
+        <w:t>For the purposes of the Customs Tariff of the United Kingdom:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:ind w:left="567" w:hanging="283"/>
+      </w:pPr>
+      <w:r>
+        <w:t>the "Preferential Duty Tariff Table" is the table that appears at Annex I;</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:ind w:left="567" w:hanging="283"/>
+      </w:pPr>
+      <w:r>
+        <w:t>the "Preferential Quota Table" is the table that appears at Annex II;</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListParagraph"/>
+        <w:numPr>
+          <w:ilvl w:val="0"/>
+          <w:numId w:val="11"/>
+        </w:numPr>
+        <w:ind w:left="567" w:hanging="283"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">a "Duty Rate" is any alphanumeric information appearing in column 2 of the Preferential Duty Tariff Table or column 4 of the Quota Table.</w:t>
+      </w:r>
+    </w:p>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t>ANNEX I</w:t>
+      </w:r>
+      <w:r>
+        <w:br/>
+        <w:t>PREFERENTIAL DUTY TARIFF TABLE</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t>This table sets out the preferential duty tariff for the Agreement, under regulation 2 of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The Commodity Code in column 1 is defined in regulation 2(3) of the Customs Tariff (Establishment) (EU Exit) Regulations 2019 ("the Tariff Regulations"). </w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Preferential Duty Rate in column 2 is defined in regulation 2(2) of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    {% if TARIFF_TABLE_ROWS %}{% include 'xml/fta/table_schedule.xml' %}{% endif %}
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Entry Price Goods</w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+      <w:r>
+        <w:t>(regulation 4 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t>For goods classified under a commodity code that has "Entry Price" shown in the same row in column 2 of the Preferential Duty Tariff Table, the duty rate is determined by adding the first percentage value in column 2 to the Specific percentage value in column 2.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">A "Specific" duty is a duty expression (or component of a duty expression) making reference to a measure of quantity.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The first percentage value in column 2 after the words "Entry Price" is a percentage of the by-value UK WTO Most Favoured Nation (MFN) rate for the goods classified under the relevant commodity code, in the relevant row of the Tariff Table in Annex II of the Tariff of the United Kingdom version 1.0 of [xx yyy] 2019 made under the Tariff Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The second "Specific" percentage value is a percentage of the Standard Rate of Import Duty specific component for the goods classified under the relevant commodity code, in the relevant row of the Tariff Table in Annex II of the Tariff of the United Kingdom version 1.0 of [xx yyy] 2019.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Complex Agricultural Duty Goods (regulation 5 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">For goods classified under a commodity code that has "CAD" shown in the same row in column 2 of the Preferential Duty Tariff Table in Annex I, the duty rate is determined by adding the first percentage value in column 2 to the following Specific percentage values in that column.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">The first percentage in column 2 after the word "CAD" is a percentage of the value of the goods to be imported.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Where in the formula in column 2 "AC" is shown, the "AC" (agricultural component) percentage value is a percentage of the AC for the goods classified under the relevant commodity code, in the relevant row of the Tariff Table in Annex II, Appendix B of the Customs Tariff of the United Kingdom version 1.0 of [xx yyy] 2019 made under the Tariff Regulations. Where "AC MAX" is shown, the following percentage value is the maximum AC Value that can be charged for the relevant good.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:lastRenderedPageBreak/>
+        <w:t xml:space="preserve">Where in the formula in column 2 "SD" is shown, the "SD" (sugar duty) is the SD component for the goods classified under the relevant commodity code, in the relevant row of the Tariff Table in Annex II of the Tariff of the United Kingdom version 1.0 of [xx yyy] 2019 made under the Tariff Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Where in the formula in column 2 "FD" is shown, the "FD" (flour duty) is the FD component for the goods classified under the relevant commodity code, in the relevant row of the Tariff Table in Annex II of the Tariff of the United Kingdom version 1.0 of [xx yyy] 2019 made under the Tariff Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t>In column 2 of the Preferential Duty Tariff Table, the percentage shown outside the brackets at the end of the formula is the percentage of the formula inside the brackets that is to be charged for the relevant goods.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t xml:space="preserve">Where, in the formula in column 2 "CAD" is shown and there is no Specific component in the relevant row of the Tariff Table in Annex II of the Tariff of the United Kingdom version 1.0 of [xx yyy] 2019, the duty rate will be the by-value percentage with no additional Specific component added.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Authorised Use Goods (regulation 6 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Authorised use goods, as identified under regulation 6(1) of the Regulations, which meet the conditions of regulation 6(2) of the Regulations attract the relevant duty rates shown in column 2.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:t>ANNEX II</w:t>
+      </w:r>
+      <w:r>
+        <w:br/>
+        <w:t>PREFERENTIAL QUOTA TABLE</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>This table sets out the preferential quota duty rates for the Agreement, under regulation 4 of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Quota Number in column 1 is defined in regulation 3(4) of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Origin Quota in column 2 is an identifier for origin quota goods. Where, for a quota number, "Yes" is shown in column 2, the preferential origin quota duty rate can only be obtained if the goods qualify for preferential origin quota treatment, are within the quota volumes and meet the other conditions for the origin quota under the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Commodity Code in column 3 is the commodity code classifying the goods.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Quota Duty Rate in column 4 is defined in regulation 3(2) of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Quota Volume in column 5 is the maximum quantity of quota goods that can be imported under the quota during the quota period in any year under regulation 9 of the Regulations. Where a volume is followed by "(2019)", the volume applies for the year 2019.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Quota Open Date in column 6 is the date on which the quota period commences under regulation 9 of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The Quota Close Date in column 7 is the date on which the quota period ends under regulations 9(1), 9(3) and 9(4) of the Regulations.</w:t>
+      </w:r>
+    </w:p>
+    {% if QUOTA_TABLE_ROWS %}{% include 'xml/fta/table_quota.xml' %}{% endif %}
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Entry Price Goods (regulation 4 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The provisions (4-7) in Annex I apply as if the reference to column 2 of the Preferential Duty Tariff Table in Annex I were a reference to column 4 of the Preferential Quota Table in this Annex.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Complex Agricultural Duty Goods (regulation 5 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The provisions (8-14) in Annex I apply as if the reference to column 2 of the Preferential Duty Tariff Table in Annex I were a reference to column 4 of the Preferential Quota Table in this Annex.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading3"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Authorised Use Goods</w:t>
+      </w:r>
+      <w:r>
+        <w:t xml:space="preserve"> </w:t>
+      </w:r>
+      <w:r>
+        <w:t>(regulation 6 of the Regulations)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Numberedlist-quotas"/>
+      </w:pPr>
+      <w:r>
+        <w:t>The provision (15) in Annex I applies as if the reference to column 2 of the Preferential Duty Tariff Table in Annex I were a reference to column 4 of the Preferential Quota Table in this Annex.</w:t>
+      </w:r>
+    </w:p>
+    <w:sectPr>
+      <w:headerReference w:type="default" r:id="rId8"/>
+      <w:footerReference w:type="default" r:id="rId9"/>
+      <w:footerReference w:type="first" r:id="rId10"/>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/>
+      <w:cols w:space="708"/>
+      <w:titlePg/>
+      <w:docGrid w:linePitch="360"/>
+    </w:sectPr>
+  </w:body>
+</w:document>

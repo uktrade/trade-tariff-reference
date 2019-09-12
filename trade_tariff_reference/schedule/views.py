@@ -3,15 +3,18 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import CreateView, FormView, RedirectView, TemplateView, UpdateView
 
+from trade_tariff_reference.documents.mfn.constants import CLASSIFICATION, SCHEDULE
+from trade_tariff_reference.documents.tasks import generate_fta_document, generate_mfn_master_document
+
 from .constants import DOCX_CONTENT_TYPE
 from .forms import AgreementModelForm, ExtendedQuotaForm, ManageExtendedInformationForm
-from .models import Agreement, ExtendedQuota
+from .models import Agreement, ExtendedQuota, MFNDocument
 from .quotas import process_quotas
 from .utils import generate_document
 
 
 class ManageAgreementScheduleView(TemplateView):
-    template_name = 'schedule/manage.html'
+    template_name = 'schedule/fta/manage.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -27,21 +30,33 @@ class DownloadAgreementScheduleView(RedirectView):
     def get(self, request, *args, **kwargs):
         agreement = self.get_agreement()
         if not agreement.document and agreement.is_document_available:
-            return redirect(reverse('schedule:manage'))
+            return redirect(reverse('schedule:fta:manage'))
         response = HttpResponse(agreement.document.read(), content_type=DOCX_CONTENT_TYPE)
         response['Content-Disposition'] = f'inline; filename={agreement.slug}_annex.docx'
         return response
 
 
+class RegenerateAgreementScheduleView(RedirectView):
+
+    def get_agreement(self):
+        return get_object_or_404(Agreement, slug=self.kwargs['slug'])
+
+    def get(self, request, *args, **kwargs):
+        agreement = self.get_agreement()
+        if not agreement.is_document_generating:
+            generate_fta_document.delay(agreement.slug, force=True)
+        return redirect(reverse('schedule:fta:manage'))
+
+
 class BaseAgreementScheduleView:
-    template_name = 'schedule/create.html'
+    template_name = 'schedule/fta/create.html'
     form_class = AgreementModelForm
 
     def get_success_url(self):
         if 'extended_information' in self.request.POST.dict():
-            return reverse('schedule:manage-extended-info', kwargs={'slug': self.object.slug})
+            return reverse('schedule:fta:manage-extended-info', kwargs={'slug': self.object.slug})
         generate_document(self.object)
-        return reverse('schedule:manage')
+        return reverse('schedule:fta:manage')
 
 
 class CreateAgreementScheduleView(BaseAgreementScheduleView, CreateView):
@@ -62,7 +77,7 @@ class EditAgreementScheduleView(BaseAgreementScheduleView, UpdateView):
 
 
 class ManageExtendedInformationAgreementScheduleView(FormView):
-    template_name = 'schedule/manage_extended_information.html'
+    template_name = 'schedule/fta/manage_extended_information.html'
     form_class = ManageExtendedInformationForm
 
     def get_agreement(self):
@@ -78,7 +93,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
         quota_data = process_quotas(form.cleaned_data)
         agreement = self.get_agreement()
         if not quota_data:
-            return redirect(reverse('schedule:manage'))
+            return redirect(reverse('schedule:fta:manage'))
 
         try:
             with transaction.atomic():
@@ -92,7 +107,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
             return self.form_invalid(form)
 
         generate_document(agreement)
-        return redirect(reverse('schedule:manage'))
+        return redirect(reverse('schedule:fta:manage'))
 
     def save_quotas(self, agreement, quota_data):
         errors = {}
@@ -136,3 +151,43 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
         existing_quotas = ExtendedQuota.objects.filter(agreement=agreement)
         deleted_quotas = existing_quotas.exclude(quota_order_number_id__in=quotas.keys())
         deleted_quotas.delete()
+
+
+class ManageMFNScheduleView(TemplateView):
+    template_name = 'schedule/mfn/manage.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['heading'] = 'MFN schedules'
+        context_data['schedule_document'] = MFNDocument.objects.filter(document_type=SCHEDULE).first()
+        context_data['classification_document'] = MFNDocument.objects.filter(document_type=CLASSIFICATION).first()
+        return context_data
+
+
+class DownloadMFNScheduleView(RedirectView):
+
+    def get_object(self):
+        return get_object_or_404(MFNDocument, document_type=self.kwargs['document_type'])
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if not obj.document:
+            return redirect(reverse('schedule:mfn:manage'))
+        response = HttpResponse(obj.document.read(), content_type=DOCX_CONTENT_TYPE)
+        response['Content-Disposition'] = f'inline; filename={obj.document_type}.docx'
+        return response
+
+
+class RegenerateMFNScheduleView(RedirectView):
+
+    def get_mfn_document(self):
+        try:
+            return MFNDocument.objects.get(document_type=self.kwargs['document_type'])
+        except MFNDocument.DoesNotExist:
+            return
+
+    def get(self, request, *args, **kwargs):
+        mfn_document = self.get_mfn_document()
+        if not mfn_document or not mfn_document.is_document_generating:
+            generate_mfn_master_document.delay(self.kwargs['document_type'], force=True)
+        return redirect(reverse('schedule:mfn:manage'))

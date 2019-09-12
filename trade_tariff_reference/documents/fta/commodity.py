@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 
-import trade_tariff_reference.documents.fta.functions as functions
+import trade_tariff_reference.documents.functions as functions
 from trade_tariff_reference.documents.fta.constants import INFINITE_MEASURE_EXTENT
 from trade_tariff_reference.documents.fta.measure import Period
 

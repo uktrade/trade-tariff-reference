@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% load i18n %}
+
+{% block back_button %}
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+{% endblock back_button %}
+
+
+{% block content %}
+<form action="." method="post">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {% csrf_token %}
+            {% include 'schedule/error_summary.html' %}
+            <fieldset class="govuk-fieldset" aria-describedby="extended-information-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">{% trans 'Manage extended information' %}</h1>
+                </legend>
+                <span id="extended-information-hint" class="govuk-hint">{% trans 'Which information would you like to add?' %}</span>
+                <div class="govuk-checkboxes" data-module="checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="extended-information-1" name="info" type="checkbox" value="origin_quotas" data-aria-controls="conditional-extended-information-1">
+                        <label class="govuk-label govuk-checkboxes__label" for="extended-information-1">{% trans 'Origin quotas' %}</label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-1">
+                        <div class="govuk-form-group govuk-!-width-three-quarters">
+                            <span class="govuk-hint">
+                                {% trans 'Please enter a list of the origin quotas which are a part of this Trade Agreement (separate each quota with a new line character)' %}
+                            </span>
+                            {{ form.origin_quotas }}
+                        </div>
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="extended-information-2" name="info" type="checkbox" value="licensed_quotas" data-aria-controls="conditional-extended-information-2">
+                        <label class="govuk-label govuk-checkboxes__label" for="extended-information-2">{% trans 'Licensed quota volumes' %}</label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-2">
+                        <div class="govuk-form-group govuk-!-width-three-quarters">
+                            <span class="govuk-hint">
+                                {% trans 'The Tariff Application is not able to capture volumes for Licensed quotas, as this information is not required by HMRC’s border systems nor included in the Taric data structures. Please enter the opening balances for the licensed quotas here. Enter the quota order number, the opening balance and the opening balance unit, separated by commas'%}
+                            </span>
+                            <span class="govuk-hint">{% trans 'e.g. 091234,123,KGM' %}</span>
+                            {{ form.licensed_quotas }}
+                        </div>
+
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="extended-information-3" name="info" type="checkbox" value="scope_quotas" data-aria-controls="conditional-extended-information-3">
+                        <label class="govuk-label govuk-checkboxes__label" for="extended-information-3">{% trans 'Quota scope' %}</label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-3">
+                        <div class="govuk-form-group govuk-!-width-three-quarters">
+                            <span class="govuk-hint">
+                                {% trans 'If any of the quotas in this Trade Agreement are limited by scope, e.g. to a single country in a multi-country group, please enter the details below (separate each quota with a new line character)' %}
+                            </span>
+                            <span class="govuk-hint">{% trans 'e.g. 0912345,"Namibia only"' %}</span>
+                            {{ form.scope_quotas }}
+                        </div>
+                    </div>
+
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="extended-information-4" name="info" type="checkbox" value="staging_quotas" data-aria-controls="conditional-extended-information-4">
+                        <label class="govuk-label govuk-checkboxes__label" for="extended-information-4">{% trans 'Quota staging and additional information' %}</label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-extended-information-4">
+                        <div class="govuk-form-group govuk-!-width-three-quarters">
+                            <span class="govuk-hint">
+                                {% trans 'Please enter a list of the origin quotas which are a part of this Trade Agreement (separate each quota with a new line character)' %}
+                            </span>
+                            <span class="govuk-hint">{% trans '091234, "an annual addition of 58,000 kg per year"' %}</span>
+                            {{ form.staging_quotas }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gov-form-group govuk-!-padding-top-6">
+                    <ul class="govuk-list">
+                        <li>
+                            <input type="submit" value="{% trans 'Continue' %}" class="govuk-button govuk-!-margin-bottom-4">
+                        </li>
+                        <li>
+                            <a href="{% url 'schedule:fta:manage' %}" class="govuk-link">{% trans 'Cancel' %}</a>
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</form>
+{% endblock content %}

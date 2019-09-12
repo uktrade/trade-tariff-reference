@@ -1,4 +1,4 @@
-import trade_tariff_reference.documents.fta.functions as functions
+import trade_tariff_reference.documents.functions as functions
 from trade_tariff_reference.documents.fta.commodity import BaseCommodity, format_commodity_code
 from trade_tariff_reference.documents.fta.constants import NUMBER_OF_DAYS_PER_YEAR
 from trade_tariff_reference.documents.fta.measure import Period

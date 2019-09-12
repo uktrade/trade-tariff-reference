@@ -55,9 +55,11 @@ INSTALLED_APPS = [
     'trade_tariff_reference.api',
     'sass_processor',
     'authbroker_client',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
+    'trade_tariff_reference.core.middleware.TimezoneMiddleware',
     'trade_tariff_reference.core.middleware.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -156,6 +158,13 @@ STATICFILES_DIRS = [
     ('tariff', STATIC_FOLDER),
 ]
 
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'tariff/js/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}
+
 SASS_PROCESSOR_INCLUDE_DIRS = [
     STATIC_FOLDER,
 ]
@@ -175,6 +184,10 @@ SASS_OUTPUT_STYLE = 'compressed'
 
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
 
+SCHEDULE = 'schedule'
+CLASSIFICATION = 'classification'
+
+
 CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
 
 CELERY_REDIS_INDEX = '1'
@@ -184,11 +197,49 @@ CELERY_BROKER_URL = f'redis://trade_application_redis:6379/{CELERY_REDIS_INDEX}'
 CELERY_BEAT_SCHEDULE = {}
 
 if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
-    CELERY_BEAT_SCHEDULE['refresh-documents'] = {
-        'task': 'trade_tariff_reference.documents.tasks.generate_all_documents',
-        'schedule': crontab(minute='20', hour='13'),
-        'args': (False, False),
-     }
+    CELERY_BEAT_SCHEDULE['refresh-fta-documents'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
+        'schedule': crontab(minute='3', hour='1'),
+        'args': (False, ),
+        'kwargs': {
+            'force': False
+        }
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-schedule-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
+        'schedule': crontab(minute='3', hour='2'),
+        'args': (SCHEDULE, ),
+        'kwargs': {
+            'generate_master': False,
+            'force': False
+        },
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-classification-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
+        'schedule': crontab(minute='45', hour='2'),
+        'args': (CLASSIFICATION, ),
+        'kwargs': {
+            'generate_master': False,
+            'force': False,
+        },
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-master-classification-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
+        'schedule': crontab(minute='45', hour='3'),
+        'args': (CLASSIFICATION, ),
+        'kwargs': {
+            'force': False
+        }
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-master-schedule-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
+        'schedule': crontab(minute='15', hour='4'),
+        'args': (SCHEDULE, ),
+        'kwargs': {
+            'force': False
+        }
+    }
+
 
 # authbroker config
 AUTHBROKER_URL = env('AUTHBROKER_URL', default='http://localhost')
@@ -199,6 +250,8 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 AWS_DEFAULT_ACL = None
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_REGION_NAME = 'eu-west-2'
 
 LOGGING = {
     'version': 1,

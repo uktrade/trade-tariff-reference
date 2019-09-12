@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+
+{% load i18n %}
+
+{% block back_button %}
+    <a href="{% url 'core:homepage' %}" class="govuk-back-link govuk-!-margin-bottom-0">{% trans 'Back' %}</a>
+{% endblock back_button %}
+
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{% trans 'Manage agreement schedules' %}</h1>
+            <ul class="govuk-list">
+                <li>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'schedule:fta:create' %}">{% trans 'Create new agreement schedule' %}</a>
+                </li>
+            </ul>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">{% trans 'ID' %}</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">{% trans 'Area name' %}</th>
+                        <th class="govuk-table__header" scope="col">{% trans 'Country code' %}</th>
+                        <th class="govuk-table__header govuk-!-width-one-half" scope="col">{% trans 'Title' %}</th>
+                        <th class="govuk-table__header" scope="col">{% trans 'Date' %}</th>
+                        <th class="govuk-table__header" scope="col">{% trans 'Version' %}</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                {% for agreement in agreements %}
+                    <tr class="govuk-table__row text-top govuk-!-padding-top-2">
+                        <td class="govuk-table__cell">{{ agreement.slug }}</td>
+                        <td class="govuk-table__cell">{{ agreement.country_name }}</td>
+                        <td class="govuk-table__cell">{{ agreement.country_codes_string }}</td>
+                        <td class="govuk-table__cell">{{ agreement.agreement_name }}</td>
+                        <td class="govuk-table__cell">{{ agreement.agreement_date_long }}</td>
+                        <td class="govuk-table__cell">{{ agreement.version }}</td>
+                        <td class="govuk-table__cell">
+                            <update-record record-data="{{ agreement.to_json }}" regenarate-url="{{ agreement.regenerate_url }}" edit-url="{{ agreement.edit_url }}" update-url="/api/agreement/{{ agreement.slug }}/?format=json" v-bind:poll-interval="4000"></update-record>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
