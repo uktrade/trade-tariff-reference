@@ -1,0 +1,10 @@
+{% load render_bundle from webpack_loader %}
+
+{% block footer_additions %} {% endblock footer_additions %}
+{% render_bundle 'index' %}
+{% block vue_component %}
+    {% render_bundle 'vueComponents' %}
+{% endblock vue_component %}
+{% block vue-app %}
+    {% render_bundle 'defaultVueApp' %}
+{% endblock vue-app %}
