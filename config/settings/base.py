@@ -200,18 +200,46 @@ if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
     CELERY_BEAT_SCHEDULE['refresh-fta-documents'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
         'schedule': crontab(minute='3', hour='1'),
-        'args': (False, False),
+        'args': (False, ),
+        'kwargs': {
+            'force': False
+        }
     }
     CELERY_BEAT_SCHEDULE['refresh-mfn-schedule-document'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
         'schedule': crontab(minute='3', hour='2'),
-        'args': (SCHEDULE, False),
+        'args': (SCHEDULE, ),
+        'kwargs': {
+            'generate_master': False,
+            'force': False
+        },
     }
     CELERY_BEAT_SCHEDULE['refresh-mfn-classification-document'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
         'schedule': crontab(minute='45', hour='2'),
-        'args': (CLASSIFICATION, False),
+        'args': (CLASSIFICATION, ),
+        'kwargs': {
+            'generate_master': False,
+            'force': False,
+        },
     }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-master-classification-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
+        'schedule': crontab(minute='45', hour='3'),
+        'args': (CLASSIFICATION, ),
+        'kwargs': {
+            'force': False
+        }
+    }
+    CELERY_BEAT_SCHEDULE['refresh-mfn-master-schedule-document'] = {
+        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
+        'schedule': crontab(minute='15', hour='4'),
+        'args': (SCHEDULE, ),
+        'kwargs': {
+            'force': False
+        }
+    }
+
 
 # authbroker config
 AUTHBROKER_URL = env('AUTHBROKER_URL', default='http://localhost')
