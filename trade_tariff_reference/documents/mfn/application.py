@@ -40,7 +40,7 @@ class Application(DatabaseConnect):
         self.shut_down()
 
     def get_latin_phrases(self):
-        return list(LatinTerm.objects.values_list('text', flat=True))
+        return set(LatinTerm.objects.values_list('text', flat=True))
 
     def get_sections_chapters(self):
         rows = self.execute_sql(GET_SECTION_CHAPTERS, dict_cursor=True)
