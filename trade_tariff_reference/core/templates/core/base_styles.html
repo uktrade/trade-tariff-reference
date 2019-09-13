@@ -1,5 +1,7 @@
 {% load sass_tags %}
+{% load render_bundle from webpack_loader %}
 
+{% block styles %}
 <link href="{% sass_src 'tariff/css/global.sass' %}" rel="stylesheet" media="all" />
 <link href="{% sass_src 'tariff/css/custom.css' %}" rel="stylesheet" media="all" />
 <!--[if lte IE 9]>
@@ -44,3 +46,19 @@
       }
     </style>
 <![endif]-->
+{% endblock styles %}
+
+{% block html %}
+{% endblock html %}
+
+{% block javascript %}
+{% block footer_additions %} {% endblock footer_additions %}
+{% render_bundle 'index' %}
+{% block vue_component %}
+    {% render_bundle 'vueComponents' %}
+{% endblock vue_component %}
+{% block vue-app %}
+    {% render_bundle 'defaultVueApp' %}
+{% endblock vue-app %}
+{% endblock %}
+
