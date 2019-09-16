@@ -115,7 +115,7 @@
         delimiters: ['[[', ']]'],
         el: '#country_codes',
         data: {
-            country_codes: {% autoescape off %}{{ form.instance.country_codes }}{% endautoescape %},
+            country_codes: {% autoescape off %}{% if form.instance.country_codes %}{{ form.instance.country_codes }}{% else %}[]{% endif %}{% endautoescape %},
             errors: {% autoescape off %}{{ form.country_codes.errors.as_json }}{% endautoescape %},
         },
         methods: {
