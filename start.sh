@@ -2,7 +2,9 @@
 
 source ./functions.sh
 
-run "pip install --no-cache-dir -r requirements.txt"
+run "pipenv lock"
+run "pipenv --rm"
+run "pipenv install --dev --system"
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]]; then
     export PORT=8080
