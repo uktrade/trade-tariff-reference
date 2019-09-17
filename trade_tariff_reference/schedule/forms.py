@@ -58,6 +58,7 @@ class AgreementModelForm(forms.ModelForm):
             'country_codes',
             'agreement_name',
             'version',
+            'country_name',
             'extended_information',
             'agreement_date_day',
             'agreement_date_month',
@@ -67,6 +68,7 @@ class AgreementModelForm(forms.ModelForm):
         labels = {
             'slug': 'Unique ID',
             'country_codes': 'Country code',
+            'country_name': 'Area name',
             'agreement_name': 'Agreement title',
             'version': 'Agreement version',
 
@@ -76,6 +78,7 @@ class AgreementModelForm(forms.ModelForm):
             'agreement_name': forms.TextInput(attrs={'class': 'govuk-input'}),
             'version': forms.TextInput(attrs={'class': 'govuk-input'}),
             'country_codes': forms.TextInput(attrs={'class': 'govuk-input'}),
+            'country_name': forms.TextInput(attrs={'class': 'govuk-input'}),
         }
 
     def __init__(self, *args, **kwargs):
