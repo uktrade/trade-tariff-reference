@@ -1,12 +1,14 @@
-#!/bin/bash -xe
+#!/bin/bash
 
-pip install --no-cache-dir -r requirements.txt
+source ./functions.sh
+
+run "pip install --no-cache-dir -r requirements.txt"
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]]; then
     export PORT=8080
 fi
 
-./start_cf.sh
+run "./start_cf.sh"
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]];
 then
