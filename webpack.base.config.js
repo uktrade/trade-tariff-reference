@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const BundleTracker = require('webpack-bundle-tracker')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const glob = require("glob");
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   context: __dirname,
@@ -25,6 +26,9 @@ module.exports = {
   plugins: [
     new BundleTracker({filename: './webpack-stats.json'}),
     new VueLoaderPlugin(),
+    new CopyPlugin([
+      { from: path.resolve(__dirname, './node_modules/govuk-frontend/all.js'), to: path.resolve(__dirname, './static/js/') },
+    ]),
   ],
   resolve: {
     modules: ['node_modules', 'bower_components'],
