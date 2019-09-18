@@ -10,7 +10,7 @@ FROM quota_definitions
 WHERE status ='published'
 AND (
 (validity_start_date >= '2020-01-01' AND validity_start_date <= '2020-12-31')
-OR 
+OR
 (validity_end_date >= '2020-01-01' AND validity_end_date <= '2020-12-31')
 )
 GROUP BY quota_order_number_id
@@ -26,10 +26,11 @@ qd.description,
 qd.validity_start_date,
 qd.validity_end_date,
 qd.quota_definition_sid
-FROM ({FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL}) self JOIN quota_definitions qd 
-ON qd.quota_order_number_id = self.quota_order_number_id 
+FROM ({FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL}) self JOIN quota_definitions qd
+ON qd.quota_order_number_id = self.quota_order_number_id
 AND self.min_start = qd.validity_start_date
-INNER JOIN quota_order_number_origins qo ON qd.quota_order_number_sid = qo.quota_order_number_sid AND qo.geographical_area_id = 'CO'
+INNER JOIN quota_order_number_origins qo ON qd.quota_order_number_sid = qo.quota_order_number_sid
+AND qo.geographical_area_id = 'CO'
 ORDER BY qd.quota_order_number_id
 """
 
