@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
-from datetime import datetime
+from django.db import IntegrityError
 
 from trade_tariff_reference.schedule.models import Agreement, ExtendedQuota
 
@@ -57,7 +57,6 @@ class Command(BaseCommand):
             )
             ExtendedQuota.objects.create(**obj_dict)
 
-
     def process_licensed_quotas(self, agreement, row):
         quotas = row['licensed_quota_volumes'].split('\n')
         quotas = list(filter(None, quotas))
@@ -78,15 +77,15 @@ class Command(BaseCommand):
             ExtendedQuota.objects.create(**obj_dict)
 
     def strip_staging(self, quota):
-        l = []
+        parts = []
         for part in quota.split('"'):
             part = part.rstrip(',')
             part = part.lstrip(',')
-            l.append(part)
-        l = list(filter(None, l))
-        if len(l) == 1:
-            return l[0].split(',')
-        return l
+            parts.append(part)
+        parts = list(filter(None, parts))
+        if len(parts) == 1:
+            return parts[0].split(',')
+        return parts
 
     def process_staging_quotas(self, agreement, row):
         quotas = row['quota_staging'].split('\n')
@@ -109,8 +108,8 @@ class Command(BaseCommand):
                         measurement_unit_code=None,
                     )
                     ExtendedQuota.objects.create(**obj_dict)
-                except:
-                    e = ExtendedQuota.objects.get(
+                except IntegrityError:
+                    e = ExtendedQuota.objects.get_or_create(
                         agreement=agreement,
                         quota_order_number_id=q,
                     )
@@ -137,7 +136,7 @@ class Command(BaseCommand):
                         measurement_unit_code=None,
                     )
                     ExtendedQuota.objects.create(**obj_dict)
-                except:
+                except IntegrityError:
                     e = ExtendedQuota.objects.get(
                         agreement=agreement,
                         quota_order_number_id=q,

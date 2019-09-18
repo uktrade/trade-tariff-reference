@@ -116,7 +116,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
                 instance = ExtendedQuota.objects.get(
                     quota_order_number_id=quota_order_number_id, agreement=agreement
                 )
-            except:
+            except ExtendedQuota.DoesNotExist:
                 instance = None
             quota_form = ExtendedQuotaForm(
                 data={

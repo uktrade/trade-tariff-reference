@@ -34,7 +34,7 @@ class QuotaDefinition:
                 f"{volume:,.0f} {f.get_measurement_unit(self.measurement_unit_code)}"
                 f" {self.measurement_unit_qualifier_code}"
             )
-        except:
+        except (ValueError, TypeError):
             formatted_string = ""
 
         formatted_string = formatted_string.strip()
