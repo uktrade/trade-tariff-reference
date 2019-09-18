@@ -12,6 +12,7 @@ freezegun = "*"
 ipdb = "*"
 pytest-cov = "*"
 pytest-django = "*"
+pytest-sugar = "*"
 watchdog = "*"
 
 
