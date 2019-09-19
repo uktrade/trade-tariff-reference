@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./functions.sh
+source ./scripts/functions.sh
 
 if [ -z "$1" ]; then
     run "python manage.py createsuperuser"

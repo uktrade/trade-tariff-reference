@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./functions.sh
+source ./scripts/functions.sh
 
 run "pipenv lock"
 run "pipenv --rm"
@@ -10,11 +10,11 @@ if [[ -z "${DEVELOPMENT_SERVER}" ]]; then
     export PORT=8080
 fi
 
-run "./start_cf.sh"
+run "./scripts/start_cf.sh"
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]];
 then
     :
 else
-    sleep infinity
+    run "sleep infinity"
 fi

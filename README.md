@@ -20,7 +20,7 @@
 4.  Import the databases (optional):
 
     ```shell
-    docker-compose run trade_application  bash ./import_db.sh
+    docker-compose run trade_application  bash ./scripts/import_db.sh
     ```
 5.  Run the services:
 
@@ -31,7 +31,7 @@
 6.  Run setup from within the container
 
     ```shell
-    docker exec -ti tariff_trade_application_1  bash ./setup.sh
+    docker exec -ti tariff_trade_application_1  bash ./scripts/setup.sh
     ```
 
 7.  Visit website
