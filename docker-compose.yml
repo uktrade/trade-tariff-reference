@@ -14,7 +14,7 @@ services:
       - trade_application_db
       - trade_application_redis
       - trade_application_celery
-    command: /app/start.sh
+    command: /app/scripts/start.sh
 
   trade_application_db:
     image: postgres:11

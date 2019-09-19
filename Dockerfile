@@ -20,4 +20,4 @@ RUN pipenv install --dev --system --deploy
 
 ADD . /app/
 
-CMD /app/start.sh
+CMD /app/scripts/start.sh
