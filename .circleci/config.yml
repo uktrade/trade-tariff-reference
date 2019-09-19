@@ -16,7 +16,6 @@ job_defaults: &job_defaults
       default: false
 
   environment:
-    DATABASE_URL: postgresql://postgres@localhost/trade_tariff_reference
     DJANGO_SECRET_KEY: test
     DJANGO_SETTINGS_MODULE: config.settings.testing
     DEBUG: True
@@ -65,7 +64,7 @@ job_defaults: &job_defaults
         command: pip install --user pipenv
 
     - run:
-        name: Check python packages for updates
+        name: Check python packages
         command: PIPENV_CACHE_DIR=~/cache/pip python -m pipenv check --system --three
 
     - run:
@@ -87,16 +86,16 @@ job_defaults: &job_defaults
         command: ./compile_assets.sh
 
     - run:
-        name: Check node packages for updates
+        name: Check node packages
         command: npm audit
-
-    - run:
-        name: Run tests
-        command: python -m pytest -p no:sugar --cov=trade_tariff_reference trade_tariff_reference/
 
     - run:
         name: Run flake8
         command: python -m flake8 trade_tariff_reference/
+
+    - run:
+        name: Run tests
+        command: python -m pytest -p no:sugar --cov=trade_tariff_reference trade_tariff_reference/
 
     - store_test_results:
         path: test-reports
