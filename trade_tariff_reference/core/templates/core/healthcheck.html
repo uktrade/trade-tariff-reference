@@ -1,3 +1,4 @@
+{% load static %}
 {% load sass_tags %}
 {% load render_bundle from webpack_loader %}
 
@@ -65,6 +66,8 @@
         {% block vue-app %}
             {% render_bundle 'defaultVueApp' %}
         {% endblock vue-app %}
+    <script src="{% static 'tariff/js/all.js' %}"></script>
+    <script>window.GOVUKFrontend.initAll()</script>
     {% endblock %}
     </body>
 </html>

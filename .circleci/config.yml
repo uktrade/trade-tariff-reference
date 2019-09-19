@@ -83,7 +83,7 @@ job_defaults: &job_defaults
 
     - run:
         name: Compile assets
-        command: ./compile_assets.sh
+        command: ./scripts/compile_assets.sh
 
     - run:
         name: Check node packages

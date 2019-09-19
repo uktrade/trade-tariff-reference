@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source ./functions.sh
+source ./scripts/functions.sh
 
-run "./compile_assets.sh"
+run "./scripts/compile_assets.sh"
 run "python manage.py migrate --noinput"
 run "python manage.py migrate --database tariff --noinput"
 

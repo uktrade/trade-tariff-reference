@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./functions.sh
+source ./scripts/functions.sh
 
 run "npm ci"
 run "npm run-script build"
