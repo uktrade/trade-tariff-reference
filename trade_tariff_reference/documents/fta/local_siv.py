@@ -2,7 +2,11 @@
 class LocalSiv:
 
     def __init__(
-        self, goods_nomenclature_item_id, validity_start_date, condition_duty_amount, condition_monetary_unit_code,
+        self,
+        goods_nomenclature_item_id,
+        validity_start_date,
+        condition_duty_amount,
+        condition_monetary_unit_code,
         condition_measurement_unit_code
     ):
         # Get parameters from instantiator

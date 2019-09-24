@@ -5,5 +5,7 @@ omit =
   *settings*,
   *tests/*,
   *urls.py,
-  *wsgi/*,
+  *wsgi.py,
   manage.py
+  *__init__.py
+  *conftest.py

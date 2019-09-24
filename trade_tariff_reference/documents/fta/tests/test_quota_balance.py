@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 from trade_tariff_reference.documents.fta.quota_balance import QuotaBalance
@@ -13,7 +15,7 @@ def get_quota_balance(
     measurement_unit_code='',
     origin_quota=None,
     addendum='',
-    scope=''
+    scope=None,
 ):
     return QuotaBalance(
         quota_order_number_id,
@@ -27,6 +29,21 @@ def get_quota_balance(
         addendum,
         scope
     )
+
+
+def test_empty_initialise():
+    quota_balance = get_quota_balance(yx_start=None)
+    assert quota_balance.y1_balance == 0
+    assert quota_balance.yx_balance == 0
+    assert quota_balance.country is None
+    assert quota_balance.method is None
+    assert quota_balance.quota_order_number_id is None
+    assert quota_balance.origin_quota is None
+    assert quota_balance.scope == ''
+    assert quota_balance.addendum == ''
+    assert quota_balance.measurement_unit_code == ''
+    assert quota_balance.validity_start_date_2019 == datetime(2019, 3, 29, 0, 0)
+    assert quota_balance.validity_end_date_2019 == datetime(2019, 12, 31, 0, 0)
 
 
 @pytest.mark.parametrize(
@@ -69,3 +86,18 @@ def test_origin_quota(origin_quota, expected_result):
 def test_add_year_returns_none_when_error_is_thrown(date):
     quota_balance = get_quota_balance()
     assert not quota_balance.add_year(date)
+
+
+@pytest.mark.parametrize(
+    'date_string,expected_result',
+    (
+        ('', None),
+        ('Hello', None),
+        (1, None),
+        ('01/02/2019', datetime(2019, 2, 1, 0, 0)),
+
+    )
+)
+def test_format_date(date_string, expected_result):
+    quota_balance = get_quota_balance()
+    assert quota_balance.format_date(date_string) == expected_result

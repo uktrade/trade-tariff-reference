@@ -649,7 +649,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 149,000 kg per quota period",
+        "addendum": "an addition of 149,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -665,7 +665,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 48,100 kg per quota period",
+        "addendum": "an addition of 48,100 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -681,7 +681,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 44,900 kg per quota period",
+        "addendum": "an addition of 44,900 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -697,7 +697,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 800 kg per quota period",
+        "addendum": "an addition of 800 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -713,7 +713,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 800 l per quota period",
+        "addendum": "an addition of 800 l per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -729,7 +729,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 400 kg per quota period",
+        "addendum": "an addition of 400 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -745,7 +745,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 400 kg per quota period",
+        "addendum": "an addition of 400 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -761,7 +761,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 100 kg per quota period",
+        "addendum": "an addition of 100 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -793,7 +793,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 136,000 kg per quota period",
+        "addendum": "an addition of 136,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -809,7 +809,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 272,000 kg per quota period",
+        "addendum": "an addition of 272,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -825,7 +825,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 272,000 kg per quota period",
+        "addendum": "an addition of 272,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -841,7 +841,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 136,000 kg per quota period",
+        "addendum": "an addition of 136,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -889,7 +889,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 68000 kg per quota period",
+        "addendum": "an addition of 68000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1145,7 +1145,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 49,000 kg per quota period",
+        "addendum": "an addition of 49,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1161,7 +1161,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 700 l per quota period",
+        "addendum": "an addition of 700 l per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1721,7 +1721,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 3,000 kg per quota period",
+        "addendum": "an addition of 3,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1880,8 +1880,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"excluding Panama\"",
-        "addendum": "+ an addition of 1,427,000 kg per quota period",
+        "scope": "excluding Panama",
+        "addendum": "an addition of 1,427,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1896,8 +1896,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"excluding Panama\"",
-        "addendum": "+ an addition of 4,100 l per quota period",
+        "scope": "excluding Panama",
+        "addendum": "an addition of 4,100 l per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1913,7 +1913,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 136,000 kg per quota period",
+        "addendum": "an addition of 136,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1929,7 +1929,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 49,000 kg per quota period",
+        "addendum": "an addition of 49,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -1945,7 +1945,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 16,000 kg per quota period",
+        "addendum": "an addition of 16,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3081,7 +3081,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 29,000 kg per quota period",
+        "addendum": "an addition of 29,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3097,7 +3097,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 26,000 kg per quota period",
+        "addendum": "an addition of 26,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3113,7 +3113,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 7,000 kg per quota period",
+        "addendum": "an addition of 7,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3129,7 +3129,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 34,000 kg per quota period",
+        "addendum": "an addition of 34,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3145,7 +3145,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 20,000 kg per quota period",
+        "addendum": "an addition of 20,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3161,7 +3161,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 2,000 kg per quota period",
+        "addendum": "an addition of 2,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3177,7 +3177,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 136,000 kg per quota period",
+        "addendum": "an addition of 136,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3193,7 +3193,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1,000 kg per quota period",
+        "addendum": "an addition of 1,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3209,7 +3209,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 41,000 kg per quota period",
+        "addendum": "an addition of 41,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3225,7 +3225,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 82,000 kg per quota period",
+        "addendum": "an addition of 82,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3241,7 +3241,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 26,000 kg per quota period",
+        "addendum": "an addition of 26,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3257,7 +3257,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 102,000 kg per quota period",
+        "addendum": "an addition of 102,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3273,7 +3273,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 463,000 kg per quota period",
+        "addendum": "an addition of 463,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3289,7 +3289,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1,400 kg per quota period",
+        "addendum": "an addition of 1,400 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3305,7 +3305,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 10,000 kg per quota period",
+        "addendum": "an addition of 10,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3321,7 +3321,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1,000 kg per quota period",
+        "addendum": "an addition of 1,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3337,7 +3337,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 110,000 kg per quota period",
+        "addendum": "an addition of 110,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3353,7 +3353,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 50,000 kg per quota period",
+        "addendum": "an addition of 50,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3721,7 +3721,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 61,000 kg per quota period",
+        "addendum": "an addition of 61,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3737,7 +3737,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 59,000 kg per quota period",
+        "addendum": "an addition of 59,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3753,7 +3753,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 8,000 kg per quota period",
+        "addendum": "an addition of 8,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3769,7 +3769,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 100 l per quota period",
+        "addendum": "an addition of 100 l per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3784,7 +3784,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"Namibia only\"",
+        "scope": "Namibia only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": true,
@@ -3800,7 +3800,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3816,7 +3816,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3832,7 +3832,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3848,7 +3848,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3864,7 +3864,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3880,7 +3880,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3896,8 +3896,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
-        "addendum": "+ an addition of 37,000 kg per quota period",
+        "scope": "S. Africa only",
+        "addendum": "an addition of 37,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3912,8 +3912,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
-        "addendum": "+ an addition of 19,000 kg per quota period",
+        "scope": "S. Africa only",
+        "addendum": "an addition of 19,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3928,8 +3928,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
-        "addendum": "+ an addition of 7,000 kg per quota period",
+        "scope": "S. Africa only",
+        "addendum": "an addition of 7,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -3944,7 +3944,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3960,7 +3960,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3976,7 +3976,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -3992,8 +3992,8 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
-        "addendum": "+ an addition of 3,000 kg per quota period",
+        "scope": "S. Africa only",
+        "addendum": "an addition of 3,000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4008,7 +4008,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -4024,7 +4024,7 @@
         "start_date": null,
         "year_start_balance": null,
         "opening_balance": null,
-        "scope": "\"S. Africa only\"",
+        "scope": "S. Africa only",
         "addendum": null,
         "quota_type": "F",
         "is_origin_quota": false,
@@ -4169,7 +4169,7 @@
         "year_start_balance": null,
         "opening_balance": 442000,
         "scope": null,
-        "addendum": "+ an addition of 4250000 kg per quota period",
+        "addendum": "an addition of 4250000 kg per quota period",
         "quota_type": "L",
         "is_origin_quota": false,
         "measurement_unit_code": "KGM"
@@ -4185,7 +4185,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 104770000 kg per quota period",
+        "addendum": "an addition of 104770000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4201,7 +4201,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 15160000 kg per quota period",
+        "addendum": "an addition of 15160000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4217,7 +4217,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 12380000 kg per quota period",
+        "addendum": "an addition of 12380000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4233,7 +4233,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 12380000 kg per quota period",
+        "addendum": "an addition of 12380000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4249,7 +4249,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 12380000 kg per quota period",
+        "addendum": "an addition of 12380000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4265,7 +4265,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 8330000 kg per quota period",
+        "addendum": "an addition of 8330000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4281,7 +4281,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 4500000 kg per quota period",
+        "addendum": "an addition of 4500000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4297,7 +4297,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 3000000 kg per quota period",
+        "addendum": "an addition of 3000000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4313,7 +4313,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 3000000 kg per quota period",
+        "addendum": "an addition of 3000000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4329,7 +4329,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1670000 kg per quota period",
+        "addendum": "an addition of 1670000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4345,7 +4345,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1590000 kg per quota period",
+        "addendum": "an addition of 1590000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4361,7 +4361,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 1500000 kg per quota period",
+        "addendum": "an addition of 1500000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4377,7 +4377,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 830000 kg per quota period",
+        "addendum": "an addition of 830000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4393,7 +4393,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 670000 kg per quota period",
+        "addendum": "an addition of 670000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4409,7 +4409,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 670000 kg per quota period",
+        "addendum": "an addition of 670000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4425,7 +4425,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 250000 kg per quota period",
+        "addendum": "an addition of 250000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
@@ -4441,7 +4441,7 @@
         "year_start_balance": null,
         "opening_balance": null,
         "scope": null,
-        "addendum": "+ an addition of 70000 kg per quota period",
+        "addendum": "an addition of 70000 kg per quota period",
         "quota_type": "F",
         "is_origin_quota": false,
         "measurement_unit_code": null
