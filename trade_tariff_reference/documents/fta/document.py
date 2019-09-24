@@ -8,16 +8,17 @@ from functools import lru_cache
 
 from botocore.exceptions import EndpointConnectionError
 
-from django.conf import settings
 from django.template.loader import render_to_string
 
 
 import trade_tariff_reference.documents.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
+    FIRST_COME_FIRST_SERVED,
     GET_COMMODITIES_SQL,
     GET_DUTIES_SQL,
     GET_MEASURE_COMPONENTS_SQL,
+    GET_QUOTA_BALANCE_SQL,
     GET_QUOTA_DEFINITIONS_SQL,
     GET_QUOTA_MEASURES_SQL,
     GET_QUOTA_ORDER_NUMBERS_SQL,
@@ -46,6 +47,9 @@ class Document:
         self.duty_list = []
         self.balance_dict = {}
         self.supplementary_unit_list = []
+        self.quota_definition_list = []
+        self.q = []
+        self.quota_order_number_list = []
         self.seasonal_records = 0
         self.wide_duty = False
 
@@ -89,28 +93,23 @@ class Document:
     def get_commodities_for_local_sivs(self):
         # Get commodities where there is a local SIV
         rows = self.application.execute_sql(
-            GET_COMMODITIES_SQL.format(geo_ids=self.application.agreement.geo_ids)
+            GET_COMMODITIES_SQL.format(geo_ids=self.application.agreement.geo_ids),
+            dict_cursor=True
         )
 
         local_sivs = []
         local_sivs_commodities_only = []
 
-        for rw in rows:
-            goods_nomenclature_item_id = rw[0]
-            validity_start_date = rw[1]
-            condition_duty_amount = rw[2]
-            condition_monetary_unit_code = rw[3]
-            condition_measurement_unit_code = rw[4]
-
+        for row in rows:
             obj = LocalSiv(
-                goods_nomenclature_item_id,
-                validity_start_date,
-                condition_duty_amount,
-                condition_monetary_unit_code,
-                condition_measurement_unit_code,
+                row['goods_nomenclature_item_id'],
+                row['validity_start_date'],
+                row['condition_duty_amount'],
+                row['condition_monetary_unit_code'],
+                row['condition_measurement_unit_code'],
             )
             local_sivs.append(obj)
-            local_sivs_commodities_only.append(goods_nomenclature_item_id)
+            local_sivs_commodities_only.append(row['goods_nomenclature_item_id'])
         return local_sivs, local_sivs_commodities_only
 
     def _get_duties(self, measure_type_list):
@@ -118,6 +117,103 @@ class Document:
             GET_DUTIES_SQL.format(measure_type_list=measure_type_list, geo_ids=self.application.agreement.geo_ids),
             dict_cursor=True
         )
+
+    def populate_duty_list(
+        self,
+        commodity_code,
+        additional_code_type_id,
+        additional_code_id,
+        measure_type_id,
+        duty_expression_id,
+        duty_amount,
+        monetary_unit_code,
+        measurement_unit_code,
+        measurement_unit_qualifier_code,
+        measure_sid,
+        quota_order_number_id,
+        geographical_area_id,
+        validity_start_date,
+        validity_end_date,
+        reduction_indicator,
+        local_sivs,
+        local_sivs_commodities_only,
+        measure_condition_dict,
+    ):
+        if duty_amount is None and duty_expression_id is None:
+            is_siv = True
+            measure_condition = measure_condition_dict.get(measure_sid)
+            if measure_condition:
+                duty_expression_id = "01"
+                duty_amount = measure_condition.condition_duty_amount
+        else:
+            is_siv = False
+
+        obj_duty = Duty(
+            self.application,
+            commodity_code,
+            additional_code_type_id,
+            additional_code_id,
+            measure_type_id,
+            duty_expression_id,
+            duty_amount,
+            monetary_unit_code,
+            measurement_unit_code,
+            measurement_unit_qualifier_code,
+            measure_sid,
+            quota_order_number_id,
+            geographical_area_id,
+            validity_start_date,
+            validity_end_date,
+            reduction_indicator,
+            is_siv, local_sivs,
+            local_sivs_commodities_only
+        )
+        self.duty_list.append(obj_duty)
+
+    def populate_measure_list(
+        self,
+        temp_measure_list,
+        measure_sid,
+        commodity_code,
+        quota_order_number_id,
+        validity_start_date,
+        validity_end_date,
+        geographical_area_id,
+        reduction_indicator,
+    ):
+        if measure_sid not in temp_measure_list:
+            obj_measure = Measure(
+                measure_sid,
+                commodity_code,
+                quota_order_number_id,
+                validity_start_date,
+                validity_end_date,
+                geographical_area_id,
+                reduction_indicator
+            )
+            self.measure_list.append(obj_measure)
+            temp_measure_list.append(measure_sid)
+
+    def populate_commodity_list(
+        self,
+        temp_commodity_list,
+        commodity_code,
+    ):
+        if commodity_code not in temp_commodity_list:
+            obj_commodity = Commodity(commodity_code)
+            self.commodity_list.append(obj_commodity)
+            temp_commodity_list.append(commodity_code)
+
+    def populate_quota_order_number_list(
+        self,
+        temp_quota_order_number_list,
+        quota_order_number_id,
+    ):
+        if quota_order_number_id not in temp_quota_order_number_list:
+            if quota_order_number_id != "":
+                obj_quota_order_number = QuotaOrderNumber(quota_order_number_id)
+                self.quota_order_number_list.append(obj_quota_order_number)
+                temp_quota_order_number_list.append(quota_order_number_id)
 
     def get_duties(self, instrument_type):
         logger.debug(" - Getting duties for " + instrument_type)
@@ -135,7 +231,6 @@ class Document:
 
         # Get the duties (i.e the measure components)
         # Add this back in for Switzerland ( OR m.measure_sid = 3231905)
-
         duties = self._get_duties(measure_type_list)
 
         local_sivs, local_sivs_commodities_only = self.get_commodities_for_local_sivs()
@@ -171,42 +266,47 @@ class Document:
             # Hypothesis would be that the only reason why the Duty amount is None is when
             # there is a "V" code attached to the Measure
             # if ((duty_amount is None) and (duty_expression_id == "01")):
-            if duty_amount is None and duty_expression_id is None:
-                is_siv = True
-                measure_condition = measure_condition_dict.get(measure_sid)
-                if measure_condition:
-                    duty_expression_id = "01"
-                    duty_amount = measure_condition.condition_duty_amount
-            else:
-                is_siv = False
-
-            obj_duty = Duty(
-                self.application, commodity_code, additional_code_type_id, additional_code_id, measure_type_id,
-                duty_expression_id, duty_amount, monetary_unit_code, measurement_unit_code,
-                measurement_unit_qualifier_code, measure_sid, quota_order_number_id, geographical_area_id,
-                validity_start_date, validity_end_date, reduction_indicator, is_siv, local_sivs,
-                local_sivs_commodities_only
+            self.populate_duty_list(
+                commodity_code,
+                additional_code_type_id,
+                additional_code_id,
+                measure_type_id,
+                duty_expression_id,
+                duty_amount,
+                monetary_unit_code,
+                measurement_unit_code,
+                measurement_unit_qualifier_code,
+                measure_sid,
+                quota_order_number_id,
+                geographical_area_id,
+                validity_start_date,
+                validity_end_date,
+                reduction_indicator,
+                local_sivs,
+                local_sivs_commodities_only,
+                measure_condition_dict,
             )
-            self.duty_list.append(obj_duty)
 
-            if measure_sid not in temp_measure_list:
-                obj_measure = Measure(
-                    measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date,
-                    geographical_area_id, reduction_indicator
-                )
-                self.measure_list.append(obj_measure)
-                temp_measure_list.append(measure_sid)
+            self.populate_measure_list(
+                temp_measure_list,
+                measure_sid,
+                commodity_code,
+                quota_order_number_id,
+                validity_start_date,
+                validity_end_date,
+                geographical_area_id,
+                reduction_indicator,
+            )
 
-            if commodity_code not in temp_commodity_list:
-                obj_commodity = Commodity(commodity_code)
-                self.commodity_list.append(obj_commodity)
-                temp_commodity_list.append(commodity_code)
+            self.populate_commodity_list(
+                temp_commodity_list,
+                commodity_code
+            )
 
-            if quota_order_number_id not in temp_quota_order_number_list:
-                if quota_order_number_id != "":
-                    obj_quota_order_number = QuotaOrderNumber(quota_order_number_id)
-                    self.quota_order_number_list.append(obj_quota_order_number)
-                    temp_quota_order_number_list.append(quota_order_number_id)
+            self.populate_quota_order_number_list(
+                temp_quota_order_number_list,
+                quota_order_number_id
+            )
 
         self.assign_duties_to_measures()
         self.assign_measures_to_commodities()
@@ -250,8 +350,6 @@ class Document:
         else:
             self.has_quotas = True
 
-        self.quota_order_number_list = []
-        self.q = []
         for row in rows:
             quota_order_number_id = row[0]
             qon = QuotaOrderNumber(quota_order_number_id)
@@ -330,28 +428,85 @@ class Document:
                     break
 
     def get_quota_balances(self):
-        logger.debug(" - Getting quota balances")
         if self.has_quotas is False:
             return
+        self.add_first_come_first_serve_quotas()
+        self.add_licensed_quotas()
 
-        temp = ExtendedQuota.objects.all()
+    def add_licensed_quotas(self):
+        temp = ExtendedQuota.objects.filter(
+            agreement=self.application.agreement,
+            quota_type=ExtendedQuota.LICENSED
+        )
         for balance in temp:
             quota_order_number_id = balance.quota_order_number_id
             country = balance.agreement.slug
             method = balance.get_quota_type_display()
             y1_balance = balance.year_start_balance
             yx_balance = balance.opening_balance
-            yx_start = datetime.strftime(balance.start_date, "%d/%m/%Y") if balance.start_date else None
+            yx_start = balance.start_date
             measurement_unit_code = balance.measurement_unit_code
             origin_quota = "Y" if balance.is_origin_quota else ""
             addendum = balance.addendum
             scope = balance.scope
             qb = QuotaBalance(
-                quota_order_number_id, country, method, y1_balance, yx_balance, yx_start,
-                measurement_unit_code, origin_quota, addendum, scope
+                quota_order_number_id,
+                country,
+                method,
+                y1_balance,
+                yx_balance,
+                yx_start,
+                measurement_unit_code,
+                origin_quota,
+                addendum,
+                scope
             )
             if str(quota_order_number_id) not in self.balance_dict:
                 self.balance_dict[str(quota_order_number_id)] = qb
+
+    def add_first_come_first_serve_quotas(self):
+        temp = self.application.execute_sql(
+            GET_QUOTA_BALANCE_SQL.format(geo_ids=self.application.agreement.geo_ids),
+            dict_cursor=True
+        )
+        for balance in temp:
+            quota_order_number_id = balance['quota_order_number_id']
+            extended_quota_info = self.get_extended_quota_information(quota_order_number_id)
+            if not extended_quota_info:
+                origin_quota = ""
+                addendum = ""
+                scope = ""
+            else:
+                addendum = extended_quota_info.addendum
+                scope = extended_quota_info.scope
+                origin_quota = "Y" if extended_quota_info.is_origin_quota else ""
+
+            country = self.application.agreement.slug
+            y1_balance = balance['initial_volume']
+            yx_balance = balance['volume']
+            yx_start = balance['validity_start_date']
+            measurement_unit_code = balance['measurement_unit_code']
+
+            qb = QuotaBalance(
+                quota_order_number_id,
+                country,
+                FIRST_COME_FIRST_SERVED,
+                y1_balance,
+                yx_balance,
+                yx_start,
+                measurement_unit_code,
+                origin_quota,
+                addendum,
+                scope
+            )
+            if str(quota_order_number_id) not in self.balance_dict:
+                self.balance_dict[str(quota_order_number_id)] = qb
+
+    def get_extended_quota_information(self, quota_order_number_id):
+        return ExtendedQuota.objects.filter(
+            quota_order_number_id=quota_order_number_id,
+            agreement=self.application.agreement
+        ).first()
 
     def get_quota_definitions(self):
         if self.has_quotas is False:
@@ -364,29 +519,26 @@ class Document:
         my_order_numbers = f.list_to_sql(self.q)
 
         rows = self.application.execute_sql(
-            GET_QUOTA_DEFINITIONS_SQL.format(order_numbers=my_order_numbers)
+            GET_QUOTA_DEFINITIONS_SQL.format(order_numbers=my_order_numbers),
+            dict_cursor=True
         )
 
         self.quota_definition_list = []
         for row in rows:
-            quota_definition_sid = row[0]
-            quota_order_number_id = row[1]
-            validity_start_date = row[2]
-            validity_end_date = row[3]
-            quota_order_number_sid = row[4]
-            volume = row[5]
-            initial_volume = row[6]
-            measurement_unit_code = row[7]
-            maximum_precision = row[8]
-            critical_state = row[9]
-            critical_threshold = row[9]
-            monetary_unit_code = row[10]
-            measurement_unit_qualifier_code = row[11]
-
             qd = QuotaDefinition(
-                quota_definition_sid, quota_order_number_id, validity_start_date, validity_end_date,
-                quota_order_number_sid, volume, initial_volume, measurement_unit_code, maximum_precision,
-                critical_state, critical_threshold, monetary_unit_code, measurement_unit_qualifier_code
+                row['quota_definition_sid'],
+                row['quota_order_number_id'],
+                row['validity_start_date'],
+                row['validity_end_date'],
+                row['quota_order_number_sid'],
+                row['volume'],
+                row['initial_volume'],
+                row['measurement_unit_code'],
+                row['maximum_precision'],
+                row['critical_state'],
+                row['critical_threshold'],
+                row['monetary_unit_code'],
+                row['measurement_unit_qualifier_code'],
             )
 
             qb = self.balance_dict.get(str(qd.quota_order_number_id))
@@ -397,7 +549,7 @@ class Document:
                 qd.scope = qb.scope
                 qd.format_volumes()
             else:
-                logger.debug(f"Matching balance not found {qd.quota_order_number_id}")
+                logger.critical(f"Matching balance not found {qd.quota_order_number_id}")
             qd.format_volumes()
             self.quota_definition_list.append(qd)
 
@@ -412,11 +564,22 @@ class Document:
                 # definition, for use in the creation of the FTA document only
                 if qb.measurement_unit_code == "":
                     qb.measurement_unit_code = "KGM"
-                d1 = datetime.strptime(qb.yx_start, "%d/%m/%Y")
+                d1 = qb.yx_start
                 d2 = qb.yx_end
                 qd = QuotaDefinition(
-                    0, qon.quota_order_number_id, d1, d2, 0, int(qb.y1_balance), int(qb.y1_balance),
-                    qb.measurement_unit_code, 3, "Y", 90, "", ""
+                    0,
+                    qon.quota_order_number_id,
+                    d1,
+                    d2,
+                    0,
+                    int(qb.y1_balance),
+                    int(qb.y1_balance),
+                    qb.measurement_unit_code,
+                    3,
+                    "Y",
+                    90,
+                    "",
+                    ""
                 )
                 qd.volume_yx = int(qb.yx_balance)
                 qd.addendum = qb.addendum.strip()
@@ -431,11 +594,24 @@ class Document:
 
         # Finally, add the quota definitions, replete with their new balances
         # to the relevant quota order numbers
+
+        d = {}
+        for q in self.quota_definition_list:
+            d[q.quota_order_number_id] = q
+
         for qon in self.quota_order_number_list:
-            for qd in self.quota_definition_list:
-                if qd.quota_order_number_id == qon.quota_order_number_id:
-                    qon.quota_definition_list.append(qd)
-                    break
+            if qon.quota_order_number_id in d:
+                qon.quota_definition_list.append(d[qon.quota_order_number_id])
+
+    def get_quota_start_date(self, start_date):
+        if not start_date:
+            return ""
+        return datetime.strftime(start_date, '%d/%m')
+
+    def get_quota_end_date(self, end_date):
+        if not end_date:
+            return ""
+        return datetime.strftime(end_date, '%d/%m')
 
     def print_quotas(self):
         logger.debug(" - Getting quotas")
@@ -446,41 +622,21 @@ class Document:
             qb = self.balance_dict.get(str(qon.quota_order_number_id))
 
             if qb:
-                if len(qon.quota_definition_list) > 1:
-                    logger.debug("More than one definition - we must be in Morocco")
+                # TODO: MPP what should the dates be for licensed quotas
+                qon.validity_start_date = qon.quota_definition_list[0].validity_start_date
+                qon.validity_end_date = qon.quota_definition_list[0].validity_end_date
+                qon.validity_end_date_2019 = qon.quota_definition_list[0].validity_end_date
+                qon.validity_start_date_2019 = qon.quota_definition_list[0].validity_start_date
 
-                if len(qon.quota_definition_list) == 0:
-                    # if there are no definitions, then, either this is a screwed quota and the database is
-                    # missing definition entries, or this is a licensed quota, that we have somehow missed beforehand?
-                    # Check get_quota_definitions which should avoid this eventuality.
-                    qon.validity_start_date = settings.BREXIT_VALIDITY_START_DATE
-                    qon.validity_end_date = settings.BREXIT_VALIDITY_END_DATE
-                    qon.validity_start_date_2019 = settings.BREXIT_VALIDITY_START_DATE
-                    qon.validity_end_date_2019 = settings.BREXIT_VALIDITY_END_DATE
+                qon.initial_volume = qon.quota_definition_list[0].formatted_initial_volume
+                qon.volume_yx = qon.quota_definition_list[0].formatted_volume_yx
+                qon.addendum = qon.quota_definition_list[0].addendum
+                qon.scope = qon.quota_definition_list[0].scope
+                qon.measurement_unit_code = qon.quota_definition_list[0].measurement_unit_code
+                qon.monetary_unit_code = qon.quota_definition_list[0].monetary_unit_code
+                qon.measurement_unit_qualifier_code = qon.quota_definition_list[0].measurement_unit_qualifier_code
 
-                    logger.debug(f"No quota definitions found for quota {qon.quota_order_number_id}")
-                    qon.initial_volume = ""
-                    qon.volume_yx = ""
-                    qon.addendum = ""
-                    qon.scope = ""
-                    qon.measurement_unit_code = ""
-                    qon.monetary_unit_code = ""
-                    qon.measurement_unit_qualifier_code = ""
-                else:
-                    qon.validity_start_date = qon.quota_definition_list[0].validity_start_date
-                    qon.validity_end_date = qon.quota_definition_list[0].validity_end_date
-                    qon.validity_end_date_2019 = qon.quota_definition_list[0].validity_end_date
-                    qon.validity_start_date_2019 = qon.quota_definition_list[0].validity_start_date
-
-                    qon.initial_volume = qon.quota_definition_list[0].formatted_initial_volume
-                    qon.volume_yx = qon.quota_definition_list[0].formatted_volume_yx
-                    qon.addendum = qon.quota_definition_list[0].addendum
-                    qon.scope = qon.quota_definition_list[0].scope
-                    qon.measurement_unit_code = qon.quota_definition_list[0].measurement_unit_code
-                    qon.monetary_unit_code = qon.quota_definition_list[0].monetary_unit_code
-                    qon.measurement_unit_qualifier_code = qon.quota_definition_list[0].measurement_unit_qualifier_code
-
-                    # print(qon.quota_order_number_id, qon.validity_start_date, qon.validity_end_date)
+                # print(qon.quota_order_number_id, qon.validity_start_date, qon.validity_end_date)
 
                 last_order_number = "00.0000"
                 last_duty = "-1"
@@ -530,8 +686,8 @@ class Document:
                                 'QUOTA_ORDER_NUMBER': quota_order_number,
                                 'ORIGIN_QUOTA': qon.origin_quota,
                                 'QUOTA_VOLUME': quota_volume,
-                                'QUOTA_OPEN_DATE': datetime.strftime(qon.validity_start_date, '%d/%m'),
-                                'QUOTA_CLOSE_DATE': datetime.strftime(qon.validity_end_date, '%d/%m'),
+                                'QUOTA_OPEN_DATE': self.get_quota_start_date(qon.validity_start_date),
+                                'QUOTA_CLOSE_DATE': self.get_quota_end_date(qon.validity_end_date),
                                 '2019_QUOTA_VOLUME': '',
                                 'QUOTA_OPEN_DATE_2019': '',
                                 'QUOTA_CLOSE_DATE_2019': '',
@@ -548,7 +704,6 @@ class Document:
                                 )
 
                         table_row['COMMODITY_CODE'] = comm.commodity_code_formatted
-
                         table_row['PREFERENTIAL_DUTY_RATE'] = comm.duty_string
 
                         if comm.duty_string != last_duty:

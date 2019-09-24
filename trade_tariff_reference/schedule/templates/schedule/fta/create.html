@@ -21,6 +21,8 @@
 
                 {% include 'schedule/input_field.html' with field=form.slug %}
 
+                {% include 'schedule/input_field.html' with field=form.country_name %}
+
                 <div id="country_codes">
                     <div class="govuk-form-group" v-bind:class="{ 'govuk-form-group--error': errors[index] && errors[index].message!=='None'}" v-for="(country, index) in country_codes">
                         <label class="govuk-label" :for="'id_country_codes_' + index">
@@ -115,7 +117,7 @@
         delimiters: ['[[', ']]'],
         el: '#country_codes',
         data: {
-            country_codes: {% autoescape off %}{{ form.instance.country_codes }}{% endautoescape %},
+            country_codes: {% autoescape off %}{% if form.instance.country_codes %}{{ form.instance.country_codes }}{% else %}['']{% endif %}{% endautoescape %},
             errors: {% autoescape off %}{{ form.country_codes.errors.as_json }}{% endautoescape %},
         },
         methods: {

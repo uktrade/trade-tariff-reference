@@ -83,6 +83,7 @@ def test_create_agreement_with_no_data(authenticated_client):
         'country_codes': ['This field is required.'],
         'slug': ['This field is required.'],
         'version': ['This field is required.'],
+        'country_name': ['This field is required.']
     }
     assert response.context['form'].errors == expected_errors
 
@@ -103,6 +104,7 @@ def test_create_agreement(mock_generate_document, authenticated_client):
         'agreement_date_year': 2000,
         'agreement_date_month': 10,
         'agreement_date_day': 2,
+        'country_name': 'Country'
 
     }
     response = authenticated_client.post(reverse('schedule:fta:create'), data=data, follow=True)
@@ -142,6 +144,7 @@ def test_create_agreement_and_redirect_to_add_extended_information(
         'agreement_date_month': 10,
         'agreement_date_day': 2,
         'extended_information': True,
+        'country_name': 'Country'
 
     }
     response = authenticated_client.post(reverse('schedule:fta:create'), data=data, follow=True)

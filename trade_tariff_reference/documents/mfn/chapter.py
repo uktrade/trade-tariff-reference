@@ -146,7 +146,8 @@ class Chapter:
                             if next_commodity.indents == my_commodity.indents:
                                 sibling_duties.append(next_commodity.combined_duty)
                             else:
-                                sibling_duty_set = set(sibling_duties)
+                                # TODO: MPP commented out as not used. Investigate
+                                # sibling_duty_set = set(sibling_duties)
                                 break
 
     def create_document(self, context):
@@ -215,12 +216,12 @@ class Chapter:
             GET_SECTION_DETAILS.format(chapter_string=self.chapter.chapter_string),
             only_one_row=True
         )
-        try:
-            self.section_numeral = row[0]
-        except:
+        if not row:
             self.section_numeral = ""
             logger.error("Chapter does not exist")
             return
+
+        self.section_numeral = row[0]
         self.section_title = row[1]
         self.sSectionID = row[2]
 

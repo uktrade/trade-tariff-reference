@@ -6,6 +6,9 @@ INFINITE_MEASURE_EXTENT = -1
 
 PUBLISHED = 'published'
 
+FIRST_COME_FIRST_SERVED = 'FCFS'
+
+
 GET_COMMODITIES_SQL = """
 SELECT DISTINCT m.goods_nomenclature_item_id,
 m.validity_start_date,
@@ -141,10 +144,45 @@ WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN ({geo_ids})
 ORDER BY goods_nomenclature_item_id, measure_sid
 """
 
+# TODO: MPP set validity date to 2019-01-01
+# if quotas are not appearing instead of settings.BREXIT_VALIDITY_START_DATE_STRING
 GET_QUOTA_DEFINITIONS_SQL = f"""
 SELECT * FROM quota_definitions
 WHERE quota_order_number_id IN ({{order_numbers}})
 AND status = 'published'
 AND validity_start_date >= '{settings.BREXIT_VALIDITY_START_DATE_STRING}'
 ORDER BY quota_order_number_id, validity_start_date DESC
+"""
+
+# TODO: MPP set validity date to 2019-11-01 to find all quota balances
+FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL = """
+SELECT quota_order_number_id,
+MIN(validity_start_date) as min_start
+FROM quota_definitions
+WHERE status ='published'
+AND (
+(validity_start_date >= '2020-01-01' AND validity_start_date <= '2020-12-31')
+OR
+(validity_end_date >= '2020-01-01' AND validity_end_date <= '2020-12-31')
+)
+GROUP BY quota_order_number_id
+"""
+
+
+GET_QUOTA_BALANCE_SQL = f"""
+SELECT qd.quota_order_number_id,
+qd.measurement_unit_code,
+qd.initial_volume,
+qd.volume,
+qd.description,
+qd.validity_start_date,
+qd.validity_end_date,
+qd.quota_definition_sid
+FROM ({FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL}) self JOIN quota_definitions qd
+ON qd.quota_order_number_id = self.quota_order_number_id
+AND self.min_start = qd.validity_start_date
+INNER JOIN quota_order_number_origins qo
+ON qd.quota_order_number_sid = qo.quota_order_number_sid
+AND qo.geographical_area_id IN ({{geo_ids}})
+ORDER BY qd.quota_order_number_id
 """

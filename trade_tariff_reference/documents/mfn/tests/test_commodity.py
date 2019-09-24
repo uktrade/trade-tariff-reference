@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-
 from unittest import mock
 
 from freezegun import freeze_time
@@ -287,28 +286,6 @@ def test_format_description(db_description, indents, expected_description):
     commodity = Commodity(application, indents=indents)
     actual_description = str(commodity.format_description(db_description))
     assert_xml(actual_description, expected_description)
-
-
-@pytest.mark.parametrize(
-    'commodity_code,expected_result',
-    (
-        ('', 10),
-        ('0000000000', 2),
-        ('1100000000', 2),
-        ('1111000000', 4),
-        ('1111110000', 6),
-        ('1111111100', 8),
-        ('1111111111', 10),
-        ('0000000011', 10),
-        ('0000001111', 10),
-        ('0000111111', 10),
-        ('0011111111', 10),
-    )
-)
-def test_get_significant_digits(commodity_code, expected_result):
-    application = mock.MagicMock()
-    commodity = Commodity(application, commodity_code=commodity_code)
-    assert commodity.significant_digits == expected_result
 
 
 @pytest.mark.parametrize(

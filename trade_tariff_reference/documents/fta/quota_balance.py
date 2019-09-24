@@ -14,13 +14,13 @@ class QuotaBalance:
         self.quota_order_number_id = quota_order_number_id
         self.country = country
         self.method = method
-        self.y1_balance = y1_balance
-        self.yx_balance = yx_balance
-        self.yx_start = yx_start
+        self.y1_balance = y1_balance or 0
+        self.yx_balance = yx_balance or 0
+        self.yx_start = self.format_date(yx_start)
         self.yx_end = self.add_year(self.yx_start)
-        self.measurement_unit_code = measurement_unit_code.strip()
-        self.addendum = addendum.strip()
-        self.scope = scope.strip()
+        self.measurement_unit_code = measurement_unit_code or ""
+        self.addendum = addendum or ""
+        self.scope = scope or ""
 
         if origin_quota == "Y":
             origin_quota = "Yes"
@@ -34,8 +34,6 @@ class QuotaBalance:
         if not date:
             return
         try:
-            if type(date) is str:
-                date = datetime.strptime(date, "%d/%m/%Y")
             return date + relativedelta(years=1, days=-1)
         except (TypeError, ValueError):
             return
@@ -43,7 +41,13 @@ class QuotaBalance:
     def get_year_one_dates(self):
         if not self.yx_start:
             return
-        start_date = datetime.strptime(self.yx_start, "%d/%m/%Y")
-        if start_date.month > 3:
-            self.validity_start_date_2019 = start_date
-            self.validity_end_date_2019 = self.add_year(start_date)
+        if self.yx_start.month > 3:
+            self.validity_start_date_2019 = self.yx_start
+            self.validity_end_date_2019 = self.add_year(self.yx_start)
+
+    def format_date(self, date_string):
+        if date_string and isinstance(date_string, str):
+            try:
+                return datetime.strptime(date_string, "%d/%m/%Y")
+            except (TypeError, ValueError):
+                return

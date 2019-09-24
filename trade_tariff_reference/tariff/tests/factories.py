@@ -1,3 +1,6 @@
+import random
+from datetime import date
+
 from django.utils.timezone import utc
 
 import factory
@@ -68,3 +71,38 @@ class ChapterSectionFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'tariff.ChaptersSections'
+
+
+class QuotaOrderNumberFactory(factory.django.DjangoModelFactory):
+    status = PUBLISHED
+    validity_start_date = date(2020, 1, 1)
+    validity_end_date = date(2020, 12, 31)
+    id = factory.LazyAttribute(lambda q: str(random.randrange(100000, 999999)))
+    quota_order_number_sid = factory.LazyAttribute(
+        lambda q: str(q.id)
+    )
+
+    class Meta:
+        model = 'tariff.QuotaOrderNumbers'
+
+
+class QuotaDefinitionFactory(factory.django.DjangoModelFactory):
+    status = PUBLISHED
+    quota_order_number_sid = factory.LazyAttribute(
+        lambda q: str(q.quota_order_number.quota_order_number_sid)
+    )
+    validity_start_date = date(2020, 1, 1)
+    validity_end_date = date(2020, 12, 31)
+    quota_order_number = factory.SubFactory(
+        QuotaOrderNumberFactory,
+        quota_order_number_sid=factory.SelfAttribute('..quota_order_number_sid')
+    )
+
+    class Meta:
+        model = 'tariff.QuotaDefinitions'
+
+
+class QuotaOrderNumberOriginFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = 'tariff.QuotaOrderNumberOrigins'
