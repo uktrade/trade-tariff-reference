@@ -4,8 +4,14 @@ from datetime import datetime
 class Measure:
 
     def __init__(
-        self, measure_sid, commodity_code, quota_order_number_id, validity_start_date, validity_end_date,
-        geographical_area_id, reduction_indicator
+        self,
+        measure_sid,
+        commodity_code,
+        quota_order_number_id,
+        validity_start_date,
+        validity_end_date,
+        geographical_area_id,
+        reduction_indicator
     ):
         # Get parameters from instantiator
         self.measure_sid = measure_sid
