@@ -13,5 +13,5 @@ def test_format_order_string_when_scope_set():
     quota_order_number.format_order_number()
     assert (
         quota_order_number.quota_order_number_id_formatted
-        == '1</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:br/></w:r><w:r><w:t>Scope'
+        == '1 Scope'
     )
