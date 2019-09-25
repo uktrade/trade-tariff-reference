@@ -114,6 +114,9 @@ class ChapterNoteFactory(factory.django.DjangoModelFactory):
 class ChapterNoteWithDocumentFactory(factory.django.DjangoModelFactory):
     document = factory.django.FileField(filename='chapter_note.docx')
 
+    class Meta:
+        model = 'schedule.ChapterNote'
+
 
 class ChapterDocumentHistoryFactory(factory.django.DjangoModelFactory):
     chapter = factory.SubFactory(ChapterFactory)

@@ -8,8 +8,17 @@ from django.conf import settings
 class QuotaBalance:
 
     def __init__(
-        self, quota_order_number_id, country, method, y1_balance, yx_balance, yx_start, measurement_unit_code,
-        origin_quota, addendum, scope
+        self,
+        quota_order_number_id,
+        country,
+        method,
+        y1_balance,
+        yx_balance,
+        yx_start,
+        measurement_unit_code,
+        origin_quota,
+        addendum,
+        scope
     ):
         self.quota_order_number_id = quota_order_number_id
         self.country = country

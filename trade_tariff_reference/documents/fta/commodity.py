@@ -1,4 +1,5 @@
 import logging
+from datetime import timezone
 
 from django.conf import settings
 
@@ -89,7 +90,10 @@ class Commodity(BaseCommodity):
         if not is_all_full_year or not measure.validity_end_date:
             return
 
-        if measure.validity_end_date < self.date_brexit:
+        validity_end_date = measure.validity_end_date.replace(tzinfo=timezone.utc)
+        date_brexit = self.date_brexit.replace(tzinfo=timezone.utc)
+
+        if validity_end_date < date_brexit:
             self.suppress = True
 
     def get_partial_period_list(self):
@@ -127,7 +131,9 @@ class Commodity(BaseCommodity):
 
         if len(self.measure_list) == 1:
             m = self.measure_list[0]
-            if m.validity_end_date < self.date_brexit:
+            validity_end_date = m.validity_end_date.replace(tzinfo=timezone.utc)
+            date_brexit = self.date_brexit.replace(tzinfo=timezone.utc)
+            if validity_end_date < date_brexit:
                 logger.debug(f"Found a single measure that ends before Brexit {self.commodity_code}")
                 self.suppress = True
 
