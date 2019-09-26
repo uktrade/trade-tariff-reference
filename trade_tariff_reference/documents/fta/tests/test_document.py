@@ -2,7 +2,6 @@ import zipfile
 from datetime import datetime, timezone
 from unittest import mock
 
-
 from botocore.exceptions import EndpointConnectionError
 
 from override_storage import override_storage

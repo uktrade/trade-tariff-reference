@@ -57,6 +57,8 @@ class Application(DatabaseConnect):
         # Create the document
         my_document = Document(self)
 
+        my_document.check_for_quotas()
+
         # Create the measures table
         my_document.get_duties("preferences")
         tariff_data = my_document.print_tariffs()

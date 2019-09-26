@@ -52,6 +52,7 @@ class Document:
         self.quota_order_number_list = []
         self.seasonal_records = 0
         self.wide_duty = False
+        self.has_quotas = False
 
         logger.debug("Creating FTA document for " + application.agreement.country_name + "\n")
         self.application.get_mfns_for_siv_products()
@@ -736,7 +737,7 @@ class Document:
             'WIDTH_QUOTA_CLOSE_DATE': '10',
             'WIDTH_2019_QUOTA_VOLUME': '16',
             'QUOTA_TABLE_ROWS': quota_list,
-            'HAS_QUOTAS': True,
+            'HAS_QUOTAS': self.has_quotas,
         }
         return quota_data
 
