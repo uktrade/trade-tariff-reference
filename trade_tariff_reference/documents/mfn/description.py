@@ -58,7 +58,7 @@ class DocumentHTMLParser(HTMLParser):
             self.run.underline = True
         if tag == "br":
             self.run.add_break()
-        if tag in "li":
+        if tag == "li":
             self.run.add_text(u'- ')
         if tag == 'sub':
             self.run.font.subscript = True
