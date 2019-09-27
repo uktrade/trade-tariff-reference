@@ -228,7 +228,7 @@
     "pk": 15,
     "fields": {
         "slug": "honduras",
-        "country_codes": "[\"HO\"]",
+        "country_codes": "[\"HN\"]",
         "agreement_name": "Agreement establishing an Association between the United Kingdom of Great Britain and Northern Ireland and Central America",
         "agreement_date": "2019-11-01",
         "version": "1.0",
