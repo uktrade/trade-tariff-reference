@@ -26,35 +26,29 @@ EXP_FORMAT_DESCRIPTION_1 = '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:ta
                            '</w:pPr>' \
                            '<w:t>-</w:t><w:tab/>' \
                            '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/>' \
-                           '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/><w:p>' \
+                           '<w:pPr><w:jc w:val="left"/></w:pPr><w:t>-</w:t><w:tab/>' \
                            '<w:r/><w:r><w:t>Other</w:t>' \
                            '</w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 EXP_FORMAT_DESCRIPTION_2 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
-                           '<w:p>' \
                            '<w:r/>' \
                            '<w:r><w:t>kg liters</w:t></w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 
 EXP_FORMAT_DESCRIPTION_3 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
-                           '<w:p>' \
                            '<w:r/>' \
                            '<w:r><w:t>Other - Sweets</w:t></w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 EXP_FORMAT_DESCRIPTION_4 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
                            '<w:pPr>' \
                            '<w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
-                           '<w:p>' \
                            '<w:r/>' \
                            '<w:r><w:t>Electroplated interior or exterior decorative parts consisting of:</w:t></w:r>' \
                            '<w:r><w:br/></w:r>' \
@@ -66,8 +60,7 @@ EXP_FORMAT_DESCRIPTION_4 = '<w:pPr><w:jc w:val="left"/>' \
                            '<w:r><w:t>- layers of copper, nickel and chromium</w:t></w:r>' \
                            '<w:r><w:br/><w:t>for use in the manufacturing of parts for motor vehicles of heading ' \
                            '8701 to 8705</w:t></w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 EXP_FORMAT_DESCRIPTION_5 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
@@ -78,7 +71,6 @@ EXP_FORMAT_DESCRIPTION_5 = '<w:pPr><w:jc w:val="left"/>' \
                            '<w:t>-</w:t><w:tab/>' \
                            '<w:pPr><w:jc w:val="left"/></w:pPr>' \
                            '<w:t>-</w:t><w:tab/>' \
-                           '<w:p>' \
                            '<w:r/>' \
                            '<w:r><w:t>Heat-, infra- and UV insulating poly(vinyl butyral) film:</w:t></w:r>' \
                            '<w:r><w:br/></w:r>' \
@@ -101,8 +93,7 @@ EXP_FORMAT_DESCRIPTION_5 = '<w:pPr><w:jc w:val="left"/>' \
                            '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
                            '<w:r><w:t>- with a total thickness of 0,43 mm (± 0,043 mm)</w:t></w:r>' \
                            '<w:r><w:br/></w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 EXP_FORMAT_DESCRIPTION_6 = '<w:pPr><w:jc w:val="left"/>' \
                            '</w:pPr><w:t>-</w:t><w:tab/>' \
@@ -114,7 +105,7 @@ EXP_FORMAT_DESCRIPTION_6 = '<w:pPr><w:jc w:val="left"/>' \
                            '<w:t>-</w:t><w:tab/>' \
                            '<w:pPr><w:jc w:val="left"/></w:pPr>' \
                            '<w:t>-</w:t><w:tab/>' \
-                           '<w:p><w:r/>' \
+                           '<w:r/>' \
                            '<w:r><w:t>Thermoplastic polyurethane foil in rolls with:</w:t></w:r>' \
                            '<w:r><w:br/></w:r>' \
                            '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
@@ -146,8 +137,7 @@ EXP_FORMAT_DESCRIPTION_6 = '<w:pPr><w:jc w:val="left"/>' \
                            '<w:r><w:t xml:space="preserve"></w:t></w:r>' \
                            '<w:r><w:t>- a flatness of 0,025 mm</w:t></w:r>' \
                            '<w:r><w:br/></w:r>' \
-                           '<w:r/>' \
-                           '</w:p>'
+                           '<w:r/>'
 
 
 EXP_SEASONAL_XML = '<w:r><w:t>2019-02-01 to 2019-05-12</w:t></w:r><w:r><w:tab/><w:t>DUTY / 100 kg</w:t></w:r>' \
@@ -165,7 +155,7 @@ def test_initialise():
     assert commodity.commodity_code == ''
     assert commodity.commodity_code_formatted == ''
     assert commodity.description == ''
-    assert_xml(commodity.description_formatted, "<w:p><w:r/><w:r/><w:r><w:rPr>  <w:b/></w:rPr></w:r><w:r/><w:r/></w:p>")
+    assert_xml(commodity.description_formatted, "<w:r/><w:r/><w:r><w:rPr>  <w:b/></w:rPr></w:r><w:r/><w:r/>")
     assert commodity.product_line_suffix == ''
     assert commodity.indents == 0
     assert commodity.leaf == 0

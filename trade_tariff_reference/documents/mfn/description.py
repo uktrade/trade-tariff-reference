@@ -26,6 +26,17 @@ HEADER = (
     'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
 )
 
+ms_p_tag = '<w:p>'
+ms_end_p_tag = '</w:p>'
+
+
+def remove_header(xml):
+    xml = xml.replace(HEADER, '<w:p>')
+    xml = xml.strip()
+    if xml.startswith(ms_p_tag) and xml.endswith(ms_end_p_tag):
+        xml = xml[len(ms_p_tag):-len(ms_end_p_tag)]
+    return xml
+
 
 def update_description(html_code):
     document = Document()
@@ -33,7 +44,7 @@ def update_description(html_code):
     document_html_parser = DocumentHTMLParser(document)
     document_html_parser.add_paragraph_and_feed(html_code)
     xml = document_html_parser.paragraph._element.xml
-    xml = xml.replace(HEADER, '<w:p>')
+    xml = remove_header(xml)
     return xml
 
 

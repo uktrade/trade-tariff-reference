@@ -3,40 +3,36 @@ import pytest
 from trade_tariff_reference.core.tests.utils import assert_xml
 from trade_tariff_reference.documents.mfn.description import update_description
 
-EXP_DESCRIPTION_1 = '<w:p><w:r/><w:r>' \
+EXP_DESCRIPTION_1 = '<w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:i/>' \
                     '</w:rPr>' \
                     '<w:t>Latin</w:t>' \
                     '</w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
-EXP_DESCRIPTION_2 = '<w:p><w:r/><w:r>' \
+EXP_DESCRIPTION_2 = '<w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:b/>' \
                     '</w:rPr>' \
                     '<w:t>Bold</w:t>' \
                     '</w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
-EXP_DESCRIPTION_3 = '<w:p><w:r/><w:r>' \
+EXP_DESCRIPTION_3 = '<w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:u w:val="single"/>' \
                     '</w:rPr>' \
                     '<w:t>Underline</w:t>' \
                     '</w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
-EXP_DESCRIPTION_4 = '<w:p><w:r>' \
+EXP_DESCRIPTION_4 = '<w:r>' \
                     '<w:t>Line break</w:t>' \
                     '</w:r>' \
-                    '<w:r><w:br/></w:r>' \
-                    '</w:p>'
+                    '<w:r><w:br/></w:r>'
 
-EXP_DESCRIPTION_5 = '<w:p><w:r/><w:r/><w:r>' \
+EXP_DESCRIPTION_5 = '<w:r/><w:r/><w:r>' \
                     '<w:t xml:space="preserve">- </w:t>' \
                     '<w:t>Point 1</w:t>' \
                     '<w:br/>' \
@@ -48,24 +44,21 @@ EXP_DESCRIPTION_5 = '<w:p><w:r/><w:r/><w:r>' \
                     '<w:br/>' \
                     '</w:r>' \
                     '<w:r><w:br/></w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
-EXP_DESCRIPTION_6 = '<w:p><w:r/><w:r>' \
+EXP_DESCRIPTION_6 = '<w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:vertAlign w:val="superscript"/></w:rPr>' \
                     '<w:t>Superscript</w:t>' \
                     '</w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
-EXP_DESCRIPTION_7 = '<w:p><w:r/><w:r>' \
+EXP_DESCRIPTION_7 = '<w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:vertAlign w:val="subscript"/></w:rPr>' \
                     '<w:t>Subscript</w:t>' \
                     '</w:r>' \
-                    '<w:r/>' \
-                    '</w:p>'
+                    '<w:r/>'
 
 
 @pytest.mark.parametrize(
