@@ -617,6 +617,8 @@ class Document:
     def print_quotas(self):
         logger.debug(" - Getting quotas")
         quota_list = []
+
+        self.quota_order_number_list.sort(key=lambda x: x.quota_order_number_id, reverse=False)
         for qon in self.quota_order_number_list:
 
             # Check balance info has been provided, if not then do not display
