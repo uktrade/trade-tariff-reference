@@ -325,8 +325,8 @@ def test_latinise():
     commodity = Commodity(application)
     assert commodity.application.latin_phrases == {'weather', 'sunny thynnus', 'sunny'}
     assert (
-        commodity.latinise('sunny weather is bad, no the weather is good thynnus.') ==
-        '<i>sunny</i> <i>weather</i> is bad, no the <i>weather</i> is good thynnus.'
+        commodity.latinise('sunny thynnus is bad, no the weather is good thynnus. sunny') ==
+        '<i>sunny thynnus</i> is bad, no the <i>weather</i> is good thynnus. <i>sunny</i>'
     )
 
 

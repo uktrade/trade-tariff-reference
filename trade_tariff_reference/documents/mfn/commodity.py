@@ -101,12 +101,24 @@ class Commodity:
         self.combined_duty = self.combined_duty.strip()
 
     def latinise(self, description):
-        # Italicise any Latin text
+        found_latin_phrases = []
+
         for latin_phrase in self.application.latin_phrases:
             if description.find(latin_phrase) > -1:
-                replacement_string = self.style_latin(latin_phrase)
-                description = description.replace(latin_phrase, replacement_string)
+                found_latin_phrases.append(latin_phrase)
+
+        found_latin_phrases.sort(reverse=True)
+
+        for index, phrase in enumerate(found_latin_phrases):
+            description = description.replace(phrase, self.get_temp_replacement_string(index))
+
+        for index, phrase in enumerate(found_latin_phrases):
+            replacement_string = self.style_latin(phrase)
+            description = description.replace(self.get_temp_replacement_string(index), replacement_string)
         return description
+
+    def get_temp_replacement_string(self, index):
+        return f'__FOUND_{index}__'
 
     def style_latin(self, phrase):
         return f'<i>{phrase}</i>'
