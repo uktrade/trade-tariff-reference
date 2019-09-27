@@ -165,7 +165,7 @@ def test_initialise():
     assert commodity.commodity_code == ''
     assert commodity.commodity_code_formatted == ''
     assert commodity.description == ''
-    assert_xml(commodity.description_formatted, "<w:p><w:r/></w:p>")
+    assert_xml(commodity.description_formatted, "<w:p><w:r/><w:r/><w:r><w:rPr>  <w:b/></w:rPr></w:r><w:r/><w:r/></w:p>")
     assert commodity.product_line_suffix == ''
     assert commodity.indents == 0
     assert commodity.leaf == 0
@@ -313,11 +313,8 @@ def test_get_significant_digits(commodity_code, expected_result):
 @pytest.mark.parametrize(
     'phrase,indents,expected_result',
     (
-        ('hello', 0, '<b><i>hello</i></b>'),
-        ('hello', 1, '<b><i>hello</i></b>'),
-        ('hello', 2, '<i>hello</i>'),
-        ('hello', 20, '<i>hello</i>'),
-
+        ('hello', 0, '<i>hello</i>'),
+        ('hello', 1, '<i>hello</i>'),
     )
 )
 def test_style_latin(phrase, indents, expected_result):
@@ -339,7 +336,7 @@ def test_latinise():
     assert commodity.application.latin_phrases == {'weather', 'sunny thynnus', 'sunny'}
     assert (
         commodity.latinise('sunny weather is bad, no the weather is good thynnus.') ==
-        '<b><i>sunny</i></b> <b><i>weather</i></b> is bad, no the <b><i>weather</i></b> is good thynnus.'
+        '<i>sunny</i> <i>weather</i> is bad, no the <i>weather</i> is good thynnus.'
     )
 
 

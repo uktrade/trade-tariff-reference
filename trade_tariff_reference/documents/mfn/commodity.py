@@ -109,10 +109,12 @@ class Commodity:
         return description
 
     def style_latin(self, phrase):
-        styled_latin = f'<i>{phrase}</i>'
-        if self.indents < 2:
-            return f'<b>{styled_latin}</b>'
-        return styled_latin
+        return f'<i>{phrase}</i>'
+
+    def style_bold(self, description):
+        if self.indents == 0:
+            return f'<b>{description}</b>'
+        return description
 
     def replace_characters_in_description(self, description):
         replacement_list = [
@@ -129,7 +131,8 @@ class Commodity:
         return description
 
     def format_description(self, org_description):
-        description = self.latinise(org_description)
+        description = self.style_bold(org_description)
+        description = self.latinise(description)
         description = self.replace_characters_in_description(description)
         html = markdown.markdown(description)
         result = update_description(html)
