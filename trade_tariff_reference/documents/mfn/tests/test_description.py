@@ -7,7 +7,6 @@ EXP_DESCRIPTION_1 = '<w:p><w:r/><w:r>' \
                     '<w:rPr>  ' \
                     '<w:i/>' \
                     '</w:rPr>' \
-                    '<w:t xml:space="preserve">- </w:t>' \
                     '<w:t>Latin</w:t>' \
                     '</w:r>' \
                     '<w:r/>' \
