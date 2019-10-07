@@ -4,6 +4,7 @@ from __future__ import with_statement
 import os
 import re
 from contextlib import closing
+from unicodedata import normalize
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
@@ -124,19 +125,19 @@ def remove_header_footer_xml(xml):
 
 
 def apply_value_format_to_document(document_xml_string):
-    document_xml_string = re.sub(
-        " ([0-9]{1,4}),([0-9]{1,4}) ", " \\1.\\2 ", document_xml_string, flags=re.MULTILINE
-    )
+    document_xml_string = normalize('NFKD', document_xml_string)
     document_xml_string = re.sub(
         "([0-9]{1,4}),([0-9]{1,4})/", "\\1.\\2/", document_xml_string, flags=re.MULTILINE
     )
     document_xml_string = re.sub(
-        " ([0-9]{1,4}),([0-9]{1,4})%", " \\1.\\2%", document_xml_string, flags=re.MULTILINE
+        "([0-9]{1,4}),([0-9]{1,4})(\\s?)%", "\\1.\\2%", document_xml_string, flags=re.MULTILINE
     )
     document_xml_string = re.sub(
-        " ([0-9]{1,4}),([0-9]{1,4})\\)", " \\1.\\2)", document_xml_string, flags=re.MULTILINE
+        "([0-9]{1,4})(\\s)%", "\\1%", document_xml_string, flags=re.MULTILINE
     )
-    document_xml_string = re.sub("([0-9]),([0-9])%", "\\1.\\2%", document_xml_string, flags=re.MULTILINE)
+    document_xml_string = re.sub(
+        "([0-9]{1,4}),([0-9]{1,4})\\)", "\\1.\\2)", document_xml_string, flags=re.MULTILINE
+    )
     document_xml_string = re.sub("([0-9]),([0-9]) kg", "\\1.\\2 kg", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9]) Kg", "\\1.\\2 kg", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub("([0-9]),([0-9])kg", "\\1.\\2kg", document_xml_string, flags=re.MULTILINE)
@@ -173,7 +174,12 @@ def apply_value_format_to_document(document_xml_string):
     )
     document_xml_string = re.sub("±([0-9]{1,2}),([0-9]{1,3})", "±\\1.\\2", document_xml_string, flags=re.MULTILINE)
     document_xml_string = re.sub(
-        "€ ([0-9]{1,3}),([0-9]{1,3})", "€ \\1.\\2", document_xml_string, flags=re.MULTILINE
+        "€(\\s?)([0-9]{1,3})", "€\\2", document_xml_string, flags=re.MULTILINE
     )
-
+    document_xml_string = re.sub(
+        "€([0-9]{1,3}),([0-9]{1,3})", "€\\1.\\2", document_xml_string, flags=re.MULTILINE
+    )
+    document_xml_string = re.sub(
+        " ([0-9]{1,4}),([0-9]{1,4}) ", " \\1.\\2 ", document_xml_string, flags=re.MULTILINE
+    )
     return document_xml_string
