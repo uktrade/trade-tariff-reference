@@ -3,6 +3,7 @@ import logging
 import os
 import tempfile
 from distutils.dir_util import copy_tree
+from unicodedata import normalize
 
 from botocore.exceptions import EndpointConnectionError
 
@@ -175,6 +176,7 @@ class Chapter:
             chapter_log.log_document_history(remote_file_name)
 
     def write(self, document_xml):
+        document_xml = normalize('NFKD', document_xml)
         document_xml = f.apply_value_format_to_document(document_xml)
         ###########################################################################
         # WRITE document.xml

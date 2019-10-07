@@ -164,7 +164,9 @@ def test_remove_header_footer_xml(value, expected_result):
         (' 12,5678%', ' 12.5678%'),
         (' 12,5678 )', ' 12.5678 )'),
         (' 12,5678)', ' 12.5678)'),
+        ('12,5678)', '12.5678)'),
         ('1,2%', '1.2%'),
+        ('70 %', '70%'),
         ('10,2%', '10.2%'),
         ('20,2 Kg', '20.2 kg'),
         ('30,2Kg', '30.2kg'),
@@ -196,11 +198,15 @@ def test_remove_header_footer_xml(value, expected_result):
         ('40,2 dB', '40.2 dB'),
         ('40,2 kvar', '40.2 kvar'),
         ('±40,2', '±40.2'),
-        ('€ 40,20', '€ 40.20'),
-
-
+        ('€ 40,20', '€40.20'),
+        ('€40,20', '€40.20'),
+        ('€40.20', '€40.20'),
+        ('€ 224', '€224'),
+        (
+            'Lithium metal of a purity by weight of 98,8 % or more (CAS RN 7439-93-2)',
+            'Lithium metal of a purity by weight of 98.8% or more (CAS RN 7439-93-2)',
+        ),
     ),
-
 )
 def test_apply_value_format_to_document(value, expected_result):
     assert functions.apply_value_format_to_document(value) == expected_result
