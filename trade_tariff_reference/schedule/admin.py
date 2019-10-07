@@ -32,6 +32,7 @@ class ChapterAdmin(admin.ModelAdmin):
         'classification_document_status',
         'classification_document_created_at',
         'classification_document_check_sum',
+        'display_section_heading',
     )
 
     def get_readonly_fields(self, request, obj=None):
