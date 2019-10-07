@@ -164,6 +164,27 @@ class MFNDocumentHistoryFactory(factory.django.DjangoModelFactory):
         model = 'schedule.MFNDocumentHistory'
 
 
+class MFNTableOfContentFactory(factory.django.DjangoModelFactory):
+    document_type = SCHEDULE
+    document = None
+    document_created_at = None
+    document_check_sum = None
+
+    class Meta:
+        model = 'schedule.MFNTableOfContent'
+
+
+class MFNTableOfContentWithDocumentFactory(MFNTableOfContentFactory):
+    document = factory.django.FileField(filename='toc.docx')
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """ Workaround for FileField being a post generation attribute """
+        with mock.patch('storages.backends.s3boto3.S3Boto3Storage.save') as mock_file_save:
+            mock_file_save.return_value = 'toc.docx'
+            return super().create(*args, **kwargs)
+
+
 class SeasonalQuotaFactory(factory.django.DjangoModelFactory):
     quota_order_number_id = str(random.randrange(100000, 999999))
 

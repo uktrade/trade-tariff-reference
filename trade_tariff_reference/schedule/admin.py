@@ -10,6 +10,7 @@ from trade_tariff_reference.schedule.models import (
     LatinTerm,
     MFNDocument,
     MFNDocumentHistory,
+    MFNTableOfContent,
     SpecialNote,
 )
 
@@ -88,6 +89,15 @@ class MFNDocumentAdmin(admin.ModelAdmin):
     )
 
 
+class MFNTableOfContentAdmin(admin.ModelAdmin):
+    fields = ('document', 'document_created_at', 'document_check_sum', 'document_type')
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['document_check_sum', 'document_created_at', 'document_type']
+        return ['document_check_sum', 'document_created_at']
+
+
 admin.site.register(Agreement)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register(ChapterNote, ChapterNoteAdmin)
@@ -98,3 +108,4 @@ admin.site.register(SpecialNote)
 admin.site.register(MFNDocumentHistory, MFNDocumentHistoryAdmin)
 admin.site.register(LatinTerm)
 admin.site.register(MFNDocument, MFNDocumentAdmin)
+admin.site.register(MFNTableOfContent, MFNTableOfContentAdmin)
