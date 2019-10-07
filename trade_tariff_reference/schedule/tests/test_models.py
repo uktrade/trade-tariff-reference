@@ -7,7 +7,7 @@ from freezegun import freeze_time
 
 import pytest
 
-from trade_tariff_reference.documents.mfn.constants import SCHEDULE
+from trade_tariff_reference.documents.mfn.constants import CLASSIFICATION, SCHEDULE
 from trade_tariff_reference.schedule.tests.factories import (
     AgreementDocumentHistoryFactory,
     AgreementFactory,
@@ -19,6 +19,7 @@ from trade_tariff_reference.schedule.tests.factories import (
     MFNDocumentFactory,
     MFNDocumentHistoryFactory,
     MFNDocumentWithDocumentFactory,
+    MFNTableOfContentFactory,
     SeasonalQuotaFactory,
     SeasonalQuotaSeasonFactory,
     SpecialNoteFactory,
@@ -165,3 +166,19 @@ def test_chapter_note():
     )
     assert str(chapter_note) == 'Chapter Note - Chapter description'
     # MPP TODO: Add a test for document check sum
+
+
+@pytest.mark.parametrize(
+    'document_type,expected_string',
+    (
+        (
+            SCHEDULE, 'Schedule TOC'
+        ),
+        (
+            CLASSIFICATION, 'Classification TOC',
+        ),
+    ),
+)
+def test_mfn_table_of_contents(document_type, expected_string):
+    mfn_table_contents = MFNTableOfContentFactory(document_type=document_type)
+    assert str(mfn_table_contents) == expected_string

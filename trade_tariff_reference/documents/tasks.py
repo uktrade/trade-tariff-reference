@@ -70,7 +70,7 @@ def generate_mfn_document(document_type, first_chapter, last_chapter, force=Fals
     retry_backoff=30,
 )
 def generate_mfn_master_document(document_type, force=False):
-    if not is_mfn_master_document_being_generated(document_type):
+    if not is_mfn_master_document_being_generated(document_type) or force:
         app = MFNMasterApplication(document_type, force=force)
         app.main()
 

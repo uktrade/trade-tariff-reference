@@ -22,12 +22,15 @@ from trade_tariff_reference.schedule.tests.factories import (
     ChapterFactory,
     ChapterWithDocumentFactory,
     MFNDocumentFactory,
+    MFNTableOfContentFactory,
+    MFNTableOfContentWithDocumentFactory,
 )
 
 pytestmark = pytest.mark.django_db
 
 schedule_checksum = get_document_check_sum('hello'.encode('utf-8'))
 classification_checksum = get_document_check_sum('goodbye'.encode('utf-8'))
+toc_checksum = get_document_check_sum('toc'.encode('utf-8'))
 
 
 class FakeComposer:
@@ -89,40 +92,73 @@ def test_main_updates_document_status_when_mfn_document_does_not_exist(
 
 
 @pytest.mark.parametrize(
-    'document_type,expected_checksum',
+    'document_type,with_toc,expected_checksum',
     (
-        (SCHEDULE, schedule_checksum),
-        (CLASSIFICATION, classification_checksum),
+        (SCHEDULE, False, schedule_checksum),
+        (CLASSIFICATION, False, classification_checksum),
+        (SCHEDULE, True, schedule_checksum),
+        (CLASSIFICATION, True, classification_checksum),
     )
 )
-def test_get_change_dict(document_type, expected_checksum):
+def test_get_change_dict(document_type, with_toc, expected_checksum):
     chapter = ChapterFactory()
     chapter_with_checksum = ChapterFactory(
         id=2,
         schedule_document_check_sum=schedule_checksum,
         classification_document_check_sum=classification_checksum,
     )
-    app = Application(document_type)
-    actual_change_dict = app.get_change_dict()
-    assert actual_change_dict == {
+    expected_change_dict = {
         chapter.get_document_name(document_type): None,
         chapter_with_checksum.get_document_name(document_type): expected_checksum,
     }
 
+    if with_toc:
+        MFNTableOfContentFactory(
+            document_check_sum=toc_checksum,
+            document_type=document_type,
+        )
+        expected_change_dict['toc'] = toc_checksum
+    app = Application(document_type)
+    actual_change_dict = app.get_change_dict()
+    assert actual_change_dict == expected_change_dict
 
+
+@pytest.mark.parametrize(
+    'document_type,with_toc,mock_docx_document_calls,expected_call_to_composer,expected_documents',
+    (
+        (SCHEDULE, False, ['1', '2'], '1', ['2']),
+        (CLASSIFICATION, False, ['1', '2'], '1', ['2']),
+        (SCHEDULE, True, ['toc', '1', '2'], 'toc', ['1', '2']),
+        (CLASSIFICATION, True, ['toc', '1', '2'], 'toc', ['1', '2']),
+    )
+)
 @mock.patch('trade_tariff_reference.documents.mfn_master.application.Document')
 @mock.patch('trade_tariff_reference.documents.mfn_master.application.Composer')
-def test_merge_documents(mock_composer, mock_document):
+def test_merge_documents(
+    mock_composer,
+    mock_document,
+    document_type,
+    with_toc,
+    mock_docx_document_calls,
+    expected_call_to_composer,
+    expected_documents,
+):
     fake_composer = FakeComposer
+    fake_composer.documents = []
     mock_document.return_value = None
-    mock_document.side_effect = ['1', '2']
+    mock_document.side_effect = mock_docx_document_calls
     mock_composer.return_value = fake_composer
+    if with_toc:
+        MFNTableOfContentWithDocumentFactory(
+            document_check_sum=toc_checksum,
+            document_type=document_type,
+        )
     ChapterWithDocumentFactory(id=1)
     ChapterWithDocumentFactory(id=2)
-    app = Application(SCHEDULE)
-    app.merge_documents('schedule_document', '1.txt')
-    mock_composer.assert_called_once_with('1')
-    assert fake_composer.documents == ['2']
+    app = Application(document_type)
+    app.merge_documents(f'{document_type}_document', '1.txt')
+    mock_composer.assert_called_once_with(expected_call_to_composer)
+    assert fake_composer.documents == expected_documents
     assert fake_composer.remote_file_name == '1.txt'
 
 
