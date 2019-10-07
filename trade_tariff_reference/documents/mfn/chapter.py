@@ -283,7 +283,8 @@ class ScheduleChapter(Chapter):
 
     def format_heading(self):
         heading = {}
-        if self.new_section is True:
+
+        if self.chapter.display_section_heading:
             heading['HEADINGa'] = "Section " + self.section_numeral
             heading['HEADINGb'] = self.section_title
 

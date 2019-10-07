@@ -302,6 +302,7 @@ class Chapter(models.Model):
     )
     classification_last_checked = models.DateTimeField(null=True, blank=True)
     classification_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
+    display_section_heading = models.BooleanField(default=False)
 
     @property
     def chapter_string(self):
