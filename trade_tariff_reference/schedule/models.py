@@ -53,6 +53,10 @@ class MFNClassificationStorage(PrivateStorage):
     location = 'documents/mfn/classification'
 
 
+class MFNTableOfContentStorage(PrivateStorage):
+    location = 'documents/mfn/toc'
+
+
 class MFNStorage(S3Boto3Storage):
     location = 'documents/mfn/downloads'
 
@@ -302,6 +306,7 @@ class Chapter(models.Model):
     )
     classification_last_checked = models.DateTimeField(null=True, blank=True)
     classification_document_check_sum = models.CharField(max_length=32, null=True, blank=True)
+    display_section_heading = models.BooleanField(default=False)
 
     @property
     def chapter_string(self):
@@ -379,6 +384,7 @@ class MFNDocument(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['document_type'], name='MFN Document Type constraint'),
         ]
+        verbose_name_plural = 'MFN Documents'
 
     def to_json(self):
         from trade_tariff_reference.api.serializers import MFNDocumentSerializer
@@ -386,3 +392,29 @@ class MFNDocument(models.Model):
 
     def __str__(self):
         return f'Master {self.document_type} MFN document'
+
+
+class MFNTableOfContent(models.Model):
+    document = models.FileField(null=True, blank=True, storage=MFNTableOfContentStorage())
+    document_created_at = models.DateTimeField(null=True, blank=True)
+    document_check_sum = models.CharField(max_length=32, null=True, blank=True)
+    document_type = models.CharField(choices=DocumentType.DOCUMENT_TYPE_CHOICES, max_length=100)
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if self.document:
+            self.document_check_sum = get_document_check_sum(self.document.read())
+
+        return super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields
+        )
+
+    def __str__(self):
+        return f'{self.document_type.capitalize()} TOC'
+
+    class Meta:
+        verbose_name_plural = 'MFN Table of contents'

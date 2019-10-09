@@ -1,11 +1,15 @@
 import datetime
 from datetime import timezone
+from unittest import mock
+
+from override_storage import override_storage
 
 import pytest
 
 from trade_tariff_reference.documents.exceptions import CountryProfileError
 from trade_tariff_reference.documents.fta.application import Application
 from trade_tariff_reference.documents.fta.mfn_duty import MfnDuty
+from trade_tariff_reference.schedule.models import DocumentStatus
 from trade_tariff_reference.schedule.tests.factories import AgreementFactory
 from trade_tariff_reference.tariff.models import MeursingComponents
 from trade_tariff_reference.tariff.tests.factories import (
@@ -202,3 +206,44 @@ def test_agreement_properties_set():
     assert application.agreement.geo_ids == "'IS', '2334'"
     assert application.agreement.agreement_date_short == '01/01/2019'
     assert application.agreement.agreement_date_long == '1 January 2019'
+
+
+@override_storage()
+@mock.patch('trade_tariff_reference.documents.fta.document.Document.create_document')
+def test_main_with_no_quotas(mock_create_document):
+    mock_create_document.return_value = None
+    agreement = AgreementFactory(
+        slug='israel',
+        country_name='israel',
+        version='2.0',
+        country_codes=['IS', '2334'],
+        agreement_date='2019-01-01',
+        document_status=DocumentStatus.UNAVAILABLE
+    )
+    application = Application('israel')
+    application.main()
+    agreement.refresh_from_db()
+    assert agreement.document_status == DocumentStatus.AVAILABLE
+    assert mock_create_document.called is True
+    expected_context = {
+        'AGREEMENT_NAME': agreement.agreement_name,
+        'VERSION': '2.0',
+        'AGREEMENT_DATE': '1 January 2019',
+        'AGREEMENT_DATE_SHORT': '01/01/2019',
+        'COUNTRY_NAME': 'israel',
+        'TARIFF_WIDTH_CLASSIFICATION': '400',
+        'TARIFF_WIDTH_DUTY': '1450',
+        'TARIFF_TABLE_ROWS': [],
+        'WIDTH_QUOTA_NUMBER': '8',
+        'WIDTH_ORIGIN_QUOTA': '7',
+        'WIDTH_COMMODITY_CODE': '11',
+        'WIDTH_PREFERENTIAL_QUOTA_DUTY_RATE': '22',
+        'WIDTH_QUOTA_VOLUME': '16',
+        'WIDTH_QUOTA_OPEN_DATE': '10',
+        'WIDTH_QUOTA_CLOSE_DATE': '10',
+        'WIDTH_2019_QUOTA_VOLUME': '16',
+        'QUOTA_TABLE_ROWS': [],
+        'HAS_QUOTAS': False
+    }
+
+    mock_create_document.assert_called_with(expected_context)

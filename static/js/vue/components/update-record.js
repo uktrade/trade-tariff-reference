@@ -49,7 +49,8 @@ Vue.component('update-record', {
   template: `<ul class="govuk-list">
       <li>
         <a v-if="is_document_available()" v-bind:href="responseData.download_url" class="govuk-link govuk-link--no-visited-state">Download</a>
-        <div v-else-if="is_document_generating" class="govuk-text">Updating document</div>
+        <div v-else-if="is_document_unavailable()" class="govuk-text">Error document unavailable</div>
+        <div v-else-if="is_document_generating()" class="govuk-text">Updating document</div>
         <div v-else class="govuk-text">Error document unavailable</div>
       </li>
       <li v-if="editUrl">

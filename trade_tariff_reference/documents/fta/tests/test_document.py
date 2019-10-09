@@ -1,7 +1,10 @@
+import zipfile
 from datetime import datetime, timezone
 from unittest import mock
 
 from botocore.exceptions import EndpointConnectionError
+
+from override_storage import override_storage
 
 import pytest
 
@@ -144,7 +147,7 @@ def test_get_quota_measures():
     assert actual_measure.reduction_indicator == current_measure.reduction_indicator
 
 
-def test_get_duties():
+def test__get_duties():
     measure = get_mfn_siv_product(1, geographical_area_id='1011', measure_type_id='143')
     current_measure = CurrentMeasureFactory(
         measure_sid=measure.measure_sid,
@@ -324,14 +327,76 @@ def test_get_quota_definitions_when_has_quotas(
 
 
 @pytest.mark.parametrize(
-    'quota_order_number_id,expected_quota_order_number_sid',
+    'quota_order_number_id,add_balance,expected_quota_order_number_sid,expected_definition',
     (
-        ('123456', 123456),
-        ('094346', 0),
+        (
+            '123456',
+            True,
+            123456,
+            {
+                'critical_state': None,
+                'critical_threshold': None,
+                'initial_volume': 6000,
+                'maximum_precision': None,
+                'measurement_unit_code': '',
+                'measurement_unit_qualifier_code': '',
+                'monetary_unit_code': '',
+                'quota_definition_sid': None,
+                'quota_order_number_id': '123456',
+                'quota_order_number_sid': 123456,
+                'validity_end_date': datetime(2020, 12, 31, 0, 0, tzinfo=timezone.utc),
+                'validity_start_date': datetime(2020, 1, 1, 0, 0, tzinfo=timezone.utc),
+                'volume': 3000,
+            }
+        ),
+        (
+            '123456',
+            False,
+            123456,
+            {
+                'critical_state': None,
+                'critical_threshold': None,
+                'initial_volume': 2000,
+                'maximum_precision': None,
+                'measurement_unit_code': '',
+                'measurement_unit_qualifier_code': '',
+                'monetary_unit_code': '',
+                'quota_definition_sid': None,
+                'quota_order_number_id': '123456',
+                'quota_order_number_sid': 123456,
+                'validity_end_date': datetime(2020, 12, 31, 0, 0, tzinfo=timezone.utc),
+                'validity_start_date': datetime(2020, 1, 1, 0, 0, tzinfo=timezone.utc),
+                'volume': 3000,
+            }
+        ),
+        (
+            '094346',
+            True,
+            0,
+            {
+                'critical_state': 'Y',
+                'critical_threshold': 90,
+                'initial_volume': 6000,
+                'maximum_precision': 3,
+                'measurement_unit_code': 'KGM',
+                'measurement_unit_qualifier_code': '',
+                'monetary_unit_code': '',
+                'quota_definition_sid': 0,
+                'quota_order_number_id': '094346',
+                'quota_order_number_sid': 0,
+                'validity_end_date': datetime(2011, 1, 19, 0, 0),
+                'validity_start_date': datetime(2010, 1, 20, 0, 0),
+                'volume': 6000,
+            }
+        ),
     ),
 )
-@pytest.mark.xfail(reason="Investigation into behaviour required")
-def test_get_quota_definitions(quota_order_number_id, expected_quota_order_number_sid):
+def test_get_quota_definitions(
+    quota_order_number_id,
+    add_balance,
+    expected_quota_order_number_sid,
+    expected_definition
+):
     geographical_area_id = '1011'
     country_profile = 'spain'
 
@@ -339,13 +404,14 @@ def test_get_quota_definitions(quota_order_number_id, expected_quota_order_numbe
         id=quota_order_number_id,
         quota_order_number_sid=str(quota_order_number_id)
     )
-    QuotaDefinitionFactory(
-        quota_order_number_id=quota_order_number.id,
-        quota_order_number_sid=quota_order_number.quota_order_number_sid,
-        initial_volume=2000,
-        volume=3000,
-        measurement_unit_code=''
-    )
+    if not quota_order_number_id.startswith('094'):
+        QuotaDefinitionFactory(
+            quota_order_number_id=quota_order_number.id,
+            quota_order_number_sid=quota_order_number.quota_order_number_sid,
+            initial_volume=2000,
+            volume=3000,
+            measurement_unit_code=''
+        )
 
     AgreementFactory(
         country_name=country_profile.capitalize(),
@@ -356,17 +422,30 @@ def test_get_quota_definitions(quota_order_number_id, expected_quota_order_numbe
         country_profile=country_profile
     )
 
-    qb = get_quota_balance(quota_order_number_id=quota_order_number.quota_order_number_id)
     document = Document(application)
     document.has_quotas = True
-    document.balance_dict[quota_order_number.quota_order_number_id] = qb
+
+    if add_balance:
+        qb = get_quota_balance(
+            quota_order_number_id=quota_order_number.quota_order_number_id,
+            y1_balance=6000,
+        )
+        document.balance_dict[quota_order_number.quota_order_number_id] = qb
+
     document.q = [quota_order_number.quota_order_number_id]
     qon = QuotaOrderNumber(quota_order_number.quota_order_number_id)
     assert document.quota_definition_list == []
     document.quota_order_number_list = [qon]
     document.get_quota_definitions()
     assert len(qon.quota_definition_list) == 1
-    assert document.quota_definition_list == []
+    assert qon.quota_definition_list[0].quota_order_number_id == str(quota_order_number_id)
+    assert len(document.quota_definition_list) == 1
+    assert_object(document.quota_definition_list[0], expected_definition)
+
+
+def assert_object(actual_definition, expected_definition):
+    for key, expected_value in expected_definition.items():
+        assert getattr(actual_definition, key) == expected_value, f'{key}'
 
 
 @pytest.mark.parametrize(
@@ -754,3 +833,178 @@ def test_assign_duties_to_measures(mock_combine_duties, duty_list, measure_list,
             assert measure.duty_list[0].measure_sid == measure_list[0].measure_sid
         else:
             assert measure.duty_list == []
+
+
+@pytest.mark.parametrize(
+    'instrument_type,'
+    'measure_type_id,'
+    'expected_duty_list,'
+    'expected_measure_list,'
+    'expected_commodity_list,'
+    'expected_quota_order_number_list',
+    (
+        (
+            'preferences',
+            '142',
+            [
+                {
+                    'commodity_code': '1',
+                    'additional_code_type_id': '',
+                    'additional_code_id': '',
+                    'measure_type_id': '142',
+                    'duty_expression_id': '01',
+                    'duty_amount': 100,
+                    'monetary_unit_code': '',
+                    'measurement_unit_code': '',
+                    'measurement_unit_qualifier_code': '',
+                    'quota_order_number_id': '10',
+                    'geographical_area_id': '1011',
+                    'validity_start_date': datetime(2019, 5, 1, 1, 0, tzinfo=timezone.utc),
+                    'validity_end_date': datetime(2019, 4, 2, 1, 0, tzinfo=timezone.utc),
+                    'reduction_indicator': 5,
+                    'is_siv': True,
+                    'local_sivs_commodities_only': ['1'],
+                }
+            ],
+            [
+                {
+                    'commodity_code': '1',
+                    'quota_order_number_id': '10',
+                    'validity_start_date': datetime(2019, 5, 1, 1, 0, tzinfo=timezone.utc),
+                    'validity_end_date': datetime(2019, 4, 2, 1, 0, tzinfo=timezone.utc),
+                    'geographical_area_id': '1011',
+                    'reduction_indicator': 5,
+                },
+            ],
+            [
+                {
+                    'commodity_code': '1',
+                }
+            ],
+            [
+                {
+                    'quota_order_number_id': '10',
+                }
+            ],
+        ),
+        (
+            'quotas',
+            '143',
+            [
+                {
+                    'commodity_code': '1',
+                    'additional_code_type_id': '',
+                    'additional_code_id': '',
+                    'measure_type_id': '143',
+                    'duty_expression_id': '01',
+                    'duty_amount': 100,
+                    'monetary_unit_code': '',
+                    'measurement_unit_code': '',
+                    'measurement_unit_qualifier_code': '',
+                    'quota_order_number_id': '10',
+                    'geographical_area_id': '1011',
+                    'validity_start_date': datetime(2019, 5, 1, 1, 0, tzinfo=timezone.utc),
+                    'validity_end_date': datetime(2019, 4, 2, 1, 0, tzinfo=timezone.utc),
+                    'reduction_indicator': 5,
+                    'is_siv': True,
+                    'local_sivs_commodities_only': ['1'],
+                }
+            ],
+            [
+                {
+                    'commodity_code': '1',
+                    'quota_order_number_id': '10',
+                    'validity_start_date': datetime(2019, 5, 1, 1, 0, tzinfo=timezone.utc),
+                    'validity_end_date': datetime(2019, 4, 2, 1, 0, tzinfo=timezone.utc),
+                    'geographical_area_id': '1011',
+                    'reduction_indicator': 5,
+                },
+            ],
+            [
+                {
+                    'commodity_code': '1',
+                }
+            ],
+            [
+                {
+                    'quota_order_number_id': '10',
+                }
+            ]
+        ),
+    )
+)
+def test_get_duties(
+    instrument_type,
+    measure_type_id,
+    expected_duty_list,
+    expected_measure_list,
+    expected_commodity_list,
+    expected_quota_order_number_list
+):
+    measure = get_mfn_siv_product(1, geographical_area_id='1011', measure_type_id=measure_type_id)
+    current_measure = CurrentMeasureFactory(
+        measure_sid=measure.measure_sid,
+        geographical_area_id=measure.geographical_area_id,
+        measure_type_id=measure.measure_type_id,
+        validity_start_date=measure.validity_start_date,
+        validity_end_date=measure.validity_end_date,
+        ordernumber=measure.quota_order_number_id,
+        goods_nomenclature_item_id=measure.goods_nomenclature_item_id,
+        reduction_indicator=measure.reduction_indicator,
+    )
+    GoodsNomenclatureFactory(goods_nomenclature_item_id=current_measure.goods_nomenclature_item_id)
+    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
+    document = Document(application)
+    document.get_duties(instrument_type)
+
+    assert len(document.duty_list) == len(expected_duty_list)
+    if document.duty_list:
+        assert_object(document.duty_list[0], expected_duty_list[0])
+
+    assert len(document.measure_list) == len(expected_measure_list)
+    if document.measure_list:
+        assert_object(document.measure_list[0], expected_measure_list[0])
+
+    assert len(document.commodity_list) == len(expected_commodity_list)
+    if document.commodity_list:
+        assert_object(document.commodity_list[0], expected_commodity_list[0])
+
+    assert len(document.quota_order_number_list) == len(expected_quota_order_number_list)
+    if document.quota_order_number_list:
+        assert_object(document.quota_order_number_list[0], expected_quota_order_number_list[0])
+
+
+@override_storage()
+def test_write():
+    file_contents = 'XML'
+    agreement = AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
+    application = Application(country_profile='spain')
+    document = Document(application)
+    actual_remote_file_name = document.write(file_contents)
+    agreement.refresh_from_db()
+    assert agreement.document.name == actual_remote_file_name
+    with zipfile.ZipFile(agreement.document) as fh:
+        actual_files = [f.filename for f in fh.filelist]
+        assert set(actual_files) == {
+            '[Content_Types].xml',
+            '_rels/.rels',
+            'word/webSettings.xml',
+            'word/footer2.xml',
+            'word/settings.xml',
+            'word/footnotes.xml',
+            'word/footer1.xml',
+            'word/fontTable.xml',
+            'word/header1.xml',
+            'word/document.xml',
+            'word/endnotes.xml',
+            'word/styles.xml',
+            'word/numbering.xml',
+            'word/_rels/document.xml.rels',
+            'word/theme/theme1.xml',
+            'customXml/item1.xml',
+            'customXml/itemProps1.xml',
+            'customXml/_rels/item1.xml.rels'
+        }
+        actual_document_xml = fh.read('word/document.xml')
+        assert actual_document_xml == bytes(file_contents, 'utf-8')

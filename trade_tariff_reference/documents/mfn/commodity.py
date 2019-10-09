@@ -101,18 +101,32 @@ class Commodity:
         self.combined_duty = self.combined_duty.strip()
 
     def latinise(self, description):
-        # Italicise any Latin text
+        found_latin_phrases = []
+
         for latin_phrase in self.application.latin_phrases:
             if description.find(latin_phrase) > -1:
-                replacement_string = self.style_latin(latin_phrase)
-                description = description.replace(latin_phrase, replacement_string)
+                found_latin_phrases.append(latin_phrase)
+
+        found_latin_phrases.sort(reverse=True)
+
+        for index, phrase in enumerate(found_latin_phrases):
+            description = description.replace(phrase, self.get_temp_replacement_string(index))
+
+        for index, phrase in enumerate(found_latin_phrases):
+            replacement_string = self.style_latin(phrase)
+            description = description.replace(self.get_temp_replacement_string(index), replacement_string)
         return description
 
+    def get_temp_replacement_string(self, index):
+        return f'__FOUND_{index}__'
+
     def style_latin(self, phrase):
-        styled_latin = f'<i>{phrase}</i>'
-        if self.indents < 2:
-            return f'<b>{styled_latin}</b>'
-        return styled_latin
+        return f'<i>{phrase}</i>'
+
+    def style_bold(self, description):
+        if self.indents == 0:
+            return f'<b>{description}</b>'
+        return description
 
     def replace_characters_in_description(self, description):
         replacement_list = [
@@ -129,7 +143,8 @@ class Commodity:
         return description
 
     def format_description(self, org_description):
-        description = self.latinise(org_description)
+        description = self.style_bold(org_description)
+        description = self.latinise(description)
         description = self.replace_characters_in_description(description)
         html = markdown.markdown(description)
         result = update_description(html)

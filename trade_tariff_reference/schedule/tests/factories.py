@@ -114,6 +114,9 @@ class ChapterNoteFactory(factory.django.DjangoModelFactory):
 class ChapterNoteWithDocumentFactory(factory.django.DjangoModelFactory):
     document = factory.django.FileField(filename='chapter_note.docx')
 
+    class Meta:
+        model = 'schedule.ChapterNote'
+
 
 class ChapterDocumentHistoryFactory(factory.django.DjangoModelFactory):
     chapter = factory.SubFactory(ChapterFactory)
@@ -159,6 +162,27 @@ class MFNDocumentHistoryFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'schedule.MFNDocumentHistory'
+
+
+class MFNTableOfContentFactory(factory.django.DjangoModelFactory):
+    document_type = SCHEDULE
+    document = None
+    document_created_at = None
+    document_check_sum = None
+
+    class Meta:
+        model = 'schedule.MFNTableOfContent'
+
+
+class MFNTableOfContentWithDocumentFactory(MFNTableOfContentFactory):
+    document = factory.django.FileField(filename='toc.docx')
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """ Workaround for FileField being a post generation attribute """
+        with mock.patch('storages.backends.s3boto3.S3Boto3Storage.save') as mock_file_save:
+            mock_file_save.return_value = 'toc.docx'
+            return super().create(*args, **kwargs)
 
 
 class SeasonalQuotaFactory(factory.django.DjangoModelFactory):

@@ -16,6 +16,7 @@ from trade_tariff_reference.schedule.tests.factories import (
     ExtendedQuotaFactory,
     LatinTermFactory,
     MFNDocumentHistoryFactory,
+    MFNTableOfContentFactory,
     SpecialNoteFactory,
 )
 
@@ -79,6 +80,9 @@ def get_factory_dict(factory):
         ('admin:schedule_extendedquota_changelist', False, {}),
         ('admin:schedule_extendedquota_change', True, {'scope': 'test scope'}),
 
+        ('admin:schedule_mfntableofcontent_add', False, {}),
+        ('admin:schedule_mfntableofcontent_changelist', False, {}),
+        ('admin:schedule_mfntableofcontent_change', True, {}),
     ),
 )
 def test_admin_views(
@@ -103,6 +107,8 @@ def test_admin_views(
         factory = ChapterFactory()
     elif '_extendedquota_' in url:
         factory = ExtendedQuotaFactory()
+    elif 'mfntableofcontent' in url:
+        factory = MFNTableOfContentFactory()
     else:
         factory = MFNDocumentHistoryFactory()
 

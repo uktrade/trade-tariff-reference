@@ -17,6 +17,7 @@ from trade_tariff_reference.schedule.models import (
     Chapter,
     DocumentStatus,
     MFNDocument,
+    MFNTableOfContent,
 )
 
 logger = logging.getLogger(__name__)
@@ -71,6 +72,9 @@ class Application:
 
     def get_change_dict(self):
         change_dict = {}
+        toc = self.get_table_of_contents()
+        if toc:
+            change_dict['toc'] = toc.document_check_sum
         for chapter in Chapter.objects.all():
             change_dict[
                 chapter.get_document_name(self.document_type)
@@ -86,11 +90,18 @@ class Application:
 
     def merge_documents(self, document_field, full_file_name):
         chapters = Chapter.objects.all()
-        first_chapter = chapters.first()
-        master_document = self.get_docx(first_chapter, document_field)
-        complete_document = Composer(master_document)
-        logger.info(f'Processing {self.document_type} {first_chapter.chapter_string}')
-        for chapter in chapters.exclude(id=first_chapter.id):
+        toc = self.get_table_of_contents()
+        if not toc:
+            first_chapter = chapters.first()
+            master_document = self.get_docx(first_chapter, document_field)
+            complete_document = Composer(master_document)
+            logger.info(f'Processing {self.document_type} {first_chapter.chapter_string}')
+            chapters = chapters.exclude(id=first_chapter.id)
+        else:
+            master_document = self.get_docx(toc, 'document')
+            complete_document = Composer(master_document)
+            logger.info(f'Processing {self.document_type} TOC')
+        for chapter in chapters:
             logger.info(f'Processing {self.document_type} {chapter.chapter_string}')
             docx = self.get_docx(chapter, document_field)
             complete_document.append(docx)
@@ -99,3 +110,9 @@ class Application:
     def get_docx(self, chapter, document_field):
         document = getattr(chapter, document_field)
         return Document(document)
+
+    def get_table_of_contents(self):
+        try:
+            return MFNTableOfContent.objects.get(document_type=self.document_type)
+        except MFNTableOfContent.DoesNotExist:
+            pass
