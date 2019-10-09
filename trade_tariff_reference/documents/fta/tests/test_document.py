@@ -46,17 +46,30 @@ def test_document_initialise():
     assert document.wide_duty is False
 
 
+@freeze_time('2017-06-01')
 def test_check_for_quotas_is_false():
-    CurrentMeasureFactory(measure_type_id='140', geographical_area_id='1234', ordernumber=1)
-    CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1235', ordernumber=2)
+    SimpleCurrentMeasureFactory(measure_type_id='140', geographical_area_id='1234', ordernumber=1)
+    SimpleCurrentMeasureFactory(measure_type_id='143', geographical_area_id='1235', ordernumber=2)
+    SimpleCurrentMeasureFactory(
+        measure_type_id='143',
+        geographical_area_id='1234',
+        ordernumber=3,
+        validity_start_date=datetime.today(),
+    )
     AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'])
     application = Application(country_profile='spain')
     document = Document(application)
     assert document.check_for_quotas() is False
 
 
+@freeze_time('2018-06-01')
 def test_check_for_quotas_is_true():
-    CurrentMeasureFactory(measure_type_id='143', geographical_area_id='1234', ordernumber=1)
+    SimpleCurrentMeasureFactory(
+        measure_type_id='143',
+        geographical_area_id='1234',
+        ordernumber=1,
+        validity_start_date=datetime.today(),
+    )
     AgreementFactory(country_name='Espana', slug='spain', country_codes=['1234'])
     application = Application(country_profile='spain')
     document = Document(application)

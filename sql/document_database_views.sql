@@ -5,9 +5,9 @@
 -- -------------------------------------------------------------
 
 
-CREATE SCHEMA IF NOT EXISTS "ml";
+CREATE SCHEMA IF NOT EXISTS "django";
 
-CREATE OR REPLACE FUNCTION ml.reformat_regulation_id(reg character varying)
+CREATE OR REPLACE FUNCTION django.reformat_regulation_id(reg character varying)
  RETURNS character varying
  LANGUAGE plpgsql
 AS $function$
@@ -20,8 +20,8 @@ end
 $function$;
 
 
-CREATE OR REPLACE VIEW "ml"."v5_2019" AS SELECT measures.measure_sid,
-    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+CREATE OR REPLACE VIEW "django"."current_measures" AS SELECT measures.measure_sid,
+    django.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
     "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
     (measures.measure_generating_regulation_id)::text AS regulation_id_full,
     measures.goods_nomenclature_item_id,
@@ -72,7 +72,7 @@ CREATE OR REPLACE VIEW "ml"."v5_2019" AS SELECT measures.measure_sid,
   )
 UNION
   SELECT measures.measure_sid,
-    ml.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
+    django.reformat_regulation_id(("left"((measures.measure_generating_regulation_id)::text, 7))::character varying) AS reformat_regulation_id,
     "left"((measures.measure_generating_regulation_id)::text, 7) AS regulation_id,
     (measures.measure_generating_regulation_id)::text AS regulation_id_full,
     measures.goods_nomenclature_item_id,
@@ -127,7 +127,7 @@ UNION
   ORDER BY 1, 2, 3, 4;
 
 
-CREATE OR REPLACE VIEW "ml"."meursing_components" AS SELECT m.measure_sid,
+CREATE OR REPLACE VIEW "django"."meursing_components" AS SELECT m.measure_sid,
     m.measure_type_id,
     m.additional_code_id,
     mc.duty_amount,

@@ -15,7 +15,7 @@ m.validity_start_date,
 mc.condition_duty_amount,
 mc.condition_monetary_unit_code,
 mc.condition_measurement_unit_code
-FROM ml.v5_2019 m,
+FROM django.current_measures m,
 measure_conditions mc,
 measure_condition_components mcc
 WHERE mc.measure_sid = m.measure_sid
@@ -63,14 +63,14 @@ ORDER BY m.goods_nomenclature_item_id, m.validity_start_date
 
 GET_MEUSRING_COMPONENTS_DUTY_AVERAGE_SQL = """
 SELECT AVG(duty_amount)
-FROM ml.meursing_components
+FROM django.meursing_components
 WHERE geographical_area_id = '1011'
 """
 
 
 GET_MEUSRING_PERCENTAGE_SQL = """
 SELECT AVG(duty_amount)
-FROM ml.meursing_components
+FROM django.meursing_components
 WHERE geographical_area_id = '{geographical_area_id}'
 AND reduction_indicator = '{reduction_indicator}'
 """
@@ -111,21 +111,31 @@ m.validity_end_date,
 m.geographical_area_id,
 m.reduction_indicator
 FROM goods_nomenclatures gn,
-ml.v5_2019 m
+django.current_measures m
 LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
 WHERE (
     m.measure_type_id IN ({measure_type_list})
     AND gn.status = 'published'
     AND m.geographical_area_id IN ({geo_ids})
+    AND (m.validity_end_date IS NULL OR m.validity_end_date >= '2019-01-01')
     AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
-    AND gn.validity_end_date IS NULL AND gn.producline_suffix = '80'
+    AND gn.validity_end_date IS NULL
+    AND gn.producline_suffix = '80'
 )
 ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
 """
 
+CHECK_FOR_QUOTAS_SQL = f"""
+SELECT DISTINCT ordernumber FROM django.measures_real_end_dates m
+WHERE m.measure_type_id IN ('143', '146')
+AND m.geographical_area_id IN ({{geo_ids}})
+and m.validity_start_date >= '{settings.BREXIT_VALIDITY_START_DATE_STRING}' ORDER BY 1
+"""
+
+
 GET_QUOTA_ORDER_NUMBERS_SQL = """
 SELECT DISTINCT ordernumber
-FROM ml.v5_2019 m
+FROM django.current_measures m
 WHERE m.measure_type_id IN ('143', '146')
 AND m.geographical_area_id IN ({geo_ids}) ORDER BY 1
 """
@@ -139,7 +149,7 @@ validity_start_date,
 validity_end_date,
 geographical_area_id,
 reduction_indicator
-FROM ml.v5_2019 m
+FROM django.current_measures m
 WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN ({geo_ids})
 ORDER BY goods_nomenclature_item_id, measure_sid
 """

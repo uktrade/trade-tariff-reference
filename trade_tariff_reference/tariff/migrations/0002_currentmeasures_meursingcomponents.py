@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('CREATE SCHEMA IF NOT EXISTS ml', migrations.RunSQL.noop),
+        migrations.RunSQL('CREATE SCHEMA IF NOT EXISTS django', migrations.RunSQL.noop),
         migrations.CreateModel(
             name='CurrentMeasures',
             fields=[
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('regulation_group_id', models.CharField(blank=True, max_length=255, null=True)),
             ],
             options={
-                'db_table': '"ml"."v5_2019"',
+                'db_table': '"django"."current_measures"',
                 'managed': settings.MANAGE_TARIFF_DATABASE,
             },
         ),
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('reduction_indicator', models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': '"ml"."meursing_components"',
+                'db_table': '"django"."meursing_components"',
                 'managed': settings.MANAGE_TARIFF_DATABASE,
             },
         ),
