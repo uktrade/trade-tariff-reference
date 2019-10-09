@@ -42,15 +42,15 @@ def test_empty_initialise():
     assert quota_balance.scope == ''
     assert quota_balance.addendum == ''
     assert quota_balance.measurement_unit_code == ''
-    assert quota_balance.validity_start_date_2019 == datetime(2019, 3, 29, 0, 0)
+    assert quota_balance.validity_start_date_2019 == datetime(2018, 1, 1, 0, 0)
     assert quota_balance.validity_end_date_2019 == datetime(2019, 12, 31, 0, 0)
 
 
 @pytest.mark.parametrize(
     'yx_start,expected_start_date,expected_end_date',
     (
-        ('1/1/2019', '2019-03-29 00:00:00', '2019-12-31 00:00:00'),
-        ('1/3/2018', '2019-03-29 00:00:00', '2019-12-31 00:00:00'),
+        ('1/1/2019', '2018-01-01 00:00:00', '2019-12-31 00:00:00'),
+        ('1/3/2018', '2018-01-01 00:00:00', '2019-12-31 00:00:00'),
         ('1/4/2018', '2018-04-01 00:00:00', '2019-03-31 00:00:00'),
         # MPP: TODO not sure of the above result. Should the function check the year is 2019
         ('1/8/2019', '2019-08-01 00:00:00', '2020-07-31 00:00:00'),
