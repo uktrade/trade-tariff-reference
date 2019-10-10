@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 
 from trade_tariff_reference.documents.mfn.duty import Duty
@@ -54,25 +56,28 @@ def test_initialise():
             '01', 1, 'GBP', 'MTK', 'A', '1.000 GBP / m2 / tot alc'
         ),
         (
-            '01', 1, None, 'MTK', 'A', '1.0%'
+            '01', 1, None, 'MTK', 'A', '1.00%'
         ),
         (
             '04', 1, 'GBP', 'MTK', 'A', '+ 1.000 GBP / m2 / tot alc'
         ),
         (
-            '04', 1, None, 'MTK', 'A', '+ 1.0%'
+            '04', 1, None, 'MTK', 'A', '+ 1.00%'
         ),
         (
             '19', 1, 'GBP', 'MTK', 'A', '+ 1.000 GBP / m2 / tot alc'
         ),
         (
-            '19', 1, None, 'MTK', 'A', '+ 1.0%'
+            '19', 1, None, 'MTK', 'A', '+ 1.00%'
         ),
         (
             '20', 1, 'GBP', 'MTK', 'A', '+ 1.000 GBP / m2 / tot alc'
         ),
         (
-            '20', 1, None, 'MTK', 'A', '+ 1.0%'
+            '20', 1, None, 'MTK', 'A', '+ 1.00%'
+        ),
+        (
+            '20', Decimal('1.345'), None, 'MTK', 'A', '+ 1.34%'
         ),
         (
             '12', 1, 'GBP', 'MTK', 'A', ' + AC'
@@ -84,13 +89,13 @@ def test_initialise():
             '15', 1, 'GBP', 'MTK', 'A', 'MIN 1.000 GBP / m2 / tot alc'
         ),
         (
-            '15', 1, None, 'MTK', 'A', 'MIN 1.0%'
+            '15', 1, None, 'MTK', 'A', 'MIN 1.00%'
         ),
         (
             '17', 1, 'GBP', 'MTK', 'A', 'MAX 1.000 GBP / m2 / tot alc'
         ),
         (
-            '17', 1, None, 'MTK', 'A', 'MAX 1.0%'
+            '17', 1, None, 'MTK', 'A', 'MAX 1.00%'
         ),
         (
             '21', 1, 'GBP', 'MTK', 'A', ' + SD'

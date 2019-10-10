@@ -60,13 +60,13 @@ class Duty:
         if additional_abbreviation:
             return additional_abbreviation
 
-        if self.duty_expression_id not in ['01', '04', '19', '20', '15', '17']:
+        if self.duty_expression_id not in ['01', '04', '12', '15', '17', '19', '20', '21', '27']:
             return ''
 
         prefix = self.get_duty_string_prefix()
 
         if self.monetary_unit_code == "":
-            return f'{prefix}{self.duty_amount:1.1f}%'
+            return f'{prefix}{self.duty_amount:1.2f}%'
 
         suffix = self.get_duty_string_suffix()
 
