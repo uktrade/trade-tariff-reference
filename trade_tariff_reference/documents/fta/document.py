@@ -14,6 +14,7 @@ from django.template.loader import render_to_string
 import trade_tariff_reference.documents.functions as f
 from trade_tariff_reference.documents.fta.commodity import Commodity
 from trade_tariff_reference.documents.fta.constants import (
+    CHECK_FOR_QUOTAS_SQL,
     FIRST_COME_FIRST_SERVED,
     GET_COMMODITIES_SQL,
     GET_DUTIES_SQL,
@@ -59,7 +60,7 @@ class Document:
 
     def check_for_quotas(self):
         rows = self.application.execute_sql(
-            GET_QUOTA_ORDER_NUMBERS_SQL.format(geo_ids=self.application.agreement.geo_ids)
+            CHECK_FOR_QUOTAS_SQL.format(geo_ids=self.application.agreement.geo_ids)
         )
         if len(rows) == 0:
             logger.debug(" - This FTA has no quotas")

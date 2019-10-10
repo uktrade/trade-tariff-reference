@@ -6,9 +6,9 @@
 -- Database: tariff_management_development
 -- Generation Time: 2019-08-16 12:18:32.2900
 -- -------------------------------------------------------------
-DROP FUNCTION IF EXISTS ml.goods_nomenclature_export_brexit(text);
+DROP FUNCTION IF EXISTS django.goods_nomenclature_export_brexit(text);
 
-CREATE OR REPLACE FUNCTION ml.goods_nomenclature_export_brexit(pchapter text)
+CREATE OR REPLACE FUNCTION django.goods_nomenclature_export_brexit(pchapter text)
  RETURNS TABLE(
  goods_nomenclature_sid integer,
  goods_nomenclature_item_id character varying,
