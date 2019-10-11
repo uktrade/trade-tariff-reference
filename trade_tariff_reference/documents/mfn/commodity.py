@@ -39,6 +39,7 @@ class Commodity:
         self.significant_digits = self.get_significant_digits()
         self.indent_string = self.get_indent_string()
         self.child_duty_list = []
+        self.prevent_row_suppression = False
 
         self.special_list = []
 
@@ -183,10 +184,10 @@ class Commodity:
         else:
             return s[0:4] + ' ' + s[4:6] + ' ' + s[6:8] + ' ' + s[8:10]
 
-    # self.commodity_code_formatted = self.commodity_code + ":" + str(self.indents)
+    def set_formatted_commodity_code(self, commodity_code):
+        self.commodity_code_formatted = self.format_commodity_code(commodity_code)
 
     def check_for_mixture(self):
-        # print ("Checking for Mixture")
         my_chapter = self.commodity_code[0:2]
         my_subheading = self.commodity_code[0:4]
         right_chars = self.commodity_code[-2:]
@@ -207,14 +208,12 @@ class Commodity:
                 self.special_list.append("mixture")
 
     def check_for_specials(self):
-        # print ("Checking for specials")
         if len(self.application.special_list) > 0:
             for n in self.application.special_list:
                 if n.commodity_code == self.commodity_code:
                     self.notes_list.append(n.note)
                     self.assigned = True
                     self.special_list.append("special")
-            # print ("Adding a special on", self.commodity_code)
 
     def check_for_authorised_use(self):
         if self.commodity_code in self.application.authorised_use_list:
@@ -230,7 +229,6 @@ class Commodity:
         if self.product_line_suffix != "80":
             return seasonal_records
 
-        self.combined_duty = ''
         seasonal_quotas = SeasonalQuota.objects.filter(quota_order_number_id=self.commodity_code)
         for s in seasonal_quotas:
             duty_list = []

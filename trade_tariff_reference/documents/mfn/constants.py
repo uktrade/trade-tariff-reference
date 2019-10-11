@@ -2,6 +2,7 @@
 CLASSIFICATION = 'classification'
 SCHEDULE = 'schedule'
 CUCUMBER_COMMODITY_CODES = ["0707000510", "0707000520"]
+BUS_TYRES_COMMODITY_CODES = ['8708701080', '8708701085', '8708701092', '8708701095']
 
 
 GET_SECTION_CHAPTERS = """
@@ -36,9 +37,10 @@ SELECT m.goods_nomenclature_item_id, m.additional_code_type_id, m.additional_cod
 m.measure_type_id, mc.duty_expression_id, mc.duty_amount, mc.monetary_unit_code,
 mc.measurement_unit_code, mc.measurement_unit_qualifier_code, m.measure_sid /*,
 m.validity_start_date, m.validity_end_date, m.geographical_area_id*/
-FROM measure_components mc, django.current_measures m
+FROM measure_components mc, django.measures_real_end_dates m
 WHERE mc.measure_sid = m.measure_sid
 AND LEFT(m.goods_nomenclature_item_id, 2) = '{chapter_string}'
 AND m.measure_type_id IN ('103', '105')
+and m.validity_start_date >= '2019-11-01'
 ORDER BY m.goods_nomenclature_item_id, m.measure_type_id, m.measure_sid, mc.duty_expression_id
 """
