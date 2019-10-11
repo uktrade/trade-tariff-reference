@@ -184,6 +184,9 @@ class Commodity:
         else:
             return s[0:4] + ' ' + s[4:6] + ' ' + s[6:8] + ' ' + s[8:10]
 
+    def set_formatted_commodity_code(self, commodity_code):
+        self.commodity_code_formatted = self.format_commodity_code(commodity_code)
+
     def check_for_mixture(self):
         my_chapter = self.commodity_code[0:2]
         my_subheading = self.commodity_code[0:4]
