@@ -293,7 +293,7 @@ DATABASE_ROUTERS = [
 SASS_PROCESSOR_ENABLED = False
 SASS_PROCESSOR_AUTO_INCLUDE = False
 
-BREXIT_VALIDITY_START_DATE = datetime(2019, 3, 29, 0, 0, 0)  # datetime(2018, 1, 1, 0, 0, 0) - Date from database views
+BREXIT_VALIDITY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)  # datetime(2018, 1, 1, 0, 0, 0) - Date from database views
 BREXIT_VALIDITY_END_DATE = datetime(2019, 12, 31, 0, 0, 0)
 
 BREXIT_VALIDITY_START_DATE_STRING = BREXIT_VALIDITY_START_DATE.strftime("%Y-%m-%d")

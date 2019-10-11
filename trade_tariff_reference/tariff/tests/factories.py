@@ -14,6 +14,12 @@ class MeasureFactory(factory.django.DjangoModelFactory):
         model = 'tariff.Measures'
 
 
+class MeasureComponentFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = 'tariff.MeasureComponents'
+
+
 class MeasureConditionFactory(factory.django.DjangoModelFactory):
     status = PUBLISHED
 
@@ -41,6 +47,12 @@ class CurrentMeasureFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'tariff.CurrentMeasures'
+
+
+class SimpleCurrentMeasureFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = 'tariff.SimpleCurrentMeasures'
 
 
 class MeasureExcludedGeographicalAreaFactory(factory.django.DjangoModelFactory):

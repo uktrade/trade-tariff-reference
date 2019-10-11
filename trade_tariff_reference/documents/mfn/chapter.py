@@ -20,6 +20,7 @@ from trade_tariff_reference.schedule.models import Chapter as DBChapter
 
 from .commodity import Commodity
 from .constants import (
+    BUS_TYRES_COMMODITY_CODES,
     CLASSIFICATION,
     GET_CLASSIFICATIONS,
     GET_DUTIES,
@@ -127,29 +128,12 @@ class Chapter:
         return document_dict
 
     def get_width_list(self):
-        if self.chapter.id in [2, 9, 10, 11]:  # These all have misture rule, therefore a wider notes column
+        if self.chapter.id in [2, 9, 10, 11]:  # These all have mixture rule, therefore a wider notes column
             return [600, 900, 1150, 2350]
 
         if self.contains_authorised_use:
             return [600, 1050, 1100, 2250]
         return [600, 1050, 600, 2750]
-
-    def format_sibling_duties(self, commodity_count, commodity_list):
-        for loop1 in range(0, commodity_count):
-            sibling_duties = []
-            my_commodity = commodity_list[loop1]
-            if my_commodity.significant_digits == 10:
-                if my_commodity.combined_duty != "":
-                    sibling_duties.append(my_commodity.combined_duty)
-                    if loop1 < commodity_count:
-                        for loop2 in range(loop1 + 1, commodity_count):
-                            next_commodity = commodity_list[loop2]
-                            if next_commodity.indents == my_commodity.indents:
-                                sibling_duties.append(next_commodity.combined_duty)
-                            else:
-                                # TODO: MPP commented out as not used. Investigate
-                                # sibling_duty_set = set(sibling_duties)
-                                break
 
     def create_document(self, context):
         chapter_log = ChapterDocumentHistoryLog(
@@ -234,33 +218,39 @@ class Chapter:
                 break
 
     def get_duties(self):
-        ###############################################################
-        # Get the duties
-        # And this is what is new
         rows = self.application.execute_sql(
-            GET_DUTIES.format(chapter_string=self.chapter.chapter_string)
+            GET_DUTIES.format(chapter_string=self.chapter.chapter_string),
+            dict_cursor=True
         )
 
-        # Do a pass through the duties table and create a full duty expression
         duty_list = []
-        for row in rows:
-            commodity_code = f.mstr(row[0])
-            additional_code_type_id = f.mstr(row[1])
-            additional_code_id = f.mstr(row[2])
-            measure_type_id = f.mstr(row[3])
-            duty_expression_id = f.mstr(row[4])
-            duty_amount = row[5]
-            monetary_unit_code = f.mstr(row[6])
-            monetary_unit_code = monetary_unit_code.replace("EUR", "€")
-            measurement_unit_code = f.mstr(row[7])
-            measurement_unit_qualifier_code = f.mstr(row[8])
-            measure_sid = f.mstr(row[9])
 
-            oDuty = Duty(
-                commodity_code, additional_code_type_id, additional_code_id, measure_type_id, duty_expression_id,
-                duty_amount, monetary_unit_code, measurement_unit_code, measurement_unit_qualifier_code, measure_sid
+        for row in rows:
+            commodity_code = f.mstr(row['goods_nomenclature_item_id'])
+            additional_code_type_id = f.mstr(row['additional_code_type_id'])
+            additional_code_id = f.mstr(row['additional_code_id'])
+            measure_type_id = f.mstr(row['measure_type_id'])
+            duty_expression_id = f.mstr(row['duty_expression_id'])
+            duty_amount = row['duty_amount']
+            monetary_unit_code = f.mstr(row['monetary_unit_code'])
+            monetary_unit_code = monetary_unit_code.replace("EUR", "€")
+            measurement_unit_code = f.mstr(row['measurement_unit_code'])
+            measurement_unit_qualifier_code = f.mstr(row['measurement_unit_qualifier_code'])
+            measure_sid = f.mstr(row['measure_sid'])
+
+            duty = Duty(
+                commodity_code,
+                additional_code_type_id,
+                additional_code_id,
+                measure_type_id,
+                duty_expression_id,
+                duty_amount,
+                monetary_unit_code,
+                measurement_unit_code,
+                measurement_unit_qualifier_code,
+                measure_sid
             )
-            duty_list.append(oDuty)
+            duty_list.append(duty)
         return duty_list
 
 
@@ -292,7 +282,7 @@ class ScheduleChapter(Chapter):
         heading['HEADING'] = self.chapter.description
         return heading
 
-    def format_schedule_chapter(self, commodity_list):
+    def assign_duties_to_commodities(self, commodity_list):
         # Assign duties to those commodities as appropriate
         for my_commodity in commodity_list:
             for d in self.duty_list:
@@ -302,12 +292,12 @@ class ScheduleChapter(Chapter):
                         my_commodity.assigned = True
 
             my_commodity.combine_duties()
-            my_commodity.format_commodity_code(my_commodity.commodity_code)
+            my_commodity.set_formatted_commodity_code(my_commodity.commodity_code)
 
+    def assign_authorised_use_commodities(self, commodity_list):
         ###########################################################################
         # Get exceptions
         ###########################################################################
-
         for my_commodity in commodity_list:
             my_commodity.check_for_specials()
             my_commodity.check_for_authorised_use()
@@ -315,6 +305,7 @@ class ScheduleChapter(Chapter):
                 self.contains_authorised_use = True
             self.seasonal_records += my_commodity.check_for_seasonal()
 
+    def assign_inherited_duty_to_commodity(self, commodity_list):
         #######################################################################################
         # The purpose of the code below is to loop down through all commodity codes in
         # this chapter and, for each commodity code, then loop back up through the commodity
@@ -341,7 +332,6 @@ class ScheduleChapter(Chapter):
             if my_commodity.combined_duty == "":
                 for loop2 in range(loop1 - 1, -1, -1):
                     upper_commodity = commodity_list[loop2]
-
                     if my_commodity.significant_digits == 4:
                         if upper_commodity.significant_digits == 2:
                             if upper_commodity.combined_duty != "":
@@ -356,6 +346,20 @@ class ScheduleChapter(Chapter):
                                 break
                             yardstick_indent = upper_commodity.indents
 
+        return max_indent
+
+    def format_schedule_chapter(self, commodity_list):
+        self.assign_duties_to_commodities(commodity_list)
+        self.assign_authorised_use_commodities(commodity_list)
+        max_indent = self.assign_inherited_duty_to_commodity(commodity_list)
+        self.suppress_row_for_commodity(commodity_list, max_indent)
+        self.unsuppress_selected_commodities(commodity_list)
+        self.suppress_none_product_line(commodity_list)
+        self.suppress_child_duty(commodity_list, max_indent)
+        table_content = self.format_table_content(commodity_list)
+        return table_content
+
+    def suppress_row_for_commodity(self, commodity_list, max_indent):
         ###########################################################################
         # This function is intended to suppress rows where there is no reason to show them
         # We are only going to suppress rows where the goods is of 10 significant digits
@@ -368,41 +372,92 @@ class ScheduleChapter(Chapter):
         # inherited down - it will not work where the duty has been actually set at
         # 10-digit level and should be inherited up
         ###########################################################################
-
+        commodity_count = len(commodity_list)
         for indent in range(max_indent, -1, -1):
             for loop1 in range(0, commodity_count):
                 my_commodity = commodity_list[loop1]
                 if my_commodity.indents == indent:
                     if my_commodity.significant_digits == 10:
-                        for loop2 in range(loop1 - 1, -1, -1):
-                            upper_commodity = commodity_list[loop2]
-                            if upper_commodity.indents == my_commodity.indents - 1:
-                                if upper_commodity.combined_duty == my_commodity.combined_duty:
-                                    my_commodity.suppress_row = True
+                        if my_commodity.assigned is True:
+                            my_commodity.prevent_row_suppression = True
+                            my_commodity.suppress_row = False
+
+                        if my_commodity.prevent_row_suppression is False:
+                            for loop2 in range(loop1 - 1, -1, -1):
+                                upper_commodity = commodity_list[loop2]
+                                sibling_duty_list = []
+                                if upper_commodity.indents == my_commodity.indents - 1:
+                                    for loop3 in range(loop2 + 1, commodity_count):
+                                        sibling_commodity = commodity_list[loop3]
+                                        if sibling_commodity.indents >= my_commodity.indents:
+                                            sibling_duty_list.append(sibling_commodity.combined_duty)
+                                        elif sibling_commodity.indents < my_commodity.indents:
+                                            break
+
+                                    for i in range(len(sibling_duty_list) - 1, -1, -1):
+                                        item = sibling_duty_list[i]
+                                        if item == "":
+                                            del sibling_duty_list[i]
+
+                                    sibling_duty_set = set(sibling_duty_list)
+                                    if len(sibling_duty_set) > 1:
+                                        my_commodity.suppress_row = False
+                                        #  Start new bit
+                                        if "AU" in sibling_duty_set:
+                                            for loop3 in range(loop2 + 1, commodity_count):
+                                                child = commodity_list[loop3]
+                                                if child.indents > my_commodity.indents:
+                                                    child.prevent_row_suppression = True
+                                                else:
+                                                    break
+                                    # End new bit
+                                    else:
+                                        if my_commodity.prevent_row_suppression is False:
+                                            my_commodity.suppress_row = True
                                     break
 
-                            if self.chapter.id in (97, 47, 80, 14, 48, 49):
-                                if upper_commodity.indents <= 1 and upper_commodity.significant_digits == 2:
+                                # if upper_commodity.indents <= 1 and upper_commodity.significant_digits > 2:
+                                if upper_commodity.significant_digits == 2:
                                     break
-                            else:
-                                if upper_commodity.indents <= 1 and upper_commodity.significant_digits > 2:
-                                    break
-        self.format_sibling_duties(commodity_count, commodity_list)
 
+    def unsuppress_selected_commodities(self, commodity_list):
+        for comm in commodity_list:
+            if comm.commodity_code in BUS_TYRES_COMMODITY_CODES:
+                comm.suppress_row = False
+                comm.suppress_duty = False
+
+    def suppress_none_product_line(self, commodity_list):
         ###########################################################################
-        # Only suppress the duty if the item is not PLS of 80
-        # This will change to be - only suppress if not a leaf
+        # Suppress the duty if the item is not PLS of 80
+        # This will change to be - only supppress if not a leaf
         ###########################################################################
-
-        for loop1 in range(0, commodity_count):
-            my_commodity = commodity_list[loop1]
-            if my_commodity.product_line_suffix != "80":
-                my_commodity.suppress_duty = True
+        for commodity in commodity_list:
+            if commodity.product_line_suffix != "80":
+                commodity.suppress_duty = True
             else:
-                my_commodity.suppress_duty = False
+                commodity.suppress_duty = False
 
-        table_content = self.format_table_content(commodity_list)
-        return table_content
+    def suppress_child_duty(self, commodity_list, max_indent):
+        ###########################################################################
+        # Also suppress the duty if the item has children that are displayed
+        ###########################################################################
+        commodity_count = len(commodity_list)
+        for loop in range(max_indent, -1, -1):
+            for loop1 in range(0, commodity_count):
+                my_commodity = commodity_list[loop1]
+                if my_commodity.indents == loop:
+                    my_commodity.has_children = False
+                    for loop2 in range(loop1 + 1, commodity_count):
+                        child_commodity = commodity_list[loop2]
+                        if child_commodity.indents <= my_commodity.indents:
+                            break
+                        else:
+                            if child_commodity.suppress_row is False:
+                                my_commodity.has_children = True
+                                break
+
+                    if my_commodity.has_children:
+                        my_commodity.suppress_duty = True
 
 
 class ClassificationChapter(Chapter):
@@ -415,9 +470,6 @@ class ClassificationChapter(Chapter):
         self.format_classification_chapter(commodity_list)
 
     def format_classification_chapter(self, commodity_list):
-        commodity_count = len(commodity_list)
-        self.format_sibling_duties(commodity_count, commodity_list)
-
         table_content = self.format_table_content(commodity_list)
         document_content = self.get_document_content()
         chapter_note_content = self.get_chapter_note_content()
@@ -436,6 +488,10 @@ class ClassificationChapter(Chapter):
         composer.save(filename)
 
     def get_chapter_note_content(self):
+        check_sum = ''
+        chapter_note = getattr(self.chapter, 'note', None)
+        if chapter_note:
+            check_sum = self.chapter.note.document_check_sum
         return {
-            'CHAPTER_NOTE_DOCUMENT': self.chapter.note.document_check_sum
+            'CHAPTER_NOTE_DOCUMENT': check_sum
         }

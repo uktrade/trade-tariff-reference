@@ -2114,7 +2114,7 @@ class CurrentMeasures(models.Model):
 
     class Meta:
         managed = False  # Created from a view. Don't remove.
-        db_table = u'"ml\".\"v5_2019"'
+        db_table = u'"django\".\"current_measures"'
 
 
 class MeursingComponents(models.Model):
@@ -2129,4 +2129,36 @@ class MeursingComponents(models.Model):
 
     class Meta:
         managed = False  # Created from a view. Don't remove.
-        db_table = u'"ml\".\"meursing_components"'
+        db_table = u'"django\".\"meursing_components"'
+
+
+class SimpleCurrentMeasures(models.Model):
+    ordernumber = models.CharField(max_length=255, blank=True, null=True)
+    measure_type_id = models.CharField(max_length=3, blank=True, null=True)
+    measure_sid = models.IntegerField(blank=True, null=True)
+    geographical_area_id = models.CharField(max_length=255, blank=True, null=True)
+    reformat_regulation_id = models.CharField(max_length=100, blank=True, null=True)
+    regulation_id = models.TextField(blank=True, null=True)
+    regulation_id_full = models.TextField(blank=True, null=True)
+    goods_nomenclature_item_id = models.CharField(max_length=10, blank=True, null=True)
+    additional_code_type_id = models.TextField(blank=True, null=True)
+    additional_code_id = models.CharField(max_length=3, blank=True, null=True)
+    validity_start_date = models.DateTimeField(blank=True, null=True)
+    validity_end_date = models.DateTimeField(blank=True, null=True)
+    effective_end_date = models.DateTimeField(blank=True, null=True)
+    national = models.BooleanField(blank=True, null=True)
+    reduction_indicator = models.IntegerField(blank=True, null=True)
+    measure_generating_regulation_role = models.IntegerField(blank=True, null=True)
+    measure_generating_regulation_id = models.CharField(max_length=255, blank=True, null=True)
+    justification_regulation_role = models.IntegerField(blank=True, null=True)
+    justification_regulation_id = models.CharField(max_length=255, blank=True, null=True)
+    stopped_flag = models.BooleanField(blank=True, null=True)
+    geographical_area_sid = models.IntegerField(blank=True, null=True)
+    goods_nomenclature_sid = models.IntegerField(blank=True, null=True)
+    additional_code_sid = models.IntegerField(blank=True, null=True)
+    export_refund_nomenclature_sid = models.IntegerField(blank=True, null=True)
+    regulation_group_id = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False  # Created from a view. Don't remove.
+        db_table = u'"django\".\"measures_real_end_dates"'

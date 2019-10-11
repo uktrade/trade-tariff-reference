@@ -114,6 +114,13 @@ class ChapterNoteFactory(factory.django.DjangoModelFactory):
 class ChapterNoteWithDocumentFactory(factory.django.DjangoModelFactory):
     document = factory.django.FileField(filename='chapter_note.docx')
 
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """ Workaround for FileField being a post generation attribute """
+        with mock.patch('storages.backends.s3boto3.S3Boto3Storage.save') as mock_file_save:
+            mock_file_save.return_value = 'chapter_note.docx'
+            return super().create(*args, **kwargs)
+
     class Meta:
         model = 'schedule.ChapterNote'
 
