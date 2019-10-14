@@ -31,7 +31,7 @@ The application generates and updates Free Trade Agreement and Most Favoured Nat
     - Obtain a copy of the tariff data set.
     - Either follow the trade-tariff-management installation instructions and skip the rest of this step or
     - Place the sql dump file in `trade-tariff-reference/sql` directory.
-    - Rename the sql file to `tariff_uk.sql`
+    - Rename the sql file to `tariff_uk.dump`
     - Update `.env` file set `UK_TARIFF_HOST=trade_application_db` and `UK_TARIFF_DB=tariff_uk`
 
     ```shell
@@ -46,7 +46,7 @@ The application generates and updates Free Trade Agreement and Most Favoured Nat
     
 6.  Run setup from within the container
 
-    This will prompt to create a super user add the email address of your user, it will also add all additional data that is not found in the trade tariff database and it will generate all documents.
+    This will prompt to create a super user (add the email address of your user and enter any random string for a password as this will not be used), it will also add all additional data that is not found in the trade tariff database and it will generate all documents.
     N.B it will take a few minutes to generate all the documents.
 
     ```shell

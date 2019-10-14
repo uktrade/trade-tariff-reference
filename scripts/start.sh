@@ -7,7 +7,7 @@ run "pipenv --rm"
 run "pipenv install --dev --system"
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]]; then
-    export PORT=8080
+    export PORT=8000
 fi
 
 run "./scripts/start_cf.sh"
