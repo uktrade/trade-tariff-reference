@@ -167,7 +167,8 @@ class Document:
             validity_start_date,
             validity_end_date,
             reduction_indicator,
-            is_siv, local_sivs,
+            is_siv,
+            local_sivs,
             local_sivs_commodities_only
         )
         self.duty_list.append(obj_duty)
