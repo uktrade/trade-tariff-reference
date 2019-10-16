@@ -125,6 +125,37 @@ WHERE (
 ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
 """
 
+GET_OLD_DUTIES_SQL = """
+SELECT DISTINCT m.goods_nomenclature_item_id,
+m.additional_code_type_id,
+m.additional_code_id,
+m.measure_type_id,
+mc.duty_expression_id,
+mc.duty_amount,
+mc.monetary_unit_code,
+mc.measurement_unit_code,
+mc.measurement_unit_qualifier_code,
+m.measure_sid,
+m.ordernumber,
+m.validity_start_date,
+m.validity_end_date,
+m.geographical_area_id,
+m.reduction_indicator
+FROM goods_nomenclatures gn,
+django.current_measures m
+LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
+WHERE (
+    m.measure_type_id IN ({measure_type_list})
+    AND gn.status = 'published'
+    AND m.geographical_area_id IN ({geo_ids})
+    AND m.validity_start_date >= '2018-01-01'
+    AND m.validity_end_date <= '2018-12-31'
+    AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
+    AND gn.producline_suffix = '80'
+)
+ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
+"""
+
 CHECK_FOR_QUOTAS_SQL = f"""
 SELECT DISTINCT ordernumber FROM django.measures_real_end_dates m
 WHERE m.measure_type_id IN ('143', '146')

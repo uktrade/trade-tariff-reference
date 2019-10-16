@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Measure:
@@ -20,6 +20,7 @@ class Measure:
         self.validity_start_date = validity_start_date
         self.validity_end_date = validity_end_date
         self.reduction_indicator = reduction_indicator
+        self.old_duties = []
 
         self.validity_start_day = datetime.strftime(self.validity_start_date, "%d")
         self.validity_start_month = datetime.strftime(self.validity_start_date, "%m")
@@ -49,8 +50,6 @@ class Measure:
         self.duty_list = []
         self.suppress = False
         self.marked = False
-        self.measure_count = 0
-        self.measure_type_count = 0
         self.seasonal_list = []
         self.is_siv = False
 
@@ -69,78 +68,48 @@ class Measure:
         return s
 
     def combine_duties(self, application):
-        self.combined_duty = ""
-        self.measure_list = []
-        self.measure_type_list = []
-        self.additional_code_list = []
+        combined_duty = self.get_duty_string(self.duty_list)
+        if self.old_duties and self.validity_start_date >= datetime(2019, 11, 1, 0, 0):
+            old_duty = self.get_duty_string(self.filtered_old_duties())
+            if old_duty != combined_duty and old_duty != '':
+                combined_duty = old_duty
+        self.combined_duty = self._combine_duties(combined_duty, application)
 
-        for d in self.duty_list:
-            """
-            if d.is_siv == True:
-                print("I have found an SIV in combine_duties on product ", self.commodity_code)
-            """
-            d.geographical_area_id = self.geographical_area_id
-            self.measure_type_list.append(d.measure_type_id)
-            self.measure_list.append(d.measure_sid)
-            self.additional_code_list.append(d.additional_code_id)
+    def filtered_old_duties(self):
+        duties = []
+        last_year = self.validity_start_date - timedelta(days=365)
+        for duty in self.old_duties:
+            if (last_year >= duty.validity_start_date) and (last_year <= duty.validity_end_date):
+                duties.append(duty)
+        return duties
 
-        measure_type_list_unique = set(self.measure_type_list)
-        measure_list_unique = set(self.measure_list)
-        additional_code_list_unique = set(self.additional_code_list)
+    def get_duty_string(self, duty_list):
+        combined_duty = ""
+        for d in duty_list:
+            combined_duty += d.duty_string + " "
+        combined_duty = combined_duty.replace("  ", " ")
+        return combined_duty.strip()
 
-        self.measure_count = len(measure_list_unique)
-        self.measure_type_count = len(measure_type_list_unique)
-        self.additional_code_count = len(additional_code_list_unique)
-
-        for d in self.duty_list:
-            self.combined_duty += d.duty_string + " "
-        """
-        if self.measure_count == 1 and self.measure_type_count == 1 and self.additional_code_count == 1:
-            for d in self.duty_list:
-                self.combined_duty += d.duty_string + " "
-            if d.is_siv == True:
-                print("I have found an SIV")
-        else:
-            print("I should never show", self.measure_count)
-            if self.measure_type_count > 1:
-                #print("MTOMT")
-                #self.combined_duty = "More than one measure type"
-                if "105" in measure_type_list_unique:
-                    for d in self.duty_list:
-                        if d.measure_type_id == "105":
-                            self.combined_duty += d.duty_string + " "
-            elif self.additional_code_count > 1:
-                #print("ADD CODES")
-                #self.combined_duty = "More than one additional code"
-                if "500" in additional_code_list_unique:
-                    for d in self.duty_list:
-                        if d.additional_code_id == "500":
-                            self.combined_duty += d.duty_string + " "
-                if "550" in additional_code_list_unique:
-                    for d in self.duty_list:
-                        if d.additional_code_id == "550":
-                            self.combined_duty += d.duty_string + " "
-        """
-        self.combined_duty = self.combined_duty.replace("  ", " ")
-        self.combined_duty = self.combined_duty.strip()
-
+    def _combine_duties(self, combined_duty, application):
         # Now add in the Meursing components
-        if "ACR" in self.combined_duty or "SDR" in self.combined_duty or "FDR" in self.combined_duty:
+        if "ACR" in combined_duty or "SDR" in combined_duty or "FDR" in combined_duty:
             # print("Reduction indicator", self.reduction_indicator)
             meursing_percentage = application.get_meursing_percentage(
                 self.reduction_indicator,
                 self.geographical_area_id
             )
-            self.combined_duty = "CAD - " + self.combined_duty + ") " + str(meursing_percentage) + "%"
-            self.combined_duty = self.combined_duty.replace(" + ", " + (", 1)
-            self.combined_duty = self.combined_duty.replace("ACR", "AC")
-            self.combined_duty = self.combined_duty.replace("FDR", "FD")
-            self.combined_duty = self.combined_duty.replace("SDR", "SD")
+            combined_duty = "CAD - " + combined_duty + ") " + str(meursing_percentage) + "%"
+            combined_duty = combined_duty.replace(" + ", " + (", 1)
+            combined_duty = combined_duty.replace("ACR", "AC")
+            combined_duty = combined_duty.replace("FDR", "FD")
+            combined_duty = combined_duty.replace("SDR", "SD")
 
         # Now add in the Meursing components
-        elif "AC" in self.combined_duty or "SD" in self.combined_duty or "FD" in self.combined_duty:
-            self.combined_duty = "CAD - " + self.combined_duty + ") 100%"
-            self.combined_duty = self.combined_duty.replace(" + ", " + (", 1)
+        elif "AC" in combined_duty or "SD" in combined_duty or "FD" in combined_duty:
+            combined_duty = "CAD - " + combined_duty + ") 100%"
+            combined_duty = combined_duty.replace(" + ", " + (", 1)
+
+        return combined_duty
 
 
 class Period:
