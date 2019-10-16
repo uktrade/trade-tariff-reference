@@ -18,6 +18,7 @@ from trade_tariff_reference.documents.fta.constants import (
     FIRST_COME_FIRST_SERVED,
     GET_COMMODITIES_SQL,
     GET_DUTIES_SQL,
+    GET_OLD_DUTIES_SQL,
     GET_MEASURE_COMPONENTS_SQL,
     GET_QUOTA_BALANCE_SQL,
     GET_QUOTA_DEFINITIONS_SQL,
@@ -120,7 +121,65 @@ class Document:
             dict_cursor=True
         )
 
-    def populate_duty_list(
+    def _get_old_duties(self, measure_type_list,
+                        local_sivs,
+                        local_sivs_commodities_only,
+                        measure_condition_dict
+                        ):
+        duties = self.application.execute_sql(
+            GET_OLD_DUTIES_SQL.format(
+                measure_type_list=measure_type_list,
+                geo_ids=self.application.agreement.geo_ids,
+            ),
+            dict_cursor=True
+        )
+        duty_list = []
+        for row in duties:
+            measure_sid = row['measure_sid']
+            commodity_code = f.mstr(row['goods_nomenclature_item_id'])
+            additional_code_type_id = f.mstr(row['additional_code_type_id'])
+            additional_code_id = f.mstr(row['additional_code_id'])
+            measure_type_id = f.mstr(row['measure_type_id'])
+            duty_expression_id = row['duty_expression_id']
+            duty_amount = row['duty_amount']
+            monetary_unit_code = f.mstr(row['monetary_unit_code'])
+            monetary_unit_code = monetary_unit_code.replace("EUR", "€")
+            measurement_unit_code = f.mstr(row['measurement_unit_code'])
+            measurement_unit_qualifier_code = f.mstr(row['measurement_unit_qualifier_code'])
+            quota_order_number_id = f.mstr(row['ordernumber'])
+            validity_start_date = row['validity_start_date']
+            validity_end_date = row['validity_end_date']
+            geographical_area_id = f.mstr(row['geographical_area_id'])
+            reduction_indicator = row['reduction_indicator']
+
+            # Hypothesis would be that the only reason why the Duty amount is None is when
+            # there is a "V" code attached to the Measure
+            # if ((duty_amount is None) and (duty_expression_id == "01")):
+            duty_list.append(
+                self.populate_duty(
+                    commodity_code,
+                    additional_code_type_id,
+                    additional_code_id,
+                    measure_type_id,
+                    duty_expression_id,
+                    duty_amount,
+                    monetary_unit_code,
+                    measurement_unit_code,
+                    measurement_unit_qualifier_code,
+                    measure_sid,
+                    quota_order_number_id,
+                    geographical_area_id,
+                    validity_start_date,
+                    validity_end_date,
+                    reduction_indicator,
+                    local_sivs,
+                    local_sivs_commodities_only,
+                    measure_condition_dict,
+                )
+            )
+        return duty_list
+
+    def populate_duty(
         self,
         commodity_code,
         additional_code_type_id,
@@ -141,6 +200,7 @@ class Document:
         local_sivs_commodities_only,
         measure_condition_dict,
     ):
+
         if duty_amount is None and duty_expression_id is None:
             is_siv = True
             measure_condition = measure_condition_dict.get(measure_sid)
@@ -171,7 +231,7 @@ class Document:
             local_sivs,
             local_sivs_commodities_only
         )
-        self.duty_list.append(obj_duty)
+        return obj_duty
 
     def populate_measure_list(
         self,
@@ -269,25 +329,27 @@ class Document:
             # Hypothesis would be that the only reason why the Duty amount is None is when
             # there is a "V" code attached to the Measure
             # if ((duty_amount is None) and (duty_expression_id == "01")):
-            self.populate_duty_list(
-                commodity_code,
-                additional_code_type_id,
-                additional_code_id,
-                measure_type_id,
-                duty_expression_id,
-                duty_amount,
-                monetary_unit_code,
-                measurement_unit_code,
-                measurement_unit_qualifier_code,
-                measure_sid,
-                quota_order_number_id,
-                geographical_area_id,
-                validity_start_date,
-                validity_end_date,
-                reduction_indicator,
-                local_sivs,
-                local_sivs_commodities_only,
-                measure_condition_dict,
+            self.duty_list.append(
+                self.populate_duty(
+                    commodity_code,
+                    additional_code_type_id,
+                    additional_code_id,
+                    measure_type_id,
+                    duty_expression_id,
+                    duty_amount,
+                    monetary_unit_code,
+                    measurement_unit_code,
+                    measurement_unit_qualifier_code,
+                    measure_sid,
+                    quota_order_number_id,
+                    geographical_area_id,
+                    validity_start_date,
+                    validity_end_date,
+                    reduction_indicator,
+                    local_sivs,
+                    local_sivs_commodities_only,
+                    measure_condition_dict,
+                )
             )
 
             self.populate_measure_list(
@@ -311,17 +373,28 @@ class Document:
                 quota_order_number_id
             )
 
-        self.assign_duties_to_measures()
+        old_duties = []
+        if instrument_type == 'preferences':
+            old_duties = self._get_old_duties(
+                measure_type_list,
+                local_sivs,
+                local_sivs_commodities_only,
+                measure_condition_dict,
+            )
+        self.assign_duties_to_measures(old_duties)
         self.assign_measures_to_commodities()
         self.combine_duties()
         self.resolve_measures()
 
-    def assign_duties_to_measures(self):
+    def assign_duties_to_measures(self, old_duties):
         # Loop through the measures and assign duties to them
         for m in self.measure_list:
             for d in self.duty_list:
                 if m.measure_sid == d.measure_sid:
                     m.duty_list.append(d)
+            for old in old_duties:
+                if m.commodity_code == old.commodity_code:
+                    m.old_duties.append(old)
 
     def assign_measures_to_commodities(self):
         # Loop through the commodities and assign measures to them
