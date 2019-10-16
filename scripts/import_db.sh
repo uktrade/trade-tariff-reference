@@ -1,19 +1,11 @@
 #!/bin/bash
 
-UK_FILE=./sql/tariff_uk.sql
+UK_FILE=./sql/tariff_uk.backup
 if [ -f "$UK_FILE" ]; then
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres -c 'DROP DATABASE tariff_uk' || true
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres -c 'CREATE DATABASE tariff_uk'
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres tariff_uk < $UK_FILE
+    PGPASSWORD=${POSTGRES_PASSWORD} psql -h trade_application_db -U postgres -c 'DROP DATABASE tariff_uk' || true
+    PGPASSWORD=${POSTGRES_PASSWORD} psql -h trade_application_db -U postgres -c 'CREATE DATABASE tariff_uk'
+    PGPASSWORD=${POSTGRES_PASSWORD} pg_restore -h trade_application_db -U postgres -d tariff_uk -c $UK_FILE || true
+    PGPASSWORD=${POSTGRES_PASSWORD} psql -h trade_application_db -U postgres -d tariff_uk  -c 'drop event trigger reassign_owned' || true
 else
     echo "The sql file [$UK_FILE] for the UK database does not exist"
-fi
-
-EU_FILE=./sql/tariff_eu.sql
-if [ -f "$EU_FILE" ]; then
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres -c 'DROP DATABASE tariff_eu' || true
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres -c 'CREATE DATABASE tariff_eu'
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h postgres -U postgres tariff_eu < $EU_FILE
-else
-    echo "The sql file [$EU_FILE] for the EU database does not exist"
 fi
