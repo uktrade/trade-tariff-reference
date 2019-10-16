@@ -81,20 +81,23 @@ class Commodity(BaseCommodity):
     def process_single_measure(self, is_all_full_year):
         if not self.measure_list:
             return
+        if len(self.measure_list) == 1:
+            self.duty_string += self._get_duty_string(self.measure_list[0], is_all_full_year)
+        else:
+            self.duty_string += self._get_duty_string(self.measure_list[1], is_all_full_year)
 
-        self.measure_list = self.measure_list[:1]
-        measure = self.measure_list[0]
-
-        self.duty_string += measure.xml_without_dates()
+    def _get_duty_string(self, measure, is_all_full_year):
+        duty_string = measure.xml_without_dates()
 
         if not is_all_full_year or not measure.validity_end_date:
-            return
+            return duty_string
 
         validity_end_date = measure.validity_end_date.replace(tzinfo=timezone.utc)
         date_brexit = self.date_brexit.replace(tzinfo=timezone.utc)
 
         if validity_end_date < date_brexit:
             self.suppress = True
+        return duty_string
 
     def get_partial_period_list(self):
         partial_period_list = []

@@ -113,7 +113,7 @@ def test_process_single_measure():
     second_measure = get_measure()
     commodity.measure_list.extend([first_measure, second_measure])
     assert commodity.process_single_measure(True) is None
-    assert commodity.measure_list == [first_measure]
+    assert commodity.measure_list == [first_measure, second_measure]
     assert commodity.duty_string == '<w:r><w:t></w:t></w:r>'
     assert commodity.suppress is False
 
@@ -125,10 +125,13 @@ def test_process_single_measure_with_end_date_before_brexit():
         validity_start_date=datetime.now(),
         validity_end_date=datetime(2019, 1, 2, 0, 0),
     )
-    second_measure = get_measure()
+    second_measure = get_measure(
+        validity_start_date=datetime.now(),
+        validity_end_date=datetime(2019, 1, 2, 0, 0)
+    )
     commodity.measure_list.extend([first_measure, second_measure])
     assert commodity.process_single_measure(True) is None
-    assert commodity.measure_list == [first_measure]
+    assert commodity.measure_list == [first_measure, second_measure]
     assert commodity.duty_string == '<w:r><w:t></w:t></w:r>'
     assert commodity.suppress is True
 
