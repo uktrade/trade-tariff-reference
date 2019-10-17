@@ -19,6 +19,10 @@ services:
   trade_application_db:
     image: postgres:11
     restart: always
+    volumes:
+      - ../db-trade-tariff-reference/db:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
     env_file: .env
 
   trade_application_redis:

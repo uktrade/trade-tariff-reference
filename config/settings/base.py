@@ -184,6 +184,8 @@ SASS_OUTPUT_STYLE = 'compressed'
 
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
 
+FEEDBACK_URL = env.url('FEEDBACK_URL')
+
 SCHEDULE = 'schedule'
 CLASSIFICATION = 'classification'
 
@@ -199,7 +201,7 @@ CELERY_BEAT_SCHEDULE = {}
 if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
     CELERY_BEAT_SCHEDULE['refresh-fta-documents'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
-        'schedule': crontab(minute='3', hour='1'),
+        'schedule': crontab(minute='5', hour='*/6'),
         'args': (False, ),
         'kwargs': {
             'force': False
@@ -207,37 +209,21 @@ if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
     }
     CELERY_BEAT_SCHEDULE['refresh-mfn-schedule-document'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
-        'schedule': crontab(minute='3', hour='2'),
+        'schedule': crontab(minute='15', hour='*/7'),
         'args': (SCHEDULE, ),
         'kwargs': {
-            'generate_master': False,
+            'generate_master': True,
             'force': False
         },
     }
     CELERY_BEAT_SCHEDULE['refresh-mfn-classification-document'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_mfn_document',
-        'schedule': crontab(minute='45', hour='2'),
+        'schedule': crontab(minute='40', hour='*/7'),
         'args': (CLASSIFICATION, ),
         'kwargs': {
-            'generate_master': False,
+            'generate_master': True,
             'force': False,
         },
-    }
-    CELERY_BEAT_SCHEDULE['refresh-mfn-master-classification-document'] = {
-        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
-        'schedule': crontab(minute='45', hour='3'),
-        'args': (CLASSIFICATION, ),
-        'kwargs': {
-            'force': False
-        }
-    }
-    CELERY_BEAT_SCHEDULE['refresh-mfn-master-schedule-document'] = {
-        'task': 'trade_tariff_reference.documents.tasks.generate_mfn_master_document',
-        'schedule': crontab(minute='15', hour='4'),
-        'args': (SCHEDULE, ),
-        'kwargs': {
-            'force': False
-        }
     }
 
 
@@ -300,10 +286,6 @@ SASS_PROCESSOR_AUTO_INCLUDE = False
 # to update the stored procedures. Copy tariff/migrations/0003_database_views.py changing the dates
 # within the migration.
 BREXIT_DATE = datetime(2019, 11, 1, 0, 0, 0)
-
-
-
-
 BREXIT_VALIDITY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)
 BREXIT_VALIDITY_END_DATE = datetime(2019, 12, 31, 0, 0, 0)
 

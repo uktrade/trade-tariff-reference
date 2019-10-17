@@ -28,6 +28,7 @@ job_defaults: &job_defaults
     UK_TARIFF_PASSWORD:
     UK_TARIFF_HOST: localhost
     TARIFF_MANAGEMENT_URL: http://localhost:8000
+    FEEDBACK_URL: http://localhost:8000
     OAUTHLIB_INSECURE_TRANSPORT: 1
     AUTHBROKER_URL:
     AUTHBROKER_CLIENT_ID:
