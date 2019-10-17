@@ -293,8 +293,32 @@ DATABASE_ROUTERS = [
 SASS_PROCESSOR_ENABLED = False
 SASS_PROCESSOR_AUTO_INCLUDE = False
 
-BREXIT_VALIDITY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)  # datetime(2018, 1, 1, 0, 0, 0) - Date from database views
+
+# Configurable dates used to filter all the data presented in the documents
+
+# If BREXIT_VALIDITY_START_DATE or BREXIT_VALIDITY_END_DATE are changed a data migration is required
+# to update the stored procedures. Copy tariff/migrations/0003_database_views.py changing the dates
+# within the migration.
+BREXIT_DATE = datetime(2019, 11, 1, 0, 0, 0)
+
+
+
+
+BREXIT_VALIDITY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)
 BREXIT_VALIDITY_END_DATE = datetime(2019, 12, 31, 0, 0, 0)
 
+BREXIT_DATE_STRING = BREXIT_DATE.strftime("%Y-%m-%d")
 BREXIT_VALIDITY_START_DATE_STRING = BREXIT_VALIDITY_START_DATE.strftime("%Y-%m-%d")
 BREXIT_VALIDITY_END_DATE_STRING = BREXIT_VALIDITY_END_DATE.strftime("%Y-%m-%d")
+
+OLD_DUTY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)
+OLD_DUTY_END_DATE = datetime(2018, 12, 31, 0, 0, 0)
+
+OLD_DUTY_START_DATE_STRING = OLD_DUTY_START_DATE.strftime("%Y-%m-%d")
+OLD_DUTY_END_DATE_STRING = OLD_DUTY_END_DATE.strftime("%Y-%m-%d")
+
+QUOTA_BALANCE_START_DATE = datetime(2020, 1, 1, 0, 0, 0)
+QUOTA_BALANCE_END_DATE = datetime(2020, 12, 31, 0, 0, 0)
+
+QUOTA_BALANCE_START_DATE_STRING = QUOTA_BALANCE_START_DATE.strftime("%Y-%m-%d")
+QUOTA_BALANCE_END_DATE_STRING = QUOTA_BALANCE_END_DATE.strftime("%Y-%m-%d")
