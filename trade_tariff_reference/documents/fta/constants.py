@@ -94,7 +94,7 @@ WHERE mc.measure_condition_sid = mcc.measure_condition_sid
 ORDER BY measure_sid;
 """
 
-GET_DUTIES_SQL = """
+GET_DUTIES_SQL = f"""
 SELECT DISTINCT m.goods_nomenclature_item_id,
 m.additional_code_type_id,
 m.additional_code_id,
@@ -114,10 +114,10 @@ FROM goods_nomenclatures gn,
 django.current_measures m
 LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
 WHERE (
-    m.measure_type_id IN ({measure_type_list})
+    m.measure_type_id IN ({{measure_type_list}})
     AND gn.status = 'published'
-    AND m.geographical_area_id IN ({geo_ids})
-    AND (m.validity_end_date IS NULL OR m.validity_end_date >= '2019-01-01')
+    AND m.geographical_area_id IN ({{geo_ids}})
+    AND (m.validity_end_date IS NULL OR m.validity_end_date > '{settings.OLD_DUTY_END_DATE}')
     AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
     AND gn.validity_end_date IS NULL
     AND gn.producline_suffix = '80'
@@ -125,7 +125,7 @@ WHERE (
 ORDER BY m.goods_nomenclature_item_id, validity_start_date DESC, mc.duty_expression_id
 """
 
-GET_OLD_DUTIES_SQL = """
+GET_OLD_DUTIES_SQL = f"""
 SELECT DISTINCT m.goods_nomenclature_item_id,
 m.additional_code_type_id,
 m.additional_code_id,
@@ -145,11 +145,11 @@ FROM goods_nomenclatures gn,
 django.current_measures m
 LEFT OUTER JOIN measure_components mc ON m.measure_sid = mc.measure_sid
 WHERE (
-    m.measure_type_id IN ({measure_type_list})
+    m.measure_type_id IN ({{measure_type_list}})
     AND gn.status = 'published'
-    AND m.geographical_area_id IN ({geo_ids})
-    AND m.validity_start_date >= '2018-01-01'
-    AND m.validity_end_date <= '2018-12-31'
+    AND m.geographical_area_id IN ({{geo_ids}})
+    AND m.validity_start_date >= '{settings.OLD_DUTY_START_DATE_STRING}'
+    AND m.validity_end_date <= '{settings.OLD_DUTY_END_DATE_STRING}'
     AND m.goods_nomenclature_item_id = gn.goods_nomenclature_item_id
     AND gn.producline_suffix = '80'
 )
@@ -185,8 +185,6 @@ WHERE measure_type_id IN ('143', '146') AND geographical_area_id IN ({geo_ids})
 ORDER BY goods_nomenclature_item_id, measure_sid
 """
 
-# TODO: MPP set validity date to 2019-01-01
-# if quotas are not appearing instead of settings.BREXIT_VALIDITY_START_DATE_STRING
 GET_QUOTA_DEFINITIONS_SQL = f"""
 SELECT * FROM quota_definitions
 WHERE quota_order_number_id IN ({{order_numbers}})
@@ -195,16 +193,19 @@ AND validity_start_date >= '{settings.BREXIT_VALIDITY_START_DATE_STRING}'
 ORDER BY quota_order_number_id, validity_start_date DESC
 """
 
-# TODO: MPP set validity date to 2019-11-01 to find all quota balances
-FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL = """
+FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL = f"""
 SELECT quota_order_number_id,
 MIN(validity_start_date) as min_start
 FROM quota_definitions
 WHERE status ='published'
 AND (
-(validity_start_date >= '2020-01-01' AND validity_start_date <= '2020-12-31')
+(validity_start_date >= '{settings.QUOTA_BALANCE_START_DATE_STRING}'
+AND validity_start_date <= '{settings.QUOTA_BALANCE_END_DATE_STRING}'
+)
 OR
-(validity_end_date >= '2020-01-01' AND validity_end_date <= '2020-12-31')
+(validity_end_date >= '{settings.QUOTA_BALANCE_START_DATE_STRING}'
+AND validity_end_date <= '{settings.QUOTA_BALANCE_END_DATE_STRING}'
+)
 )
 GROUP BY quota_order_number_id
 """

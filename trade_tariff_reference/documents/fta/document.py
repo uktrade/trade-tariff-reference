@@ -520,7 +520,7 @@ class Document:
             method = balance.get_quota_type_display()
             y1_balance = balance.year_start_balance
             yx_balance = balance.opening_balance
-            yx_start = balance.start_date
+            yx_start = self.get_quota_date(balance.start_date, date_format='%d/%m/%Y')
             measurement_unit_code = balance.measurement_unit_code
             origin_quota = "Y" if balance.is_origin_quota else ""
             addendum = balance.addendum
@@ -558,9 +558,12 @@ class Document:
                 origin_quota = "Y" if extended_quota_info.is_origin_quota else ""
 
             country = self.application.agreement.slug
-            y1_balance = balance['initial_volume']
-            yx_balance = balance['volume']
-            yx_start = balance['validity_start_date']
+            y1_balance = balance['initial_volume'] or balance.year_start_balance
+            yx_balance = balance['volume'] or balance.opening_balance
+            yx_start = balance['validity_start_date'] or self.get_quota_date(
+                extended_quota_info.start_date,
+                date_format='%d/%m/%Y'
+            )
             measurement_unit_code = balance['measurement_unit_code']
 
             qb = QuotaBalance(
@@ -581,7 +584,8 @@ class Document:
     def get_extended_quota_information(self, quota_order_number_id):
         return ExtendedQuota.objects.filter(
             quota_order_number_id=quota_order_number_id,
-            agreement=self.application.agreement
+            agreement=self.application.agreement,
+            quota_type=ExtendedQuota.FIRST_COME_FIRST_SERVED,
         ).first()
 
     def get_quota_definitions(self):
@@ -679,15 +683,10 @@ class Document:
             if qon.quota_order_number_id in d:
                 qon.quota_definition_list.append(d[qon.quota_order_number_id])
 
-    def get_quota_start_date(self, start_date):
+    def get_quota_date(self, start_date, date_format='%d/%m'):
         if not start_date:
             return ""
-        return datetime.strftime(start_date, '%d/%m')
-
-    def get_quota_end_date(self, end_date):
-        if not end_date:
-            return ""
-        return datetime.strftime(end_date, '%d/%m')
+        return datetime.strftime(start_date, date_format)
 
     def print_quotas(self):
         logger.debug(" - Getting quotas")
@@ -700,7 +699,6 @@ class Document:
             qb = self.balance_dict.get(str(qon.quota_order_number_id))
 
             if qb:
-                # TODO: MPP what should the dates be for licensed quotas
                 qon.validity_start_date = qon.quota_definition_list[0].validity_start_date
                 qon.validity_end_date = qon.quota_definition_list[0].validity_end_date
                 qon.validity_end_date_2019 = qon.quota_definition_list[0].validity_end_date
@@ -748,10 +746,6 @@ class Document:
                         else:
                             qon.format_order_number()
 
-                            # Final fixes to the 2019 dates
-                            # print(qon.quota_order_number_id, qon.validity_start_date_2019, qon.validity_end_date_2019,
-                            # (qon.validity_end_date_2019 - qon.validity_start_date_2019).days)
-
                             quota_order_number = qon.quota_order_number_id_formatted
                             if qon.suspended:
                                 quota_order_number = f'{quota_order_number} (suspended)'
@@ -764,8 +758,8 @@ class Document:
                                 'QUOTA_ORDER_NUMBER': quota_order_number,
                                 'ORIGIN_QUOTA': qon.origin_quota,
                                 'QUOTA_VOLUME': quota_volume,
-                                'QUOTA_OPEN_DATE': self.get_quota_start_date(qon.validity_start_date),
-                                'QUOTA_CLOSE_DATE': self.get_quota_end_date(qon.validity_end_date),
+                                'QUOTA_OPEN_DATE': self.get_quota_date(qon.validity_start_date),
+                                'QUOTA_CLOSE_DATE': self.get_quota_date(qon.validity_end_date),
                                 '2019_QUOTA_VOLUME': '',
                                 'QUOTA_OPEN_DATE_2019': '',
                                 'QUOTA_CLOSE_DATE_2019': '',
@@ -782,7 +776,7 @@ class Document:
                                 )
 
                         table_row['COMMODITY_CODE'] = comm.commodity_code_formatted
-                        table_row['PREFERENTIAL_DUTY_RATE'] = comm.duty_string
+                        table_row['PREFERENTIAL_DUTY_RATE'] = comm.duty_string or '0.00%'
 
                         if comm.duty_string != last_duty:
                             table_row['INSERT_DUTY_DIVIDER'] = True
