@@ -52,7 +52,5 @@ class QuotaDefinition:
         return formatted_string
 
     def format_volumes(self):
-        # MPP: TODO Look in to when this called as removing the
-        # individual calls from document.py changes the file generated
         self.formatted_initial_volume = self.format_volume(self.initial_volume)
         self.formatted_volume_yx = self.format_volume(self.volume_yx)
