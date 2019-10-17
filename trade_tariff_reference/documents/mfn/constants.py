@@ -21,7 +21,7 @@ SELECT DISTINCT goods_nomenclature_item_id FROM django.current_measures m WHERE 
 
 GET_CLASSIFICATIONS = f"""
 SELECT DISTINCT goods_nomenclature_item_id, producline_suffix,
-description, number_indents FROM django.goods_nomenclature_export('{{chapter_string}}%','{settings.BREXIT_DATE_STRING}')
+description, number_indents FROM django.goods_nomenclature_export_brexit('{{chapter_string}}%')
 ORDER BY 1, 2"""
 
 
