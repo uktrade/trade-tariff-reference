@@ -57,7 +57,7 @@ def generate_all_fta_documents(force, background):
     max_retries=3,
     retry_backoff=30,
 )
-def generate_mfn_document(document_type, first_chapter, last_chapter, force=False, generate_master=True):
+def generate_mfn_document(document_type, first_chapter=1, last_chapter=99, force=False, generate_master=True):
     app = MFNApplication(document_type, first_chapter=first_chapter, last_chapter=last_chapter, force=force)
     app.main()
     if generate_master:
