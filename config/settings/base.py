@@ -184,6 +184,8 @@ SASS_OUTPUT_STYLE = 'compressed'
 
 TARIFF_MANAGEMENT_URL = env.url('TARIFF_MANAGEMENT_URL')
 
+FEEDBACK_URL = env.url('FEEDBACK_URL')
+
 SCHEDULE = 'schedule'
 CLASSIFICATION = 'classification'
 
@@ -300,10 +302,6 @@ SASS_PROCESSOR_AUTO_INCLUDE = False
 # to update the stored procedures. Copy tariff/migrations/0003_database_views.py changing the dates
 # within the migration.
 BREXIT_DATE = datetime(2019, 11, 1, 0, 0, 0)
-
-
-
-
 BREXIT_VALIDITY_START_DATE = datetime(2018, 1, 1, 0, 0, 0)
 BREXIT_VALIDITY_END_DATE = datetime(2019, 12, 31, 0, 0, 0)
 
