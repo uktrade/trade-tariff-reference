@@ -22,4 +22,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        generate_all_fta_documents(options['force'], options['background'])
+        generate_all_fta_documents(background=options['background'], force=options['force'])

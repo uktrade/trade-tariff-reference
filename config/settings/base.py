@@ -202,9 +202,9 @@ if env.bool('ENABLE_DAILY_REFRESH_OF_DOCUMENTS', False):
     CELERY_BEAT_SCHEDULE['refresh-fta-documents'] = {
         'task': 'trade_tariff_reference.documents.tasks.generate_all_fta_documents',
         'schedule': crontab(minute='5', hour='*/6'),
-        'args': (False, ),
         'kwargs': {
-            'force': False
+            'force': False,
+            'background': False
         }
     }
     CELERY_BEAT_SCHEDULE['refresh-mfn-schedule-document'] = {
