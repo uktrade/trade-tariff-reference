@@ -53,7 +53,7 @@ def test_generate_all_fta_documents_task(
     force,
 ):
     agreement = AgreementFactory()
-    generate_all_fta_documents(force, False)
+    generate_all_fta_documents(background=False, force=force)
     assert mock_generate_fta_document.called is True
     mock_generate_fta_document.assert_called_once_with(agreement.slug, force=force)
 
@@ -71,7 +71,7 @@ def test_generate_all_fta_documents_task_when_backgrounded(
 ):
     agreement = AgreementFactory()
     mock_delayed_generate_fta_document.return_value = None
-    generate_all_fta_documents(force, True)
+    generate_all_fta_documents(background=True, force=force)
     assert mock_delayed_generate_fta_document.called is True
     mock_delayed_generate_fta_document.assert_called_once_with(agreement.slug, force=force)
 

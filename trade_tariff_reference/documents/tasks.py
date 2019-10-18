@@ -43,7 +43,7 @@ def generate_fta_document(country_profile, force=False):
 
 
 @shared_task
-def generate_all_fta_documents(force, background):
+def generate_all_fta_documents(background=False, force=False):
     agreements = Agreement.objects.all().order_by('slug')
     for agreement in agreements:
         if background:
