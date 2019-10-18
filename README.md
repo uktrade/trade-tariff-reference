@@ -35,8 +35,15 @@ The application generates and updates Free Trade Agreement and Most Favoured Nat
     - Update `.env` file set `UK_TARIFF_HOST=trade_application_db` and `UK_TARIFF_DB=tariff_uk`
 
     ```shell
-    docker-compose run trade_application  bash ./scripts/import_db.sh
+    docker-compose run trade_application bash ./scripts/import_db.sh
     ```
+
+    - Update all status flags in the database to published (the script might need to be run a few times and can take awhile)
+
+    ```shell
+    docker-compose run trade_application python manage.py update_status_to_published
+    ```
+
 
 5.  Run the services:
 
