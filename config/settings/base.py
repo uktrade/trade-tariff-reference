@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'trade_tariff_reference.account',
     'trade_tariff_reference.core',
     'trade_tariff_reference.schedule',
     'trade_tariff_reference.tariff',
@@ -69,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    'trade_tariff_reference.core.middleware.ProtectAllViewsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
