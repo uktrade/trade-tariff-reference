@@ -1,6 +1,8 @@
 from django.contrib.auth import logout
 from django.views.generic import TemplateView
 
+# Warning Any views placed in the accounts app are not redirected to the auth broker login page
+
 
 class LogoutView(TemplateView):
     template_name = 'account/logout.html'
