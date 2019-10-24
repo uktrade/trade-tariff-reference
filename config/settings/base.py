@@ -246,29 +246,36 @@ LOGGING = {
     'root': {
         'level': 'INFO',
         'handlers': ['console'],
+        'formatter': 'json',
     },
     'formatters': {
         'verbose': {
             'format': '[%(levelname)s] [%(name)s] %(message)s'
+        },
+        'json': {
+            '()': 'trade_tariff_reference.core.formatter.JSONLogFormatter',
+            'format': '%(asctime)s %(levelname)s %(filename)s %(lineno)s %(message)s %(user)s'
         },
     },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'json'
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': False
+            'propagate': False,
+            'formatter': 'json',
         },
         'django.server': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
+            'formatter': 'json',
         },
     },
 }
