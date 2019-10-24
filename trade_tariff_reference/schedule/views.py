@@ -1,3 +1,8 @@
+import json
+import logging
+
+from deepdiff import DeepDiff
+
 from django.db import IntegrityError, transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
@@ -10,7 +15,10 @@ from .constants import DOCX_CONTENT_TYPE
 from .forms import AgreementModelForm, ExtendedQuotaForm, ManageExtendedInformationForm
 from .models import Agreement, ExtendedQuota, MFNDocument
 from .quotas import process_quotas
-from .utils import generate_document
+from .utils import generate_document, get_initial_quotas
+
+
+logger = logging.getLogger(__name__)
 
 
 class ManageAgreementScheduleView(TemplateView):
@@ -58,6 +66,12 @@ class BaseAgreementScheduleView:
         generate_document(self.object)
         return reverse('schedule:fta:manage')
 
+    def get_form_kwargs(self):
+        return {
+            'request': self.request,
+            **super().get_form_kwargs(),
+        }
+
 
 class CreateAgreementScheduleView(BaseAgreementScheduleView, CreateView):
 
@@ -80,6 +94,33 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
     template_name = 'schedule/fta/manage_extended_information.html'
     form_class = ManageExtendedInformationForm
 
+    def change_dict(self, change_instance):
+        if change_instance:
+            return get_initial_quotas(change_instance, lst=True)
+        return {}
+
+    def log_change(self, initial_change_data, change_data):
+        result = DeepDiff(
+            initial_change_data,
+            change_data,
+        )
+        result = json.loads(result.to_json())
+        if result:
+            self._log_message(result)
+
+    def check_for_updates(self, agreement, initial_change_data):
+        change_data = self.change_dict(agreement)
+        try:
+            self.log_change(initial_change_data, change_data)
+        except TypeError:
+            self._log_message({})
+
+    def _log_message(self, extra):
+        extra['request'] = self.request
+        agreement = self.get_agreement()
+        extra['agreement_id'] = agreement.id
+        logger.info('Agreement quotas updated', extra=extra)
+
     def get_agreement(self):
         return get_object_or_404(Agreement, slug=self.kwargs['slug'])
 
@@ -92,6 +133,8 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
     def form_valid(self, form):
         quota_data = process_quotas(form.cleaned_data)
         agreement = self.get_agreement()
+        initial_change_data = self.change_dict(agreement)
+
         if not quota_data:
             return redirect(reverse('schedule:fta:manage'))
 
@@ -106,6 +149,7 @@ class ManageExtendedInformationAgreementScheduleView(FormView):
         except IntegrityError:
             return self.form_invalid(form)
 
+        self.check_for_updates(agreement, initial_change_data)
         generate_document(agreement)
         return redirect(reverse('schedule:fta:manage'))
 

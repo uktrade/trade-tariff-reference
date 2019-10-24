@@ -32,6 +32,7 @@ django-webpack-loader = "*"
 djangorestframework = "*"
 docxcompose = "*"
 ipython = "*"
+json_log_formatter='*'
 libsass = "*"
 markdown = "*"
 psycopg2 = "*"

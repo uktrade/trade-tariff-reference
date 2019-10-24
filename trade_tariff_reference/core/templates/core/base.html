@@ -83,6 +83,11 @@
                 </div>
                 <div class="govuk-header__content">
                     <a href="{% tariff_management_url %}" class="govuk-header__link govuk-header__link--service-name" target="_blank">{% trans 'Tariff Application' %}</a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'account:logout' %}" class="govuk-header__link govuk-header__link govuk-heading-s float-right">{% trans 'Sign out' %}</a>
+                    {% else %}
+                        <a href="{% url 'core:homepage' %}" class="govuk-header__link govuk-header__link govuk-heading-s float-right">{% trans 'Sign in' %}</a>
+                    {% endif %}
                 </div>
             </div>
         </header>

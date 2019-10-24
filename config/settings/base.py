@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'trade_tariff_reference.account',
     'trade_tariff_reference.core',
     'trade_tariff_reference.schedule',
     'trade_tariff_reference.tariff',
@@ -69,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    'trade_tariff_reference.core.middleware.ProtectAllViewsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -245,29 +246,36 @@ LOGGING = {
     'root': {
         'level': 'INFO',
         'handlers': ['console'],
+        'formatter': 'json',
     },
     'formatters': {
         'verbose': {
             'format': '[%(levelname)s] [%(name)s] %(message)s'
+        },
+        'json': {
+            '()': 'trade_tariff_reference.core.formatter.JSONLogFormatter',
+            'format': '%(asctime)s %(levelname)s %(filename)s %(lineno)s %(message)s %(user)s'
         },
     },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'json'
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': False
+            'propagate': False,
+            'formatter': 'json',
         },
         'django.server': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
+            'formatter': 'json',
         },
     },
 }
