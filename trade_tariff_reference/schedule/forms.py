@@ -1,4 +1,8 @@
+import json
+import logging
 from datetime import date
+
+from deepdiff import DeepDiff
 
 from django import forms
 from django.utils import timezone
@@ -6,6 +10,10 @@ from django.utils import timezone
 from trade_tariff_reference.tariff.models import GeographicalAreas
 
 from .models import Agreement, ExtendedQuota
+from .utils import get_initial_quotas
+
+
+logger = logging.getLogger(__name__)
 
 
 class AgreementModelForm(forms.ModelForm):
@@ -82,11 +90,40 @@ class AgreementModelForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request') if 'request' in kwargs else None
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.agreement_date:
             self.initial['agreement_date_year'] = self.instance.agreement_date.year
             self.initial['agreement_date_month'] = self.instance.agreement_date.month
             self.initial['agreement_date_day'] = self.instance.agreement_date.day
+        self.initial_change_data = self.change_dict(self.instance)
+
+    def change_dict(self, change_instance):
+        if change_instance:
+            return change_instance.serialize
+        return {}
+
+    def log_change(self, change_data):
+        result = DeepDiff(
+            self.initial_change_data,
+            change_data,
+        )
+        result = json.loads(result.to_json())
+        if result:
+            self._log_message(result)
+
+    def _log_message(self, extra):
+        extra['request'] = self.request
+        logger.info('Agreement updated', extra=extra)
+
+    def save(self, *args, **kwargs):
+        instance = super().save(*args, **kwargs)
+        change_data = self.change_dict(instance)
+        try:
+            self.log_change(change_data)
+        except TypeError:
+            self._log_message({})
+        return instance
 
     def clean(self):
         cleaned_data = super().clean()
@@ -166,26 +203,7 @@ class ManageExtendedInformationForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.agreement = kwargs.pop('agreement')
         super().__init__(*args, **kwargs)
-        self.initial['origin_quotas'] = self.get_initial_origin_quotas()
-        self.initial['licensed_quotas'] = self.get_initial_licensed_quotas()
-        self.initial['scope_quotas'] = self.get_initial_scope_quotas()
-        self.initial['staging_quotas'] = self.get_initial_staging_quotas()
-
-    def get_initial_origin_quotas(self):
-        quotas = [quota.origin_quota_string for quota in self.agreement.origin_quotas]
-        return '\r\n'.join(quotas)
-
-    def get_initial_licensed_quotas(self):
-        quotas = [quota.licensed_quota_string for quota in self.agreement.licensed_quotas]
-        return '\r\n'.join(quotas)
-
-    def get_initial_scope_quotas(self):
-        quotas = [quota.scope_quota_string for quota in self.agreement.scope_quotas]
-        return '\r\n'.join(quotas)
-
-    def get_initial_staging_quotas(self):
-        quotas = [quota.staging_quota_string for quota in self.agreement.staging_quotas]
-        return '\r\n'.join(quotas)
+        self.initial.update(get_initial_quotas(self.agreement))
 
 
 class ExtendedQuotaForm(forms.ModelForm):

@@ -82,6 +82,10 @@ class Agreement(models.Model):
     )
     last_checked = models.DateTimeField(null=True, blank=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._original_data = self.to_json()
+
     @property
     def country_profile(self):
         return self.slug
@@ -143,8 +147,12 @@ class Agreement(models.Model):
         return self.document_status == DocumentStatus.UNAVAILABLE
 
     def to_json(self):
+        return json.dumps(self.serialize)
+
+    @property
+    def serialize(self):
         from trade_tariff_reference.api.serializers import AgreementSerializer
-        return json.dumps(AgreementSerializer(instance=self).data)
+        return AgreementSerializer(instance=self).data
 
     def __str__(self):
         return f'{self.agreement_name} - {self.country_name}'
