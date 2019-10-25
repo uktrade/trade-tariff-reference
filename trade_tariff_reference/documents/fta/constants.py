@@ -165,7 +165,7 @@ ORDER BY quota_order_number_id, validity_start_date DESC
 
 FIRST_QUOTA_BALANCE_OF_THE_YEAR_SQL = f"""
 SELECT quota_order_number_id,
-MIN(validity_start_date) as min_start
+MAX(validity_start_date) as min_start
 FROM quota_definitions
 WHERE status ='published'
 AND (
