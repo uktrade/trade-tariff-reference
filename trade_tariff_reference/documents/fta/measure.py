@@ -1,6 +1,4 @@
-from datetime import datetime, timedelta
-
-from django.conf import settings
+from datetime import datetime
 
 
 class Measure:
@@ -71,19 +69,7 @@ class Measure:
 
     def combine_duties(self, application):
         combined_duty = self.get_duty_string(self.duty_list)
-        if self.old_duties and self.validity_start_date >= settings.BREXIT_DATE:
-            old_duty = self.get_duty_string(self.filtered_old_duties())
-            if old_duty != combined_duty and old_duty != '':
-                combined_duty = old_duty
         self.combined_duty = self._combine_duties(combined_duty, application)
-
-    def filtered_old_duties(self):
-        duties = []
-        last_year = self.validity_start_date - timedelta(days=365)
-        for duty in self.old_duties:
-            if (last_year >= duty.validity_start_date) and (last_year <= duty.validity_end_date):
-                duties.append(duty)
-        return duties
 
     def get_duty_string(self, duty_list):
         combined_duty = ""
