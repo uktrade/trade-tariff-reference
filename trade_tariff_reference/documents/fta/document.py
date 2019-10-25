@@ -2,7 +2,7 @@ import codecs
 import logging
 import os
 import tempfile
-from datetime import datetime
+from datetime import datetime, timedelta
 from distutils.dir_util import copy_tree
 from functools import lru_cache
 
@@ -38,6 +38,8 @@ from trade_tariff_reference.schedule.models import ExtendedQuota
 
 
 logger = logging.getLogger(__name__)
+
+NOVEMBER_BREXIT_DATE = datetime(2019, 11, 1, 0, 0, 0)
 
 
 class Document:
@@ -186,17 +188,32 @@ class Document:
         reduction_indicator,
     ):
         if measure_sid not in temp_measure_list:
-            obj_measure = Measure(
-                measure_sid,
-                commodity_code,
-                quota_order_number_id,
-                validity_start_date,
-                validity_end_date,
-                geographical_area_id,
-                reduction_indicator
-            )
-            self.measure_list.append(obj_measure)
-            temp_measure_list.append(measure_sid)
+            if self.omit_post_brexit_measure() and validity_end_date == NOVEMBER_BREXIT_DATE - timedelta(days=1):
+                validity_end_date = None
+
+            if not self.omit_post_brexit_measure() or validity_start_date != NOVEMBER_BREXIT_DATE:
+                obj_measure = Measure(
+                    measure_sid,
+                    commodity_code,
+                    quota_order_number_id,
+                    validity_start_date,
+                    validity_end_date,
+                    geographical_area_id,
+                    reduction_indicator
+                )
+
+                self.measure_list.append(obj_measure)
+                temp_measure_list.append(measure_sid)
+
+    def omit_post_brexit_measure(self):
+        if datetime.today().year != 2019:
+            return False
+        country_codes_list = []
+        if self.application.agreement.country_codes:
+            country_codes_list = list(self.application.agreement.country_codes)
+        if 'NO' in country_codes_list or 'IS' in country_codes_list:
+            return False
+        return True
 
     def populate_commodity_list(
         self,
