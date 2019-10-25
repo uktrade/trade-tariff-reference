@@ -841,7 +841,7 @@ def test_assign_duties_to_measures(mock_combine_duties, duty_list, measure_list,
     for measure in measure_list:
         assert measure.duty_list == []
 
-    document.assign_duties_to_measures([])
+    document.assign_duties_to_measures()
     for measure in document.measure_list:
         if expected_assigned_duty:
             assert len(measure.duty_list) == 1

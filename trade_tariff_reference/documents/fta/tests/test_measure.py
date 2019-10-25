@@ -34,28 +34,6 @@ def get_measure(
 
 
 @freeze_time('2019-10-01')
-def test_filtered_old_duties():
-    measure = get_measure(
-        validity_start_date=datetime.now(),
-    )
-    duties = [
-        get_duty_object(
-            measure_sid=1,
-            validity_start_date=datetime(2018, 1, 1),
-            validity_end_date=datetime(2018, 8, 31),
-        ),
-        get_duty_object(
-            measure_sid=2,
-            validity_start_date=datetime(2018, 9, 2),
-            validity_end_date=datetime(2018, 12, 1),
-        ),
-    ]
-    measure.old_duties = duties
-    actual_duties = measure.filtered_old_duties()
-    assert [duty.measure_sid for duty in actual_duties] == [2]
-
-
-@freeze_time('2019-10-01')
 def test_get_duty_string():
     measure = get_measure(
         validity_start_date=datetime.now(),
@@ -74,7 +52,7 @@ def test_get_duty_string():
 
 
 @freeze_time('2019-10-01')
-def test_combine_duties_with_no_old_duties():
+def test_combine_duties():
     measure = get_measure(
         validity_start_date=datetime.now(),
     )
@@ -98,48 +76,3 @@ def test_combine_duties_with_no_old_duties():
     application = Application(country_profile='spain')
     measure.combine_duties(application)
     assert measure.combined_duty == 'CAD - + (AC + AC) 100%'
-
-
-@freeze_time('2019-10-01')
-def test_combine_duties_with_old_duties():
-    measure = get_measure(
-        validity_start_date=datetime(2019, 11, 1),
-    )
-    duties = [
-        get_duty_object(
-            measure_sid=1,
-            validity_start_date=datetime(2019, 1, 1),
-            validity_end_date=datetime(2019, 8, 31),
-            duty_expression_id='01',
-            duty_amount=1,
-        ),
-        get_duty_object(
-            measure_sid=2,
-            validity_start_date=datetime(2019, 9, 2),
-            validity_end_date=datetime(2019, 12, 1),
-            duty_amount=2,
-            duty_expression_id='01',
-        ),
-    ]
-    old_duties = [
-        get_duty_object(
-            measure_sid=1,
-            validity_start_date=datetime(2018, 1, 1),
-            validity_end_date=datetime(2018, 8, 31),
-            duty_expression_id='01',
-            duty_amount=4,
-        ),
-        get_duty_object(
-            measure_sid=2,
-            validity_start_date=datetime(2018, 9, 2),
-            validity_end_date=datetime(2018, 12, 1),
-            duty_amount=4,
-            duty_expression_id='01',
-        ),
-    ]
-    measure.duty_list = duties
-    measure.old_duties = old_duties
-    AgreementFactory(country_name='Espana', slug='spain', country_codes=['1011'])
-    application = Application(country_profile='spain')
-    measure.combine_duties(application)
-    assert measure.combined_duty == '4.00%'
