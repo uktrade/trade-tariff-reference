@@ -19,9 +19,9 @@ GET_AUTHORISED_USE_COMMODITIES = """
 SELECT DISTINCT goods_nomenclature_item_id FROM django.current_measures m WHERE measure_type_id = '105' ORDER BY 1;
 """
 
-GET_CLASSIFICATIONS = f"""
+GET_CLASSIFICATIONS = """
 SELECT DISTINCT goods_nomenclature_item_id, producline_suffix,
-description, number_indents FROM django.goods_nomenclature_export_brexit('{{chapter_string}}%')
+description, number_indents FROM django.goods_nomenclature_export_brexit('{chapter_string}%')
 ORDER BY 1, 2"""
 
 

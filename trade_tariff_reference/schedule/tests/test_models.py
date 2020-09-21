@@ -47,7 +47,7 @@ def test_agreement_model():
     assert agreement.country_codes_string == 'IS, 2334'
     assert agreement.agreement_date_short == '01/01/2019'
     assert agreement.agreement_date_long == '1 January 2019'
-    assert str(agreement) == f'Test agreement - israel'
+    assert str(agreement) == 'Test agreement - israel'
     assert agreement.download_url == reverse('schedule:fta:download', kwargs={'slug': agreement.slug})
     assert agreement.edit_url == reverse('schedule:fta:edit', kwargs={'slug': agreement.slug})
     assert agreement.regenerate_url == reverse('schedule:fta:regenerate', kwargs={'slug': agreement.slug})
@@ -99,7 +99,7 @@ def test_chapter_document_history_model():
 def test_mfn_document_history_model():
     mfn_document = MFNDocumentFactory()
     document_history = MFNDocumentHistoryFactory(mfn_document=mfn_document)
-    assert str(document_history) == f'schedule - Doc History - 2019-02-01 02:00:00+00:00'
+    assert str(document_history) == 'schedule - Doc History - 2019-02-01 02:00:00+00:00'
 
 
 def test_mfn_document_model():

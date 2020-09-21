@@ -2,9 +2,7 @@
 
 source ./scripts/functions.sh
 
-run "pipenv lock"
-run "pipenv --rm"
-run "pipenv install --dev --system"
+poetry install
 
 if [[ -z "${DEVELOPMENT_SERVER}" ]]; then
     export PORT=8000

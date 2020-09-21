@@ -1,23 +1,25 @@
-version: '2'
+version: '3'
 services:
 
   trade_application:
     build:
       context: .
+    image:
+      trade_tariff_reference/web
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ".:/app"
+      - "../cache_trade-tariff-reference/pip:/root/.cache/pip:cached"
     env_file: .env
     entrypoint: dockerize -wait tcp://trade_application_db:5432 -wait tcp://trade_application_redis:6379 -timeout 120s
     depends_on:
       - trade_application_db
-      - trade_application_redis
-      - trade_application_celery
+      - s3
     command: /app/scripts/start.sh
 
   trade_application_db:
-    image: postgres:11
+    image: postgres:12.2
     restart: always
     volumes:
       - ../db-trade-tariff-reference/db:/var/lib/postgresql/data
@@ -32,10 +34,22 @@ services:
       - "6378:6379"
 
   trade_application_celery:
-    build:
-      context: .
-    volumes:
-      - .:/app
+    image: trade_tariff_reference/web
+    restart: always
     entrypoint: dockerize -wait tcp://trade_application_db:5432 -wait tcp://trade_application_redis:6379 -timeout 120s
     env_file: .env
     command: watchmedo auto-restart -d . -R -p '*.py' -- celery worker -A config -l info -Q celery -B
+    depends_on:
+      - trade_application_redis
+      - trade_application_db
+      - s3
+
+  s3:
+    image: minio/minio
+    restart: always
+    ports:
+      - "9001:9001"
+    volumes:
+      - ../s3_trade-tariff-reference/minio:/data
+    env_file: .env
+    command: server --address 0.0.0.0:9001 /data

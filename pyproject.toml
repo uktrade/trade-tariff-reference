@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "trade-tariff-reference"
+version = "0.1.0"
+description = "Trade Tariff Reference Document Generator"
+authors = ["Department for International Trade <webops@digital.trade.gov.uk>"]
+maintainers = ["Department for International Trade <webops@digital.trade.gov.uk>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+boto3 = "*"
+deepdiff = "*"
+dj-database-url = "*"
+Django = ">=2.2.4"
+django-compressor = "*"
+django-environ = "*"
+django-extensions = "*"
+django-sass-processor = "*"
+django-staff-sso-client = "*"
+django-storages = "*"
+django-webpack-loader = "*"
+djangorestframework = "*"
+docxcompose = "*"
+ipython = "*"
+json_log_formatter = "*"
+libsass = "*"
+markdown = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+python-dateutil = "*"
+python-docx = "*"
+raven = "*"
+sentry-sdk = "*"
+waitress = "*"
+werkzeug = "*"
+whitenoise = "*"
+celery = {extras = ["redis"], version = "^4.4.7"}
+
+[tool.poetry.dev-dependencies]
+django-override-storage = "*"
+factory-boy = "*"
+flake8 = "*"
+flake8-import-order = "*"
+freezegun = "*"
+ipdb = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-sugar = "*"
+pyyaml = "*"
+watchdog = "*"
+arch = "*"
+argh = "*"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

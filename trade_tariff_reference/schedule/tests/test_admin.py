@@ -27,7 +27,7 @@ def get_factory_dict(factory):
     factory_dict = copy.deepcopy(factory.__dict__)
     remove_keys = ['_state']
 
-    for key, value in factory_dict.items():
+    for key, value in list(factory_dict.items()):
         if isinstance(value, FieldFile):
             remove_keys.append(key)
         if not value:

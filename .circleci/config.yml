@@ -19,9 +19,10 @@ job_defaults: &job_defaults
     DJANGO_SECRET_KEY: test
     DJANGO_SETTINGS_MODULE: config.settings.testing
     DEBUG: True
+    POSTGRES_HOST_AUTH_METHOD: "trust"
     POSTGRES_DB: reference
     POSTGRES_USER: postgres
-    POSTGRES_PASSWORD:
+    POSTGRES_PASSWORD: postgres
     POSTGRES_HOST: localhost
     UK_TARIFF_DB: tariff
     UK_TARIFF_USER: postgres
@@ -42,10 +43,13 @@ job_defaults: &job_defaults
 
   docker:
     - image: <<parameters.python_image>>
+      environment:
+        POETRY_CACHE_DIR: "~/cache/pip"
 
     - image: <<parameters.postgres_image>>
       environment:
-        POSTGRES_DB=reference
+         POSTGRES_DB: "reference"
+         POSTGRES_HOST_AUTH_METHOD: "trust"
 
     - image: <<parameters.redis_image>>
 
@@ -55,28 +59,41 @@ job_defaults: &job_defaults
     - restore_cache:
         name: Restore pip cache
         keys:
-          - v1-trade-tariff-reference-{{ checksum "Pipfile.lock" }}
+          - v1-trade-tariff-reference-{{ checksum "poetry.lock" }}
           - v1-trade-tariff-reference-
         paths:
           - ~/cache/pip
 
     - run:
-        name: Install pipenv
-        command: pip install --user pipenv
+        # Circle CI 2.0 doesn't support variable interpolation.
+        # https://discuss.circleci.com/t/how-to-add-a-path-to-path-in-circle-2-0/11554/4
+        command: echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
 
     - run:
-        name: Check python packages
-        command: PIPENV_CACHE_DIR=~/cache/pip python -m pipenv check --system --three
+        name: Install poetry
+        command: pip install --user poetry
+
+    - run:
+        name: Install safety
+        command: pip install --user safety
 
     - run:
         name: Install dependencies
-        command: PIPENV_CACHE_DIR=~/cache/pip python -m pipenv install --dev --system --deploy
+        command: poetry config virtualenvs.create false && poetry install
 
     - save_cache:
         name: Save pip cache
-        key: v1-trade-tariff-reference-{{ checksum "Pipfile.lock" }}
+        key: v1-trade-tariff-reference-{{ checksum "poetry.lock" }}
         paths:
           - ~/cache/pip
+          - ~/.config/pypoetry
+    - run:
+        name: Run flake8
+        command: flake8 trade_tariff_reference/
+
+    - run:
+        name: Check python packages
+        command: poetry export --dev --format=requirements.txt --without-hashes --output=requirements.txt && safety check --file=requirements.txt
 
     - run:
         name: Install node
@@ -91,12 +108,8 @@ job_defaults: &job_defaults
         command: npm audit
 
     - run:
-        name: Run flake8
-        command: python -m flake8 trade_tariff_reference/
-
-    - run:
         name: Run tests
-        command: python -m pytest -p no:sugar --cov=trade_tariff_reference trade_tariff_reference/
+        command: pytest -p no:sugar --cov=trade_tariff_reference trade_tariff_reference/
 
     - store_test_results:
         path: test-reports
@@ -123,6 +136,6 @@ workflows:
     jobs:
       - build:
           publish_coverage: true
-          python_image: python:3.7.4
-          postgres_image: postgres:11
+          python_image: python:3.8.5
+          postgres_image: postgres:12.2
           redis_image: redis:3.2
